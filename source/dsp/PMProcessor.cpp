@@ -13,7 +13,7 @@
  */
 
 #include "PMProcessor.h"
-#include "PMEditor.h"
+#include <ui/PMEditor.h>
 
 static juce::String ladderTypeTextFunction(const gin::Parameter &, float v)
 {
@@ -904,7 +904,7 @@ bool PMProcessor::isBusesLayoutSupported(const BusesLayout &layouts) const
 PMProcessor::PMProcessor()
     : gin::Processor(BusesProperties().withOutput("Output", juce::AudioChannelSet::stereo(), true),
                      false, getOptions()),
-      synth(APSynth(*this)), auxSynth(AuxSynth(*this))
+      synth(PMSynth(*this))
 {
     { // get presets
         auto sz = 0;
@@ -1202,18 +1202,12 @@ void PMProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce::MidiBuffe
     const auto numSamples = buffer.getNumSamples();
 
     if (MTS_HasMaster(client))
-    {
         scaleName = MTS_GetScaleName(client);
-    }
 
     if (modMatrix.getLearn().id != -1)
-    {
         learning = "Learning: " + modMatrix.getModSrcName(modMatrix.getLearn());
-    }
     else
-    {
         learning = "";
-    }
 
     if (presetLoaded)
     {
@@ -1225,13 +1219,11 @@ void PMProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce::MidiBuffe
 
     synth.startBlock();
     synth.setMPE(globalParams.mpe->isOn());
-
     playhead = getPlayHead();
-
     int pos = 0;
     int todo = numSamples;
 
-    buffer.clear(); // then clear it from output buffer
+    buffer.clear();
 
     synth.setMono(globalParams.mono->isOn());
     synth.setLegato(globalParams.legato->isOn());
@@ -1271,10 +1263,8 @@ void PMProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce::MidiBuffe
     }
 
     playhead = nullptr;
-
     levelTracker.trackBuffer(buffer);
-
-    synth.endBlock(numSamples * 2);
+    synth.endBlock(numSamples * 4);
 }
 
 juce::Array<float> PMProcessor::getLiveFilterCutoff() const { return synth.getLiveFilterCutoff(); }
@@ -1846,7 +1836,7 @@ bool PMProcessor::hasEditor() const { return true; }
 
 juce::AudioProcessorEditor *PMProcessor::createEditor()
 {
-    return new gin::ScaledPluginEditor(new PMProcessorEditor(*this), state);
+    return new gin::ScaledPluginEditor(new PMEditor(*this), state);
 }
 
 //==============================================================================

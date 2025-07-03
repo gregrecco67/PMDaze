@@ -1,16 +1,16 @@
-/*
- * Audible Planets - an expressive, quasi-Ptolemaic semi-modular synthesizer
- *
- * Copyright 2024, Greg Recco
- *
- * Audible Planets is released under the GNU General Public Licence v3
- * or later (GPL-3.0-or-later). The license is found in the "LICENSE"
- * file in the root of this repository, or at
- * https://www.gnu.org/licenses/gpl-3.0.en.html
- *
- * All source for Audible Planets is available at
- * https://github.com/gregrecco67/AudiblePlanets
- */
+//
+// PM Daze - a phase-modulation synthesizer
+//
+// Copyright 2025, Greg Recco
+//
+// PM Daze is released under the GNU General Public Licence v3
+// or later (GPL-3.0-or-later). The license is found in the "LICENSE"
+// file in the root of this repository, or at
+// https://www.gnu.org/licenses/gpl-3.0.en.html
+//
+// Source code for PM Daze is available at
+// https://github.com/gregrecco67/PMDaze
+//
 
 // LICENSE for FastMath class and its members fastSin, and fastTanh:
 //------------------------------------------------------------------------------
@@ -51,69 +51,72 @@ using std::numbers::pi;
 // FastMath contains some fast approximations for trigonometric functions.
 //------------------------------------------------------------------------------
 
-template<class F>
-class FastMath {
-public:
-	// Sine approximation. Range is [-pi, pi].
-	//
-	// https://web.archive.org/web/20100613230051/http://www.devmaster.net/forums/showthread.php?t=5784
-	// https://www.desmos.com/calculator/f0eryaepsl
-	static inline F fastSin(F x)
-	{
-		static constexpr F B = 4 / juce::MathConstants<float>::pi;
-		static constexpr F C = -4 / (juce::MathConstants<float>::pi *
-		                             juce::MathConstants<float>::pi);
-		static constexpr F P = 0.225f;
+template <class F> class FastMath
+{
+  public:
+    // Sine approximation. Range is [-pi, pi].
+    //
+    // https://web.archive.org/web/20100613230051/http://www.devmaster.net/forums/showthread.php?t=5784
+    // https://www.desmos.com/calculator/f0eryaepsl
+    static inline F fastSin(F x)
+    {
+        static constexpr F B = 4 / juce::MathConstants<float>::pi;
+        static constexpr F C =
+            -4 / (juce::MathConstants<float>::pi * juce::MathConstants<float>::pi);
+        static constexpr F P = 0.225f;
 
-		F y = B * x + C * x * std::abs(x);
+        F y = B * x + C * x * std::abs(x);
 
-		// Extra precision.
-		y = P * (y * std::abs(y) - y) + y;
+        // Extra precision.
+        y = P * (y * std::abs(y) - y) + y;
 
-		return y;
-	}
-
-    static inline float minimaxSin(float x1) {
-		x1 = normalizePhase(x1);
-        const float x2 = x1 * x1;
-
-        return x1 * (0.99999999997884898600402426033768998f
-        + x2 * (-0.166666666088260696413164261885310067f
-        + x2 * (0.00833333072055773645376566203656709979f
-        + x2 * (-0.000198408328232619552901560108010257242f
-        + x2 * (2.75239710746326498401791551303359689e-6f
-        - 2.3868346521031027639830001794722295e-8f * x2)))));
+        return y;
     }
 
-	static inline float normalizePhase(float x1)
-	{  // set anything to [-pi, pi]
-		while (x1 > juce::MathConstants<float>::pi) {
-			x1 -= 2.0f * juce::MathConstants<float>::pi;
-		}
-		while (x1 < -juce::MathConstants<float>::pi) {
-			x1 += 2.0f * juce::MathConstants<float>::pi;
-		}
-		return x1;
-	}
+    static inline float minimaxSin(float x1)
+    {
+        x1 = normalizePhase(x1);
+        const float x2 = x1 * x1;
 
-	using SIMD = juce::dsp::SIMDRegister<float>;
+        return x1 * (0.99999999997884898600402426033768998f +
+                     x2 * (-0.166666666088260696413164261885310067f +
+                           x2 * (0.00833333072055773645376566203656709979f +
+                                 x2 * (-0.000198408328232619552901560108010257242f +
+                                       x2 * (2.75239710746326498401791551303359689e-6f -
+                                             2.3868346521031027639830001794722295e-8f * x2)))));
+    }
 
-	static inline juce::dsp::SIMDRegister<float> simdSin(juce::dsp::SIMDRegister<float> x1)
-	{
-		const juce::dsp::SIMDRegister<float> x2 = x1 * x1;
+    static inline float normalizePhase(float x1)
+    { // set anything to [-pi, pi]
+        while (x1 > juce::MathConstants<float>::pi)
+        {
+            x1 -= 2.0f * juce::MathConstants<float>::pi;
+        }
+        while (x1 < -juce::MathConstants<float>::pi)
+        {
+            x1 += 2.0f * juce::MathConstants<float>::pi;
+        }
+        return x1;
+    }
 
-		return  x1 * (SIMD(0.99999999997884898600402426033768998f) +
-		    	x2 * (SIMD(-0.166666666088260696413164261885310067f) +
-		        x2 * (SIMD(0.00833333072055773645376566203656709979f) +
-				x2 * (SIMD(-0.000198408328232619552901560108010257242f) +
-		        x2 * (SIMD(2.75239710746326498401791551303359689e-6f) -
-				SIMD(2.3868346521031027639830001794722295e-8f) *
-				x2)))));
-	}
+    using SIMD = juce::dsp::SIMDRegister<float>;
 
-	FastMath() = default;
-	~FastMath() = default;
+    static inline juce::dsp::SIMDRegister<float> simdSin(juce::dsp::SIMDRegister<float> x1)
+    {
+        const juce::dsp::SIMDRegister<float> x2 = x1 * x1;
 
-	FastMath(const FastMath &) = delete;
-	FastMath &operator=(const FastMath &) = delete;
+        return x1 *
+               (SIMD(0.99999999997884898600402426033768998f) +
+                x2 * (SIMD(-0.166666666088260696413164261885310067f) +
+                      x2 * (SIMD(0.00833333072055773645376566203656709979f) +
+                            x2 * (SIMD(-0.000198408328232619552901560108010257242f) +
+                                  x2 * (SIMD(2.75239710746326498401791551303359689e-6f) -
+                                        SIMD(2.3868346521031027639830001794722295e-8f) * x2)))));
+    }
+
+    FastMath() = default;
+    ~FastMath() = default;
+
+    FastMath(const FastMath &) = delete;
+    FastMath &operator=(const FastMath &) = delete;
 };

@@ -13,41 +13,24 @@ http://sam.zoy.org/wtfpl/COPYING for more details.
 
 *Tab=3***********************************************************************/
 
-
-
 #pragma once
-#if ! defined (hiir_fnc_HEADER_INCLUDED)
-#define	hiir_fnc_HEADER_INCLUDED
-
-
+#if !defined(hiir_fnc_HEADER_INCLUDED)
+#define hiir_fnc_HEADER_INCLUDED
 
 /*\\\ INCLUDE FILES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*/
-
-
 
 namespace hiir
 {
 
+inline int round_int(double x);
+inline int ceil_int(double x);
 
+template <class T> T ipowp(T x, long n) noexcept;
 
-inline int  round_int (double x);
-inline int  ceil_int (double x);
+} // namespace hiir
 
-template <class T>
-T	ipowp (T x, long n) noexcept;
+#include "fnc.hpp"
 
-
-
-}	// namespace hiir
-
-
-
-#include "hiir/fnc.hpp"
-
-
-
-#endif	// hiir_fnc_HEADER_INCLUDED
-
-
+#endif // hiir_fnc_HEADER_INCLUDED
 
 /*\\\ EOF \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*/

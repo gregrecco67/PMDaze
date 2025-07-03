@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 set_property(GLOBAL PROPERTY USE_FOLDERS YES)
 set(CMAKE_XCODE_GENERATE_SCHEME OFF)
 set(PROJECT_NAME "PMDaze")
@@ -13,23 +15,24 @@ set(CURRENT_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_LEVEL}")
 set(FORMATS VST3) #Standalone AU VST3 LV2)
 
 if(NOT CMAKE_BUILD_TYPE)
-  message(STATUS "CMAKE_BUILD_TYPE unspecified; picking Release")
-  set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
+message(STATUS "CMAKE_BUILD_TYPE unspecified; picking Release")
+set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
 endif()
 
+message(STATUS "source_dir = ${CMAKE_CURRENT_SOURCE_DIR}")
+
 if (WIN32)
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>" CACHE INTERNAL "")
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>" CACHE INTERNAL "")
 endif ()
 
 # Color our warnings and errors
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    add_compile_options(-fdiagnostics-color=always)
+add_compile_options(-fdiagnostics-color=always)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    add_compile_options(-fcolor-diagnostics)
+add_compile_options(-fcolor-diagnostics)
 endif ()
 
 project(${PROJECT_NAME})
-
 
 add_subdirectory(modules/JUCE)
 
@@ -93,27 +96,31 @@ endif ()
 set_property (DIRECTORY APPEND PROPERTY LABELS Assets)
 
 file (GLOB_RECURSE source_files CONFIGURE_DEPENDS
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/third_party/MTS-ESP/*.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/third_party/hiir/*.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/third_party/ADAAsrc/polylogarithm/Li2.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/third_party/MTS-ESP/*.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/third_party/MTS-ESP/*.h
-	${CMAKE_CURRENT_SOURCE_DIR}/src/third_party/hiir/*.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/third_party/hiir/*.h
-	${CMAKE_CURRENT_SOURCE_DIR}/src/third_party/ADAAsrc/polylogarithm/Li2.*
-	${CMAKE_CURRENT_SOURCE_DIR}/src/third_party/ADAAsrc/*.h
-	${CMAKE_CURRENT_SOURCE_DIR}/src/third_party/ADAAsrc/ADAA/*.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/dsp/*.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/dsp/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/dsp/*.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/ui/*.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/ui/*.h
-	${CMAKE_CURRENT_SOURCE_DIR}/src/ui/*.hpp
-
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/third_party/MTS-ESP/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/third_party/MTS-ESP/*.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/third_party/MTS-ESP/*.h
+	${CMAKE_CURRENT_SOURCE_DIR}/source/third_party/hiir/*.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/source/third_party/hiir/*.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/source/third_party/hiir/*.h
+	${CMAKE_CURRENT_SOURCE_DIR}/source/third_party/ADAAsrc/polylogarithm/Li2.*
+	${CMAKE_CURRENT_SOURCE_DIR}/source/third_party/ADAAsrc/*.h
+	${CMAKE_CURRENT_SOURCE_DIR}/source/third_party/ADAAsrc/ADAA/*.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/dsp/*.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/dsp/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/dsp/*.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/source/ui/*.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/source/ui/*.h
+	${CMAKE_CURRENT_SOURCE_DIR}/source/ui/*.hpp
 	)
 
 target_sources (${PROJECT_NAME} PRIVATE ${source_files})
-source_group (TREE ${CMAKE_CURRENT_SOURCE_DIR}/src PREFIX Source FILES ${source_files})
+source_group (TREE ${CMAKE_CURRENT_SOURCE_DIR}/source PREFIX Source FILES ${source_files})
+target_include_directories (${PROJECT_NAME} PUBLIC 
+	${CMAKE_CURRENT_SOURCE_DIR}/source
+	${CMAKE_CURRENT_SOURCE_DIR}/source/third_party
+	${CMAKE_CURRENT_SOURCE_DIR}/source/dsp
+	${CMAKE_CURRENT_SOURCE_DIR}/source/ui
+	)
 
 file(GLOB_RECURSE AssetFiles CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/assets/*.png"
