@@ -1,0 +1,6 @@
+[submodule "modules/JUCE"]
+	path = modules/JUCE
+	url = https://github.com/juce-framework/JUCE.git
+[submodule "modules/Gin"]
+	path = modules/Gin
+	url = https://github.com/gregrecco67/Gin
