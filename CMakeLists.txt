@@ -31,11 +31,11 @@ endif ()
 project(${PROJECT_NAME})
 
 
-add_subdirectory(JUCE)
+add_subdirectory(modules/JUCE)
 
 foreach(module_name IN ITEMS gin gin_dsp gin_graphics gin_gui gin_plugin gin_simd)
 	juce_add_module (
-		"${CMAKE_CURRENT_LIST_DIR}/modules/gin/modules/${module_name}"
+		"${CMAKE_CURRENT_LIST_DIR}/modules/Gin/modules/${module_name}"
 		)
 
 	set_property (TARGET "${module_name}" APPEND PROPERTY LABELS Gin)
@@ -74,13 +74,18 @@ if (APPLE)
 			-ffast-math -fno-finite-math-only -Wfloat-equal
 #			"$<$<CONFIG:RELEASE>:-Werror>"
 		)
+		add_definitions( -DUSE_NEON )
 endif ()
 
 if (MSVC)
 	target_compile_options(${PROJECT_NAME} PRIVATE 
 			/wd26495 /wd4459 /wd4244 /wd4996 /wd4267 /wd4244
 		)
-    add_compile_definitions(MIPP_ALIGNED_LOADS)
+    add_compile_definitions(MIPP_ALIGNED_LOADS USE_SSE)
+endif ()
+
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+	add_compile_definitions(USE_SSE)
 endif ()
 
 # Binary Data
@@ -88,9 +93,24 @@ endif ()
 set_property (DIRECTORY APPEND PROPERTY LABELS Assets)
 
 file (GLOB_RECURSE source_files CONFIGURE_DEPENDS
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h)
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/third_party/MTS-ESP/*.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/third_party/hiir/*.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/third_party/ADAAsrc/polylogarithm/Li2.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/third_party/MTS-ESP/*.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/third_party/MTS-ESP/*.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/third_party/hiir/*.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/third_party/hiir/*.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/third_party/ADAAsrc/polylogarithm/Li2.*
+	${CMAKE_CURRENT_SOURCE_DIR}/src/third_party/ADAAsrc/*.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/third_party/ADAAsrc/ADAA/*.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dsp/*.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dsp/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dsp/*.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/ui/*.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/ui/*.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/ui/*.hpp
+
+	)
 
 target_sources (${PROJECT_NAME} PRIVATE ${source_files})
 source_group (TREE ${CMAKE_CURRENT_SOURCE_DIR}/src PREFIX Source FILES ${source_files})
