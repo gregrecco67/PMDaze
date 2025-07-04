@@ -99,14 +99,11 @@ class MainVolSlider : public juce::Slider
 //==============================================================================
 /** A list box of all assigned
  */
-class APModMatrixBox : public juce::ListBox,
-                       private juce::ListBoxModel,
-                       private gin::ModMatrix::Listener
+class APModMatrixBox : public juce::ListBox, private juce::ListBoxModel, private gin::ModMatrix::Listener
 {
   public:
     // APModMatrixBox(PMProcessor& p, gin::ModMatrix& m, int dw = 50)
-    APModMatrixBox(gin::Processor &p, gin::ModMatrix &m, int dw = 50)
-        : proc(p), modMatrix(m), depthWidth(dw)
+    APModMatrixBox(gin::Processor &p, gin::ModMatrix &m, int dw = 50) : proc(p), modMatrix(m), depthWidth(dw)
     {
         setName("matrix");
         setModel(this);
@@ -186,8 +183,7 @@ class APModMatrixBox : public juce::ListBox,
                 {
                     auto &a = owner.assignments.getReference(row);
 
-                    auto ev =
-                        owner.modMatrix.getModEnable(a.src, gin::ModDstId(a.dst->getModIndex()));
+                    auto ev = owner.modMatrix.getModEnable(a.src, gin::ModDstId(a.dst->getModIndex()));
                     owner.modMatrix.setModEnable(a.src, gin::ModDstId(a.dst->getModIndex()), !ev);
                     enableButton.setToggleState(!ev, juce::dontSendNotification);
                     if (ev)
@@ -202,10 +198,8 @@ class APModMatrixBox : public juce::ListBox,
                 {
                     auto &a = owner.assignments.getReference(row);
 
-                    auto ev = owner.modMatrix.getModBipolarMapping(
-                        a.src, gin::ModDstId(a.dst->getModIndex()));
-                    owner.modMatrix.setModBipolarMapping(a.src, gin::ModDstId(a.dst->getModIndex()),
-                                                         !ev);
+                    auto ev = owner.modMatrix.getModBipolarMapping(a.src, gin::ModDstId(a.dst->getModIndex()));
+                    owner.modMatrix.setModBipolarMapping(a.src, gin::ModDstId(a.dst->getModIndex()), !ev);
                     biPolarButton.setToggleState(ev, juce::dontSendNotification);
                 }
             };
@@ -222,66 +216,48 @@ class APModMatrixBox : public juce::ListBox,
                 if (row >= 0 && row < owner.assignments.size())
                 {
                     auto &a = owner.assignments.getReference(row);
-                    auto f =
-                        owner.modMatrix.getModFunction(a.src, gin::ModDstId(a.dst->getModIndex()));
+                    auto f = owner.modMatrix.getModFunction(a.src, gin::ModDstId(a.dst->getModIndex()));
 
                     auto set = [this](gin::ModMatrix::Function func) {
                         auto &aa = owner.assignments.getReference(row);
-                        owner.modMatrix.setModFunction(aa.src, gin::ModDstId(aa.dst->getModIndex()),
-                                                       func);
+                        owner.modMatrix.setModFunction(aa.src, gin::ModDstId(aa.dst->getModIndex()), func);
                     };
 
                     juce::PopupMenu m;
 
-                    m.addItem("Linear", true, f == gin::ModMatrix::Function::linear,
-                              [set] { set(gin::ModMatrix::Function::linear); });
+                    m.addItem("Linear", true, f == gin::ModMatrix::Function::linear, [set] { set(gin::ModMatrix::Function::linear); });
                     m.addItem("Quadratic In", true, f == gin::ModMatrix::Function::quadraticIn,
                               [set] { set(gin::ModMatrix::Function::quadraticIn); });
-                    m.addItem("Quadratic In/Out", true,
-                              f == gin::ModMatrix::Function::quadraticInOut,
+                    m.addItem("Quadratic In/Out", true, f == gin::ModMatrix::Function::quadraticInOut,
                               [set] { set(gin::ModMatrix::Function::quadraticInOut); });
                     m.addItem("Quadratic Out", true, f == gin::ModMatrix::Function::quadraticOut,
                               [set] { set(gin::ModMatrix::Function::quadraticOut); });
-                    m.addItem("Sine In", true, f == gin::ModMatrix::Function::sineIn,
-                              [set] { set(gin::ModMatrix::Function::sineIn); });
-                    m.addItem("Sine In Out", true, f == gin::ModMatrix::Function::sineInOut,
-                              [set] { set(gin::ModMatrix::Function::sineInOut); });
-                    m.addItem("Sine Out", true, f == gin::ModMatrix::Function::sineOut,
-                              [set] { set(gin::ModMatrix::Function::sineOut); });
+                    m.addItem("Sine In", true, f == gin::ModMatrix::Function::sineIn, [set] { set(gin::ModMatrix::Function::sineIn); });
+                    m.addItem("Sine In Out", true, f == gin::ModMatrix::Function::sineInOut, [set] { set(gin::ModMatrix::Function::sineInOut); });
+                    m.addItem("Sine Out", true, f == gin::ModMatrix::Function::sineOut, [set] { set(gin::ModMatrix::Function::sineOut); });
                     m.addItem("Exponential In", true, f == gin::ModMatrix::Function::exponentialIn,
                               [set] { set(gin::ModMatrix::Function::exponentialIn); });
-                    m.addItem("Exponential In/Out", true,
-                              f == gin::ModMatrix::Function::exponentialInOut,
+                    m.addItem("Exponential In/Out", true, f == gin::ModMatrix::Function::exponentialInOut,
                               [set] { set(gin::ModMatrix::Function::exponentialInOut); });
-                    m.addItem("Exponential Out", true,
-                              f == gin::ModMatrix::Function::exponentialOut,
+                    m.addItem("Exponential Out", true, f == gin::ModMatrix::Function::exponentialOut,
                               [set] { set(gin::ModMatrix::Function::exponentialOut); });
                     m.addSeparator();
-                    m.addItem("Inv Linear", true, f == gin::ModMatrix::Function::invLinear,
-                              [set] { set(gin::ModMatrix::Function::invLinear); });
-                    m.addItem("Inv Quadratic In", true,
-                              f == gin::ModMatrix::Function::invQuadraticIn,
+                    m.addItem("Inv Linear", true, f == gin::ModMatrix::Function::invLinear, [set] { set(gin::ModMatrix::Function::invLinear); });
+                    m.addItem("Inv Quadratic In", true, f == gin::ModMatrix::Function::invQuadraticIn,
                               [set] { set(gin::ModMatrix::Function::invQuadraticIn); });
-                    m.addItem("Inv Quadratic In/Out", true,
-                              f == gin::ModMatrix::Function::invQuadraticInOut,
+                    m.addItem("Inv Quadratic In/Out", true, f == gin::ModMatrix::Function::invQuadraticInOut,
                               [set] { set(gin::ModMatrix::Function::invQuadraticInOut); });
-                    m.addItem("Inv Quadratic Out", true,
-                              f == gin::ModMatrix::Function::invQuadraticOut,
+                    m.addItem("Inv Quadratic Out", true, f == gin::ModMatrix::Function::invQuadraticOut,
                               [set] { set(gin::ModMatrix::Function::invQuadraticOut); });
-                    m.addItem("Inv Sine In", true, f == gin::ModMatrix::Function::invSineIn,
-                              [set] { set(gin::ModMatrix::Function::invSineIn); });
+                    m.addItem("Inv Sine In", true, f == gin::ModMatrix::Function::invSineIn, [set] { set(gin::ModMatrix::Function::invSineIn); });
                     m.addItem("Inv Sine In/Out", true, f == gin::ModMatrix::Function::invSineInOut,
                               [set] { set(gin::ModMatrix::Function::invSineInOut); });
-                    m.addItem("Inv Sine Out", true, f == gin::ModMatrix::Function::invSineOut,
-                              [set] { set(gin::ModMatrix::Function::invSineOut); });
-                    m.addItem("Inv Exponential In", true,
-                              f == gin::ModMatrix::Function::invExponentialIn,
+                    m.addItem("Inv Sine Out", true, f == gin::ModMatrix::Function::invSineOut, [set] { set(gin::ModMatrix::Function::invSineOut); });
+                    m.addItem("Inv Exponential In", true, f == gin::ModMatrix::Function::invExponentialIn,
                               [set] { set(gin::ModMatrix::Function::invExponentialIn); });
-                    m.addItem("Inv Exponential In/Out", true,
-                              f == gin::ModMatrix::Function::invExponentialInOut,
+                    m.addItem("Inv Exponential In/Out", true, f == gin::ModMatrix::Function::invExponentialInOut,
                               [set] { set(gin::ModMatrix::Function::invExponentialInOut); });
-                    m.addItem("Inv Exponential Out", true,
-                              f == gin::ModMatrix::Function::invExponentialOut,
+                    m.addItem("Inv Exponential Out", true, f == gin::ModMatrix::Function::invExponentialOut,
                               [set] { set(gin::ModMatrix::Function::invExponentialOut); });
 
                     m.setLookAndFeel(&popupLNF);
@@ -301,8 +277,7 @@ class APModMatrixBox : public juce::ListBox,
             if (row >= 0 && row < owner.assignments.size())
             {
                 auto &a = owner.assignments.getReference(row);
-                owner.modMatrix.setModDepth(a.src, gin::ModDstId(a.dst->getModIndex()),
-                                            (float)depth.getValue());
+                owner.modMatrix.setModDepth(a.src, gin::ModDstId(a.dst->getModIndex()), (float)depth.getValue());
             }
         }
 
@@ -319,15 +294,11 @@ class APModMatrixBox : public juce::ListBox,
                 auto ev = owner.modMatrix.getModEnable(a.src, gin::ModDstId(a.dst->getModIndex()));
                 enableButton.setToggleState(ev, juce::dontSendNotification);
 
-                auto b = owner.modMatrix.getModBipolarMapping(a.src,
-                                                              gin::ModDstId(a.dst->getModIndex()));
+                auto b = owner.modMatrix.getModBipolarMapping(a.src, gin::ModDstId(a.dst->getModIndex()));
                 biPolarButton.setToggleState(!b, juce::dontSendNotification);
 
-                depth.setValue(
-                    owner.modMatrix.getModDepth(a.src, gin::ModDstId(a.dst->getModIndex())),
-                    juce::dontSendNotification);
-                curveButton.setCurve(
-                    owner.modMatrix.getModFunction(a.src, gin::ModDstId(a.dst->getModIndex())));
+                depth.setValue(owner.modMatrix.getModDepth(a.src, gin::ModDstId(a.dst->getModIndex())), juce::dontSendNotification);
+                curveButton.setCurve(owner.modMatrix.getModFunction(a.src, gin::ModDstId(a.dst->getModIndex())));
             }
             else
             {
@@ -396,8 +367,7 @@ class APModMatrixBox : public juce::ListBox,
             {
                 juce::Slider::mouseExit(ev);
                 setColour(juce::Slider::textBoxTextColourId, juce::Colours::transparentBlack);
-                setColour(juce::Slider::thumbColourId,
-                          findColour(gin::CopperLookAndFeel::accentColourId));
+                setColour(juce::Slider::thumbColourId, findColour(gin::CopperLookAndFeel::accentColourId));
             }
 
             juce::String getTextFromValue(double value) override { return {value, 3}; }
@@ -418,10 +388,8 @@ class APModMatrixBox : public juce::ListBox,
                 setColour(juce::PopupMenu::highlightedTextColourId, juce::Colours::white);
             }
 
-            void drawLinearSlider(juce::Graphics &g, int x, int y, int width, int height,
-                                  float sliderPos, float /*minSliderPos*/, float /*maxSliderPos*/,
-                                  const juce::Slider::SliderStyle /*style*/,
-                                  juce::Slider &slider) override
+            void drawLinearSlider(juce::Graphics &g, int x, int y, int width, int height, float sliderPos, float /*minSliderPos*/,
+                                  float /*maxSliderPos*/, const juce::Slider::SliderStyle /*style*/, juce::Slider &slider) override
             {
                 // const bool isMouseOver = slider.isMouseOverOrDragging();
                 auto rc = juce::Rectangle<int>(x, y, width, height);
@@ -478,15 +446,11 @@ class APModMatrixBox : public juce::ListBox,
 //==============================================================================
 /** Slider + editable text for showing a param
  */
-class APKnob : public gin::ParamComponent,
-               public juce::DragAndDropTarget,
-               private juce::Timer,
-               private gin::ModMatrix::Listener
+class APKnob : public gin::ParamComponent, public juce::DragAndDropTarget, private juce::Timer, private gin::ModMatrix::Listener
 {
   public:
     explicit APKnob(gin::Parameter *p, bool fromCentre = false)
-        : gin::ParamComponent(p), value(parameter),
-          knob(parameter, juce::Slider::RotaryHorizontalVerticalDrag, juce::Slider::NoTextBox)
+        : gin::ParamComponent(p), value(parameter), knob(parameter, juce::Slider::RotaryHorizontalVerticalDrag, juce::Slider::NoTextBox)
     {
         addAndMakeVisible(name);
         addAndMakeVisible(value);
@@ -494,8 +458,7 @@ class APKnob : public gin::ParamComponent,
         addChildComponent(modDepthSlider);
 
         modDepthSlider.setRange(-1.0, 1.0, 0.001);
-        modDepthSlider.setPopupDisplayEnabled(
-            true, true, findParentComponentOfClass<juce::AudioProcessorEditor>());
+        modDepthSlider.setPopupDisplayEnabled(true, true, findParentComponentOfClass<juce::AudioProcessorEditor>());
         modDepthSlider.setDoubleClickReturnValue(true, 0.0);
 
         knob.setTitle(parameter->getName(100));
@@ -528,8 +491,7 @@ class APKnob : public gin::ParamComponent,
             auto &mm = *parameter->getModMatrix();
             if (mm.shouldShowLiveModValues())
             {
-                auto curModValues =
-                    liveValuesCallback ? liveValuesCallback() : mm.getLiveValues(parameter);
+                auto curModValues = liveValuesCallback ? liveValuesCallback() : mm.getLiveValues(parameter);
                 if (curModValues != modValues)
                 {
                     modValues = curModValues;
@@ -556,8 +518,7 @@ class APKnob : public gin::ParamComponent,
 
         if (auto mm = parameter->getModMatrix())
         {
-            if (auto depths = mm->getModDepths(gin::ModDstId(parameter->getModIndex()));
-                !depths.empty())
+            if (auto depths = mm->getModDepths(gin::ModDstId(parameter->getModIndex())); !depths.empty())
             {
                 currentModSrc = depths[0].first;
             }
@@ -766,9 +727,7 @@ class APKnob : public gin::ParamComponent,
         if (!isVisible())
             return;
         auto p = getMouseXYRelative();
-        if (!getLocalBounds().contains(p) &&
-            !juce::ModifierKeys::getCurrentModifiers().isAnyMouseButtonDown() &&
-            !value.isBeingEdited())
+        if (!getLocalBounds().contains(p) && !juce::ModifierKeys::getCurrentModifiers().isAnyMouseButtonDown() && !value.isBeingEdited())
         {
             if (wantsAccessibleKeyboard(*this))
             {
@@ -798,9 +757,7 @@ class APKnob : public gin::ParamComponent,
         if (learning)
         {
             knob.getProperties().set("modDepth", modDepth);
-            knob.getProperties().set(
-                "modBipolar",
-                mm.getModBipolarMapping(mm.getLearn(), gin::ModDstId(parameter->getModIndex())));
+            knob.getProperties().set("modBipolar", mm.getModBipolarMapping(mm.getLearn(), gin::ModDstId(parameter->getModIndex())));
 
             shiftTimer.startTimerHz(100);
         }
@@ -871,9 +828,7 @@ class APKnob : public gin::ParamComponent,
             {
                 modDepth = mm->getModDepth(mm->getLearn(), dst);
                 knob.getProperties().set("modDepth", modDepth);
-                knob.getProperties().set(
-                    "modBipolar", mm->getModBipolarMapping(
-                                      mm->getLearn(), gin::ModDstId(parameter->getModIndex())));
+                knob.getProperties().set("modBipolar", mm->getModBipolarMapping(mm->getLearn(), gin::ModDstId(parameter->getModIndex())));
                 repaint();
             }
         }
@@ -920,13 +875,11 @@ class APKnob : public gin::ParamComponent,
                 currentModSrc = src;
             }
             bool editing = (src == currentModSrc) ? true : false;
-            m.addItem(
-                "Edit: " + mm.getModSrcName(src) + ": " +
-                    juce::String(mm.getModDepth(src, gin::ModDstId(parameter->getModIndex())), 3),
-                !editing, editing, [this, src] {
-                    currentModSrc = src;
-                    modMatrixChanged();
-                });
+            m.addItem("Edit: " + mm.getModSrcName(src) + ": " + juce::String(mm.getModDepth(src, gin::ModDstId(parameter->getModIndex())), 3),
+                      !editing, editing, [this, src] {
+                          currentModSrc = src;
+                          modMatrixChanged();
+                      });
         }
 
         m.showMenuAsync({});
@@ -1087,33 +1040,27 @@ class ParameterSelector : public juce::Label
         msegsMenu.addSubMenu("MSEG3", mseg3Menu);
         msegsMenu.addSubMenu("MSEG4", mseg4Menu);
 
-        timbreMenu.addItem("Equant", [this]() { setDest(proc.timbreParams.equant); });
-        timbreMenu.addItem("Pitch", [this]() { setDest(proc.timbreParams.pitch); });
         timbreMenu.addItem("Algorithm", [this]() { setDest(proc.timbreParams.algo); });
-        timbreMenu.addItem("Demod Mix", [this]() { setDest(proc.timbreParams.demodmix); });
-        timbreMenu.addItem("Demod Vol", [this]() { setDest(proc.timbreParams.demodvol); });
+        timbreMenu.addItem("Mod Index", [this]() { setDest(proc.globalParams.modIndex); });
+        timbreMenu.addItem("Mod Tone", [this]() { setDest(proc.globalParams.modTone); });
 
         filterMenu.addItem("Cutoff", [this]() { setDest(proc.filterParams.frequency); });
         filterMenu.addItem("Resonance", [this]() { setDest(proc.filterParams.resonance); });
+        filterMenu.addItem("Keytrack", [this]() { setDest(proc.filterParams.keyTracking); });
 
         fxLanesMenu.addItem("FX Lane A Gain", [this]() { setDest(proc.fxOrderParams.laneAGain); });
-        fxLanesMenu.addItem("FX Lane A Cutoff",
-                            [this]() { setDest(proc.fxOrderParams.laneAFreq); });
-        fxLanesMenu.addItem("FX Lane A Resonance",
-                            [this]() { setDest(proc.fxOrderParams.laneARes); });
+        fxLanesMenu.addItem("FX Lane A Cutoff", [this]() { setDest(proc.fxOrderParams.laneAFreq); });
+        fxLanesMenu.addItem("FX Lane A Resonance", [this]() { setDest(proc.fxOrderParams.laneARes); });
         fxLanesMenu.addItem("FX Lane A Pan", [this]() { setDest(proc.fxOrderParams.laneAPan); });
         fxLanesMenu.addItem("FX Lane B Gain", [this]() { setDest(proc.fxOrderParams.laneBGain); });
-        fxLanesMenu.addItem("FX Lane B Cutoff",
-                            [this]() { setDest(proc.fxOrderParams.laneBFreq); });
-        fxLanesMenu.addItem("FX Lane B Resonance",
-                            [this]() { setDest(proc.fxOrderParams.laneBRes); });
+        fxLanesMenu.addItem("FX Lane B Cutoff", [this]() { setDest(proc.fxOrderParams.laneBFreq); });
+        fxLanesMenu.addItem("FX Lane B Resonance", [this]() { setDest(proc.fxOrderParams.laneBRes); });
         fxLanesMenu.addItem("FX Lane B Pan", [this]() { setDest(proc.fxOrderParams.laneBPan); });
 
         waveshaperMenu.addItem("Drive", [this]() { setDest(proc.waveshaperParams.drive); });
         waveshaperMenu.addItem("Dry", [this]() { setDest(proc.waveshaperParams.dry); });
         waveshaperMenu.addItem("Wet", [this]() { setDest(proc.waveshaperParams.wet); });
-        waveshaperMenu.addItem("High Shelf",
-                               [this]() { setDest(proc.waveshaperParams.highshelf); });
+        waveshaperMenu.addItem("High Shelf", [this]() { setDest(proc.waveshaperParams.highshelf); });
         waveshaperMenu.addItem("Low Pass", [this]() { setDest(proc.waveshaperParams.lp); });
 
         compressorMenu.addItem("Threshold", [this]() { setDest(proc.compressorParams.threshold); });
@@ -1190,15 +1137,9 @@ class ParameterSelector : public juce::Label
 
     ~ParameterSelector() override { setLookAndFeel(nullptr); }
 
-    void setDest(gin::Parameter::Ptr p)
-    {
-        proc.modMatrix.setModDepth(macroSrc, gin::ModDstId(p->getModIndex()), 0.0f);
-    }
+    void setDest(gin::Parameter::Ptr p) { proc.modMatrix.setModDepth(macroSrc, gin::ModDstId(p->getModIndex()), 0.0f); }
 
-    void mouseDown(const juce::MouseEvent & /*ev*/) override
-    {
-        m.showMenu(PopupMenu::Options().withMousePosition());
-    }
+    void mouseDown(const juce::MouseEvent & /*ev*/) override { m.showMenu(PopupMenu::Options().withMousePosition()); }
 
     class PopupLNF : public juce::LookAndFeel_V4
     {

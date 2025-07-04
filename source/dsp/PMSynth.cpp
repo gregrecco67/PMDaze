@@ -1,5 +1,5 @@
-#include "PMProcessor.h"
 #include "PMSynth.h"
+#include "PMProcessor.h"
 
 PMSynth::PMSynth(PMProcessor &proc_) : proc(proc_)
 {
@@ -33,8 +33,7 @@ void PMSynth::handleMidiEvent(const juce::MidiMessage &m)
     {
         if (m.getControllerNumber() == 1)
         {
-            proc.modMatrix.setMonoValue(proc.modSrcModwheel,
-                                        float(m.getControllerValue()) / 127.0f);
+            proc.modMatrix.setMonoValue(proc.modSrcModwheel, float(m.getControllerValue()) / 127.0f);
             return;
         }
         if (proc.macroParams.learning->getUserValueInt() > 0)
@@ -70,18 +69,15 @@ void PMSynth::handleMidiEvent(const juce::MidiMessage &m)
     }
     if (m.isPitchWheel())
     {
-        proc.modMatrix.setMonoValue(proc.modSrcMonoPitchbend,
-                                    static_cast<float>(m.getPitchWheelValue()) / 0x2000 - 1.0f);
+        proc.modMatrix.setMonoValue(proc.modSrcMonoPitchbend, static_cast<float>(m.getPitchWheelValue()) / 0x2000 - 1.0f);
     }
     if (m.isAftertouch())
     {
         for (const auto &voice : voices)
         {
-            if (auto *svoice = dynamic_cast<PMVoice *>(voice);
-                svoice->curNote.initialNote == m.getNoteNumber())
+            if (auto *svoice = dynamic_cast<PMVoice *>(voice); svoice->curNote.initialNote == m.getNoteNumber())
             {
-                proc.modMatrix.setPolyValue(*svoice, proc.modPolyAT,
-                                            m.getAfterTouchValue() / 127.0f);
+                proc.modMatrix.setPolyValue(*svoice, proc.modPolyAT, m.getAfterTouchValue() / 127.0f);
             }
         }
     }

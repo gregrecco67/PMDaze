@@ -60,10 +60,8 @@ class PMProcessor : public gin::Processor
     void stateUpdated() override;
     void updateState() override;
 
-    void downsampleStage1(const juce::dsp::AudioBlock<float> &inputBlock,
-                          juce::dsp::AudioBlock<float> &outputBlock);
-    void downsampleStage2(const juce::dsp::AudioBlock<float> &inputBlock,
-                          juce::dsp::AudioBlock<float> &outputBlock);
+    void downsampleStage1(const juce::dsp::AudioBlock<float> &inputBlock, juce::dsp::AudioBlock<float> &outputBlock);
+    void downsampleStage2(const juce::dsp::AudioBlock<float> &inputBlock, juce::dsp::AudioBlock<float> &outputBlock);
 
     //==============================================================================
 
@@ -99,8 +97,7 @@ class PMProcessor : public gin::Processor
     {
         LFOParams() = default;
 
-        gin::Parameter::Ptr enable, sync, wave, rate, beat, depth, phase, offset, fade, delay,
-            level, env;
+        gin::Parameter::Ptr enable, sync, wave, rate, beat, depth, phase, offset, fade, delay, level, env;
 
         void setup(PMProcessor &p, const juce::String &num);
         int num;
@@ -111,8 +108,7 @@ class PMProcessor : public gin::Processor
     {
         ENVParams() = default;
 
-        gin::Parameter::Ptr attack, decay, sustain, release, acurve, drcurve, syncrepeat, time,
-            duration;
+        gin::Parameter::Ptr attack, decay, sustain, release, acurve, drcurve, syncrepeat, time, duration;
 
         void setup(PMProcessor &p, const juce::String &number);
         int num;
@@ -133,8 +129,7 @@ class PMProcessor : public gin::Processor
     struct MSEGParams
     {
         MSEGParams() = default;
-        gin::Parameter::Ptr sync, rate, beat, depth, offset, phase, enable, xgrid, ygrid, loop,
-            draw, drawmode;
+        gin::Parameter::Ptr sync, rate, beat, depth, offset, phase, enable, xgrid, ygrid, loop, draw, drawmode;
         void setup(PMProcessor &p, const juce::String &number);
         int num;
         JUCE_DECLARE_NON_COPYABLE(MSEGParams)
@@ -145,7 +140,7 @@ class PMProcessor : public gin::Processor
     {
         GlobalParams() = default;
 
-        gin::Parameter::Ptr mono, glideMode, glideRate, legato, level, mpe, velSens, pitchbendRange;
+        gin::Parameter::Ptr mono, glideMode, glideRate, legato, level, mpe, velSens, pitchbendRange, modIndex, modfm, modTone;
 
         void setup(PMProcessor &p);
 
@@ -178,8 +173,7 @@ class PMProcessor : public gin::Processor
     {
         StereoDelayParams() = default;
 
-        gin::Parameter::Ptr enable, timeleft, timeright, beatsleft, beatsright, temposync, freeze,
-            pingpong, feedback, dry, wet, cutoff;
+        gin::Parameter::Ptr enable, timeleft, timeright, beatsleft, beatsright, temposync, freeze, pingpong, feedback, dry, wet, cutoff;
 
         void setup(PMProcessor &p);
         int pos{-1};
@@ -212,8 +206,7 @@ class PMProcessor : public gin::Processor
     {
         MBFilterParams() = default;
 
-        gin::Parameter::Ptr enable, lowshelffreq, lowshelfgain, lowshelfq, peakfreq, peakgain,
-            peakq, highshelffreq, highshelfgain, highshelfq;
+        gin::Parameter::Ptr enable, lowshelffreq, lowshelfgain, lowshelfq, peakfreq, peakgain, peakq, highshelffreq, highshelfgain, highshelfq;
 
         void setup(PMProcessor &p);
         int pos{-1};
@@ -224,8 +217,7 @@ class PMProcessor : public gin::Processor
     {
         RingModParams() = default;
 
-        gin::Parameter::Ptr enable, modfreq1, shape1, mix1, modfreq2, shape2, mix2, spread, lowcut,
-            highcut;
+        gin::Parameter::Ptr enable, modfreq1, shape1, mix1, modfreq2, shape2, mix2, spread, lowcut, highcut;
 
         void setup(PMProcessor &p);
         int pos{-1};
@@ -256,9 +248,8 @@ class PMProcessor : public gin::Processor
     {
         FXOrderParams() = default;
 
-        gin::Parameter::Ptr fxa1, fxa2, fxa3, fxa4, fxb1, fxb2, fxb3, fxb4, chainAtoB, laneAGain,
-            laneBGain, laneAType, laneAFreq, laneARes, laneBType, laneBFreq, laneBRes, laneAPrePost,
-            laneAPan, laneBPrePost, laneBPan;
+        gin::Parameter::Ptr fxa1, fxa2, fxa3, fxa4, fxb1, fxb2, fxb3, fxb4, chainAtoB, laneAGain, laneBGain, laneAType, laneAFreq, laneARes,
+            laneBType, laneBFreq, laneBRes, laneAPrePost, laneAPan, laneBPrePost, laneBPan;
 
         void setup(PMProcessor &p);
 
@@ -279,8 +270,7 @@ class PMProcessor : public gin::Processor
     {
         AuxParams() = default;
 
-        gin::Parameter::Ptr enable, wave, env, octave, volume, detune, spread, prefx, filtertype,
-            filtercutoff, filterres, filterkeytrack, ignorepb;
+        gin::Parameter::Ptr enable, wave, env, octave, volume, detune, spread, prefx, filtertype, filtercutoff, filterres, filterkeytrack, ignorepb;
         void setup(PMProcessor &p);
 
         JUCE_DECLARE_NON_COPYABLE(AuxParams)
@@ -295,11 +285,10 @@ class PMProcessor : public gin::Processor
     gin::ProcessorOptions getOptions() const;
 
     //==============================================================================
-    gin::ModSrcId modSrcPressure, modSrcTimbre, modSrcMonoPitchbend, modSrcNote, modSrcVelocity,
-        modSrcVelOff, modSrcLFO1, modSrcLFO2, modSrcLFO3, modSrcLFO4, modSrcMonoLFO1,
-        modSrcMonoLFO2, modSrcMonoLFO3, modSrcMonoLFO4, modSrcEnv1, modSrcEnv2, modSrcEnv3,
-        modSrcEnv4, modSrcModwheel, modPolyAT, modSrcMSEG1, modSrcMSEG2, modSrcMSEG3, modSrcMSEG4,
-        macroSrc1, macroSrc2, macroSrc3, randSrc1Mono, randSrc1Poly, randSrc2Mono, randSrc2Poly;
+    gin::ModSrcId modSrcPressure, modSrcTimbre, modSrcMonoPitchbend, modSrcNote, modSrcVelocity, modSrcVelOff, modSrcLFO1, modSrcLFO2, modSrcLFO3,
+        modSrcLFO4, modSrcMonoLFO1, modSrcMonoLFO2, modSrcMonoLFO3, modSrcMonoLFO4, modSrcEnv1, modSrcEnv2, modSrcEnv3, modSrcEnv4, modSrcModwheel,
+        modPolyAT, modSrcMSEG1, modSrcMSEG2, modSrcMSEG3, modSrcMSEG4, macroSrc1, macroSrc2, macroSrc3, randSrc1Mono, randSrc1Poly, randSrc2Mono,
+        randSrc2Poly;
 
     //==============================================================================
 
@@ -343,19 +332,15 @@ class PMProcessor : public gin::Processor
     gin::LFO lfo1, lfo2, lfo3, lfo4;
     gin::MSEG::Data mseg1Data, mseg2Data, mseg3Data, mseg4Data;
     std::array<gin::LFO *, 4> monoLFOs{&lfo1, &lfo2, &lfo3, &lfo4};
-    std::array<gin::ModSrcId *, 4> monoLfoIds{&modSrcMonoLFO1, &modSrcMonoLFO2, &modSrcMonoLFO3,
-                                              &modSrcMonoLFO4};
+    std::array<gin::ModSrcId *, 4> monoLfoIds{&modSrcMonoLFO1, &modSrcMonoLFO2, &modSrcMonoLFO3, &modSrcMonoLFO4};
     std::array<gin::ModSrcId *, 4> polyLfoIds{&modSrcLFO1, &modSrcLFO2, &modSrcLFO3, &modSrcLFO4};
     std::array<gin::ModSrcId *, 4> envSrcIds{&modSrcEnv1, &modSrcEnv2, &modSrcEnv3, &modSrcEnv4};
 
     juce::AudioPlayHead *playhead = nullptr;
     bool presetLoaded = false;
     gin::Filter laneAFilter, laneBFilter;
-    juce::dsp::ProcessorDuplicator<juce::dsp::IIR::Filter<float>,
-                                   juce::dsp::IIR::Coefficients<float>>
-        dcFilter;
-    juce::SmoothedValue<float, juce::ValueSmoothingTypes::Multiplicative> laneAFilterCutoff,
-        laneBFilterCutoff;
+    juce::dsp::ProcessorDuplicator<juce::dsp::IIR::Filter<float>, juce::dsp::IIR::Coefficients<float>> dcFilter;
+    juce::SmoothedValue<float, juce::ValueSmoothingTypes::Multiplicative> laneAFilterCutoff, laneBFilterCutoff;
     int fxa1, fxa2, fxa3, fxa4, fxb1, fxb2, fxb3, fxb4; // effect choices
     std::unordered_set<int> activeEffects;
 
@@ -392,8 +377,8 @@ class PMProcessor : public gin::Processor
     hiir::Downsampler2xSse<nbr_coefs2> dspl2L, dspl2R;
 #endif
 
-    bool env1osc1, env1osc2, env1osc3, env1osc4, env2osc1, env2osc2, env2osc3, env2osc4, env3osc1,
-        env3osc2, env3osc3, env3osc4, env4osc1, env4osc2, env4osc3, env4osc4;
+    bool env1osc1, env1osc2, env1osc3, env1osc4, env2osc1, env2osc2, env2osc3, env2osc4, env3osc1, env3osc2, env3osc3, env3osc4, env4osc1, env4osc2,
+        env4osc3, env4osc4;
 
     std::array<double, 1024> convex;
 

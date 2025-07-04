@@ -1,0 +1,3 @@
+
+-- recheck all algorithms for correctness and voice start/stop logic
+-- modindex mono?

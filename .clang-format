@@ -26,7 +26,7 @@ BraceWrapping:
   SplitEmptyFunction: true
   SplitEmptyRecord: true
   SplitEmptyNamespace: true
-ColumnLimit: 100
+ColumnLimit: 150
 SortIncludes: Never
 ---
 Language: ObjC

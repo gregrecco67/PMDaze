@@ -43,11 +43,7 @@ class PMVoice final : public gin::SynthesiserVoice, public gin::ModVoice
 
     void setCurrentSampleRate(double newRate) override;
 
-    void renderNextBlock(juce::AudioBuffer<float> &outputBuffer, int startSample,
-                         int numSamples) override;
-
-    mipp::Reg<float> mix(const mipp::Reg<float> &aReg, const mipp::Reg<float> &bReg,
-                         const float mix);
+    void renderNextBlock(juce::AudioBuffer<float> &outputBuffer, int startSample, int numSamples) override;
 
     float getCurrentNote() override { return noteSmoother.getCurrentValue() * 127.0f; }
 
@@ -70,6 +66,16 @@ class PMVoice final : public gin::SynthesiserVoice, public gin::ModVoice
 
     gin::Wave waveForChoice(const int choice);
 
+    struct Averager
+    {
+        static float in;
+        float previous{0.f};
+        float process(float x) { return previous = (x * in + previous * (1.0f - in)); }
+    };
+
+    float sine(float x);
+    float wave(int sel, float x, bool isMod = false);
+
   private:
     void updateParams(int blockSize);
 
@@ -78,83 +84,41 @@ class PMVoice final : public gin::SynthesiserVoice, public gin::ModVoice
     gin::Filter filter;
     gin::LFO lfo1, lfo2, lfo3, lfo4;
     gin::MSEG mseg1, mseg2, mseg3, mseg4;
-    APOscillator osc1, osc2, osc3, osc4;
-    float lastp1{0.f}, lastp2{0.f}, lastp3{0.f}, lastp4{0.f}; // last phase
     gin::MSEG::Parameters mseg1Params, mseg2Params, mseg3Params, mseg4Params;
-
     Envelope env1, env2, env3, env4;
     std::array<Envelope *, 4> envs{&env1, &env2, &env3, &env4};
     std::array<Envelope *, 4> envsByNum{&env1, &env2, &env3, &env4};
 
     int filterType{0};
+    double freq1 = 0.0, freq2 = 0.0, freq3 = 0.0, freq4 = 0.0;
+    double freq4factor = 1.0f, freq3factor = 1.0f, freq2factor = 1.0f;
+    float vol1 = 0.0f, vol2 = 0.0f, vol3 = 0.0f, vol4 = 0.0f;
+    double phase1 = 0.0, phase2 = 0.0, phase3 = 0.0, phase4 = 0.0;
+    double phase = 0.0;
 
-    float osc1xs[128]{0.f}; // at 4x sr, processed down to 32
-    float osc1ys[128]{0.f}; // direct output from oscillators
-    float osc2xs[128]{0.f};
-    float osc2ys[128]{0.f};
-    float osc3xs[128]{0.f};
-    float osc3ys[128]{0.f};
-    float osc4xs[128]{0.f};
-    float osc4ys[128]{0.f};
+    int w1{0}, w2{0}, w3{0}, w4{0};
+    Averager a4, a3, a2;
+    int algo{0};
+    float modIndex{4.f}; // was 25 for [0, 2pi] range, switched now to [0, 1] for faster rollover
 
-    // the same, as registers
-    mipp::Reg<float> osc1x, osc1y, osc2x, osc2y, osc3x, osc3y, osc4x, osc4y;
-
-    // interpreted positions, added together according to algo
-    mipp::Reg<float> epi1xs[32]{0.f};
-    mipp::Reg<float> epi1ys[32]{0.f};
-    mipp::Reg<float> epi2xs[32]{0.f};
-    mipp::Reg<float> epi2ys[32]{0.f};
-    mipp::Reg<float> epi3xs[32]{0.f};
-    mipp::Reg<float> epi3ys[32]{0.f};
-    mipp::Reg<float> epi4xs[32]{0.f};
-    mipp::Reg<float> epi4ys[32]{0.f};
+    // =================================================
+    // above: we need it
+    // below: do we?
+    // =================================================
 
     int tilUpdate{0}; // only update envelopes/lfo/mseg every 4th block
 
-    // distances and inverse distances
-    mipp::Reg<float> dist2sq, dist2, invDist2;
-    mipp::Reg<float> dist3sq, dist3, invDist3;
-    mipp::Reg<float> dist4sq, dist4, invDist4;
-
     float currentMidiNote = -1;
-    APOscillator::Settings osc1Params, osc2Params, osc3Params, osc4Params;
-    float osc1Freq = 0.0f, osc2Freq = 0.0f, osc3Freq = 0.0f, osc4Freq = 0.0f;
-    float osc1Vol = 0.0f, osc2Vol = 0.0f, osc3Vol = 0.0f, osc4Vol = 0.0f;
-    int algo{0};
-    float equant{0.f};
 
-    static constexpr float baseAmplitude = 0.12f;
+    static constexpr float baseAmplitude = 0.5f;
 
     gin::EasedValueSmoother<float> noteSmoother;
 
-    double fna0, fnb1, fnz1, fqa0, fqb1, fqz1;
+    double fna0, fnb1, fnz1, fqa0, fqb1, fqz1; //
 
     juce::AudioBuffer<float> synthBuffer;
 
-    mipp::Reg<float> sine2{0.f, 0.f, 0.f, 0.f}, cos2{0.f, 0.f, 0.f, 0.f}, sine3{0.f, 0.f, 0.f, 0.f},
-        cos3{0.f, 0.f, 0.f, 0.f}, sine4{0.f, 0.f, 0.f, 0.f}, cos4{0.f, 0.f, 0.f, 0.f};
-
-    mipp::Reg<float> dmSine2{0.f, 0.f, 0.f, 0.f}, dmSine3{0.f, 0.f, 0.f, 0.f},
-        dmSine4{0.f, 0.f, 0.f, 0.f};
-    mipp::Reg<float> dmCos2{0.f, 0.f, 0.f, 0.f}, dmCos3{0.f, 0.f, 0.f, 0.f},
-        dmCos4{0.f, 0.f, 0.f, 0.f};
-    // redundant??
-    mipp::Reg<float> sample2L, sample2R, sample3L, sample3R, sample4L, sample4R;
-
-    mipp::Reg<float> sampleL{0.f, 0.f, 0.f, 0.f}, sampleR{0.f, 0.f, 0.f, 0.f};
-
-    float demodMix{0.f}, demodVol{0.f};
     float antipop{0.f};
-    mipp::Reg<float> oneFloat{1.f, 1.f, 1.f, 1.f};
-    mipp::Reg<float> a, b, c, d;
-    float bits3[4][2] = {{1, 0}, {1, 0}, {0, 1}, {0, 1}};             // epi2, epi1
-    float bits4[4][3] = {{1, 0, 0}, {0, 1, 0}, {1, 0, 0}, {0, 0, 1}}; // epi3, epi2, epi1
-    float mb[4][4] = {// mixBits --> sine4, 3, 2, and mix reciprocal
-                      {1, 0, 0, 1},
-                      {1, 1, 0, 0.5f},
-                      {1, 0, 1, 0.5f},
-                      {1, 1, 1, 1.f / 3.f}};
 
     friend class PMSynth;
     juce::MPENote curNote;

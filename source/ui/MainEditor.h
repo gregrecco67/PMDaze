@@ -44,23 +44,20 @@ class MainEditor : public juce::Component, public gin::Parameter::ParameterListe
     ENVBox env3{proc, proc.env3Params, 2};
     ENVBox env4{proc, proc.env4Params, 3};
 
+    LFOMain lfo1{proc, proc.lfo1Params, 1};
+    LFOMain lfo2{proc, proc.lfo2Params, 2};
+    LFOMain lfo3{proc, proc.lfo3Params, 3};
+    LFOMain lfo4{proc, proc.lfo3Params, 4};
+
     FilterBox filter{"  flt", proc};
     ModBox modsrc{"  mod", proc};
     TimbreBox timbre{"  timbre", proc};
-    AuxBox aux{"      Aux Oscillator", proc};
+    AlgoBox algoBox{"   algo", proc};
+    GlobalBox global{"  global", proc};
     MainMatrixBox matrix{"  Mod Matrix", proc};
     VolumeBox volumeBox{proc};
     LevelBox levelBox{proc.levelTracker};
 
-    GlobalBox global{"  global", proc};
-    MacrosBox macros{proc};
-
-    int frameRate{24};
-    float vizDefPhase{0.f}, vizEpi1Phase{0.f}, vizEpi2Phase{0.f}, vizEpi3Phase{0.f};
-    juce::ToggleButton liveViz{"Live"};
-    juce::TextButton swap{"Swap"};
-    APModMatrixBox::Row::APDepthSlider speedSlider;
-    float phaseIncrement{juce::MathConstants<float>::pi / (2.0f * frameRate)};
     APLNF aplnf;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainEditor)

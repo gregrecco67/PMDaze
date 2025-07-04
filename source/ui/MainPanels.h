@@ -20,13 +20,12 @@
 #include <dsp/PMProcessor.h>
 #include "EnvelopeComponent.h"
 #include "APLevelMeter.h"
+#include "BinaryData.h"
 
-inline void gradientRect(juce::Graphics &g, const juce::Rectangle<int> rc, const juce::Colour c1,
-                         const juce::Colour c2)
+inline void gradientRect(juce::Graphics &g, const juce::Rectangle<int> rc, const juce::Colour c1, const juce::Colour c2)
 {
-    const juce::ColourGradient gradient(
-        c1, static_cast<float>(rc.getX()), static_cast<float>(rc.getY()), c2,
-        static_cast<float>(rc.getRight()), static_cast<float>(rc.getBottom()), false);
+    const juce::ColourGradient gradient(c1, static_cast<float>(rc.getX()), static_cast<float>(rc.getY()), c2, static_cast<float>(rc.getRight()),
+                                        static_cast<float>(rc.getBottom()), false);
 
     g.setGradientFill(gradient);
     g.fillRect(rc);
@@ -38,8 +37,7 @@ class OSCBox : public gin::ParamBox
 {
   public:
     OSCBox(PMProcessor &proc_, const PMProcessor::OSCParams &params_, const int num_)
-        : gin::ParamBox(juce::String("  OSC ") += (num_ + 1)), proc(proc_), oscparams(params_),
-          num(num_)
+        : gin::ParamBox(juce::String("  OSC ") += (num_ + 1)), proc(proc_), oscparams(params_), num(num_)
     {
         addControl(c1 = new APKnob(oscparams.coarse), 0, 0); // coarse
         addControl(f1 = new APKnob(oscparams.fine), 1, 0);   // fine
@@ -115,11 +113,8 @@ class OSCBox : public gin::ParamBox
         if (oscparams.fixed->isOn())
         {
             fixedHz1.setVisible(true);
-            fixedHz1.setText(
-                juce::String(
-                    (oscparams.coarse->getUserValue() + oscparams.fine->getUserValue()) * 100, 2) +
-                    juce::String(" Hz"),
-                juce::dontSendNotification);
+            fixedHz1.setText(juce::String((oscparams.coarse->getUserValue() + oscparams.fine->getUserValue()) * 100, 2) + juce::String(" Hz"),
+                             juce::dontSendNotification);
         }
         else
         {
@@ -203,8 +198,7 @@ class ENVBox : public gin::ParamBox, public juce::Timer
 {
   public:
     ENVBox(PMProcessor &proc_, const PMProcessor::ENVParams &params_, int num_)
-        : gin::ParamBox(juce::String("  ENV ") += (num_ + 1)), proc(proc_), num(num_),
-          envparams(params_), pSelect(proc, *(proc.envSrcIds[num]))
+        : gin::ParamBox(juce::String("  ENV ") += (num_ + 1)), proc(proc_), num(num_), envparams(params_), pSelect(proc, *(proc.envSrcIds[num]))
     {
         // in reverse order
         switch (num_)
@@ -352,15 +346,338 @@ class TimbreBox : public gin::ParamBox
     TimbreBox(const juce::String &name, const PMProcessor &proc) : gin::ParamBox(name)
     {
         setName(name);
-        addControl(equant = new APKnob(proc.timbreParams.equant, true), 0, 0);
-        addControl(new APKnob(proc.timbreParams.pitch), 0, 1);
-        addControl(algo = new APKnob(proc.timbreParams.algo), 1, 0);
-        addControl(new APKnob(proc.globalParams.velSens), 1, 1);
-        addControl(new APKnob(proc.timbreParams.demodmix), 2, 0);
-        addControl(new APKnob(proc.timbreParams.demodvol), 2, 1);
+        addControl(new APKnob(proc.timbreParams.algo), 0, 0);
+        addControl(new APKnob(proc.globalParams.modIndex), 1, 0);
+        addControl(new APKnob(proc.globalParams.modTone), 2, 0);
+        addControl(new gin::Select(proc.globalParams.modfm), 0, 1);
+        addControl(new APKnob(proc.timbreParams.pitch), 1, 1);
+        addControl(new APKnob(proc.globalParams.velSens), 2, 1);
+    }
+};
+
+class AlgoBox : public gin::ParamBox
+{
+  public:
+    AlgoBox(const juce::String &name, PMProcessor &proc_) : gin::ParamBox(name), proc(proc_)
+    {
+        setName("algo");
+        setTitle(name);
+        // addAndMakeVisible(funcImage);
+        // funcImage.setImage(juce::ImageCache::getFromMemory(BinaryData::algo_svg, BinaryData::algo_svgSize));
+        watchParam(proc.timbreParams.algo);
+    }
+    PMProcessor &proc;
+    // arrows
+    bool a43{false}, a42{false}, a41{false}, a32{false}, a31{false}, a21{false};
+    // voices
+    bool v1{false}, v2{false}, v3{false}, v4{false};
+
+    void paramChanged() override
+    {
+        gin::ParamBox::paramChanged();
+        int algo = proc.timbreParams.algo->getUserValueInt();
+        switch (algo)
+        {
+        case 0:
+        {
+            a43 = a32 = a21 = true;
+            a42 = a41 = a31 = false;
+            v1 = true;
+            v2 = v3 = v4 = false;
+        }
+        break;
+        case 1:
+        {
+            a42 = a32 = a21 = true;
+            a43 = a41 = a31 = false;
+            v1 = true;
+            v4 = v3 = v2 = false;
+        }
+        break;
+        case 2:
+        {
+            a41 = a32 = a21 = true;
+            a43 = a42 = a31 = false;
+            v1 = true;
+            v4 = v3 = v2 = false;
+        }
+        break;
+        case 3:
+        {
+            a43 = a42 = a31 = a21 = true;
+            a41 = a32 = false;
+            v1 = true;
+            v4 = v3 = v2 = false;
+        }
+        break;
+        case 4:
+        {
+            a32 = a21 = a41 = true;
+            a43 = a42 = a31 = false;
+            v1 = v2 = true;
+            v4 = v3 = false;
+        }
+        break;
+        case 5:
+        {
+            a43 = a32 = true;
+            a42 = a41 = a31 = a21 = false;
+            v1 = v2 = true;
+            v4 = v3 = false;
+        }
+        break;
+        case 6:
+        {
+            a41 = a31 = a21 = true;
+            a43 = a42 = a32 = false;
+            v1 = true;
+            v4 = v3 = v2 = false;
+        }
+        break;
+        case 7:
+        {
+            a43 = a21 = true;
+            a42 = a41 = a32 = a31 = false;
+            v1 = v3 = true;
+            v2 = v4 = false;
+        }
+        break;
+        case 8:
+        {
+            a43 = a42 = a41 = true;
+            a32 = a31 = a21 = false;
+            v1 = v2 = v3 = true;
+            v4 = false;
+        }
+        break;
+        case 9:
+        {
+            a43 = true;
+            a42 = a41 = a32 = a31 = a21 = false;
+            v1 = v2 = v3 = true;
+            v4 = false;
+        }
+        break;
+        case 10:
+        {
+            a43 = a42 = a41 = a32 = a31 = a21 = false;
+            v4 = v3 = v2 = v1 = true;
+        }
+        break;
+        }
     }
 
-    APKnob *equant, *algo;
+    void resized() override
+    {
+        gin::ParamBox::resized();
+        // funcImage.setBounds(0, 26, 110, 140);
+    }
+
+    void paint(juce::Graphics &g) override
+    {
+        gin::ParamBox::paint(g);
+        juce::Point ctr4{29, 104};
+        juce::Point ctr3{81, 104};
+        juce::Point ctr2{81, 52};
+        juce::Point ctr1{29, 52};
+        // 1
+        g.setColour(APColors::redMuted);
+        g.fillRoundedRectangle(6, 29, 46, 46, 5);
+        juce::ColourGradient gradient{juce::Colours::white.withAlpha(0.6f),
+                                      {ctr1.getX() + 0.f, ctr1.getY() + 0.f},
+                                      APColors::redMuted,
+                                      {ctr1.getX() - 9.f, ctr1.getY() - 9.f},
+                                      true};
+        g.setGradientFill(gradient);
+        g.fillEllipse({ctr1.getX() - 20.f, ctr1.getY() - 20.f, 40.f, 40.f});
+
+        // 2
+        g.setColour(APColors::yellowMuted);
+        g.fillRoundedRectangle(58, 29, 46, 46, 5);
+        if (v2)
+        {
+            juce::ColourGradient gradient{juce::Colours::white.withAlpha(0.6f),
+                                          {ctr2.getX() + 0.f, ctr2.getY() + 0.f},
+                                          APColors::yellowMuted,
+                                          {ctr2.getX() - 9.f, ctr2.getY() - 9.f},
+                                          true};
+            g.setGradientFill(gradient);
+            g.fillEllipse({ctr2.getX() - 20.f, ctr2.getY() - 20.f, 40.f, 40.f});
+        }
+
+        // 4
+        g.setColour(APColors::blueMuted);
+        g.fillRoundedRectangle(6, 81, 46, 46, 5);
+        if (v4)
+        {
+            juce::ColourGradient gradient{juce::Colours::white.withAlpha(0.6f),
+                                          {ctr4.getX() + 0.f, ctr4.getY() + 0.f},
+                                          APColors::blueMuted,
+                                          {ctr4.getX() - 9.f, ctr4.getY() - 9.f},
+                                          true};
+            g.setGradientFill(gradient);
+            g.fillEllipse({ctr4.getX() - 20.f, ctr4.getY() - 20.f, 40.f, 40.f});
+        }
+
+        // 3
+        g.setColour(APColors::greenMuted);
+        g.fillRoundedRectangle(58, 81, 46, 46, 5);
+        if (v3)
+        {
+            juce::ColourGradient gradient{juce::Colours::white.withAlpha(0.6f),
+                                          {ctr3.getX() + 0.f, ctr3.getY() + 0.f},
+                                          APColors::greenMuted,
+                                          {ctr3.getX() - 9.f, ctr3.getY() - 9.f},
+                                          true};
+            g.setGradientFill(gradient);
+            g.fillEllipse({ctr3.getX() - 20.f, ctr3.getY() - 20.f, 40.f, 40.f});
+        }
+
+        // arrows
+
+        // clang-format off
+        if (a43)
+        {
+            g.setColour(APColors::blueMuted);
+            g.drawArrow(  juce::Line<float>{ctr4.getX() + 7.f, ctr4.getY()+0.f, ctr3.getX() - 7.f, ctr3.getY()+0.f}, 8.f, 16.f, 16.f);
+            juce::Path path;
+            path.addArrow(juce::Line<float>{ctr4.getX() + 7.f, ctr4.getY()+0.f, ctr3.getX() - 7.f, ctr3.getY()+0.f}, 10.f, 18.f, 18.f);
+            g.setColour(juce::Colours::black);
+            g.strokePath(path, juce::PathStrokeType(3.f));
+        }
+        if (a41)
+        {
+            g.setColour(APColors::blueMuted);
+            g.drawArrow(  juce::Line<float>{ctr4.getX()+0.f, ctr4.getY() - 7.f, ctr1.getX()+0.f, ctr1.getY() + 7.f}, 8.f, 16.f, 16.f);
+            juce::Path path;
+            path.addArrow(juce::Line<float>{ctr4.getX()+0.f, ctr4.getY() - 7.f, ctr1.getX()+0.f, ctr1.getY() + 7.f}, 10.f, 18.f, 18.f);
+            g.setColour(juce::Colours::black);
+            g.strokePath(path, juce::PathStrokeType(3.f));
+        }
+        if (a32)
+        {
+            g.setColour(APColors::greenMuted);
+            g.drawArrow(  juce::Line<float>{ctr3.getX()+0.f, ctr3.getY() - 7.f, ctr2.getX()+0.f, ctr2.getY() + 7.f}, 8.f, 16.f, 16.f);
+            juce::Path path;
+            path.addArrow(juce::Line<float>{ctr3.getX()+0.f, ctr3.getY() - 7.f, ctr2.getX()+0.f, ctr2.getY() + 7.f}, 10.f, 18.f, 18.f);
+            g.setColour(juce::Colours::black);
+            g.strokePath(path, juce::PathStrokeType(3.f));
+        }
+        if (a21) 
+        {
+            g.setColour(APColors::yellowMuted);
+            g.drawArrow(  juce::Line<float>{ctr2.getX() - 7.f, ctr2.getY()+0.f, ctr1.getX() + 7.f, ctr1.getY()+0.f}, 8.f, 16.f, 16.f);
+            juce::Path path;
+            path.addArrow(juce::Line<float>{ctr2.getX() - 7.f, ctr2.getY()+0.f, ctr1.getX() + 7.f, ctr1.getY()+0.f}, 10.f, 18.f, 18.f);
+            g.setColour(juce::Colours::black);
+            g.strokePath(path, juce::PathStrokeType(3.f));
+        }
+        if (a42) 
+        {
+            g.setColour(APColors::blueMuted);
+            g.drawArrow(  juce::Line<float>{ctr4.getX() + 7.f, ctr4.getY() - 7.f, ctr2.getX() - 7.f, ctr2.getY() + 7.f}, 8.f, 16.f, 16.f);
+            juce::Path path;
+            g.setColour(juce::Colours::black);
+            path.addArrow(juce::Line<float>{ctr4.getX() + 7.f, ctr4.getY() - 7.f, ctr2.getX() - 7.f, ctr2.getY() + 7.f}, 10.f, 18.f, 18.f);
+            g.strokePath(path, juce::PathStrokeType(3.f));
+        }
+        if (a31) 
+        {
+            g.setColour(APColors::greenMuted);
+            g.drawArrow(  juce::Line<float>{ctr3.getX() - 7.f, ctr3.getY() - 7.f, ctr1.getX() + 7.f, ctr1.getY() + 7.f}, 8.f, 16.f, 16.f);
+            juce::Path path;
+            path.addArrow(juce::Line<float>{ctr3.getX() - 7.f, ctr3.getY() - 7.f, ctr1.getX() + 7.f, ctr1.getY() + 7.f}, 10.f, 18.f, 18.f);
+            g.setColour(juce::Colours::black);
+            g.strokePath(path, juce::PathStrokeType(3.f));
+        }
+    }
+
+    // clang-format on
+    // juce::ImageComponent funcImage{"function"};
+};
+
+class LFOMain : public gin::ParamBox
+{
+  public:
+    LFOMain(PMProcessor &proc_, const PMProcessor::LFOParams &lfoParams_, int num_)
+        : ParamBox(juce::String("  LFO ") += juce::String(num_)), proc(proc_), lfoParams(lfoParams_), num(num_),
+          monoSelect(proc, *(proc.monoLfoIds[num - 1])), polySelect(proc, *(proc.polyLfoIds[num - 1]))
+    {
+        setName("lfo");
+        addAndMakeVisible(monoSelect);
+        addAndMakeVisible(polySelect);
+        monoSelect.setText("+M", juce::dontSendNotification);
+        polySelect.setText("+P", juce::dontSendNotification);
+
+        gin::ModSrcId src;
+        gin::ModSrcId monoSrc;
+        switch (num)
+        {
+        case 1:
+            src = proc.modSrcLFO1;
+            monoSrc = proc.modSrcMonoLFO1;
+            break;
+        case 2:
+            src = proc.modSrcLFO2;
+            monoSrc = proc.modSrcMonoLFO2;
+            break;
+        case 3:
+            src = proc.modSrcLFO3;
+            monoSrc = proc.modSrcMonoLFO3;
+            break;
+        case 4:
+            src = proc.modSrcLFO4;
+            monoSrc = proc.modSrcMonoLFO4;
+            break;
+        }
+        addModSource(poly1 = new gin::ModulationSourceButton(proc.modMatrix, src, true));
+        addModSource(mono1 = new gin::ModulationSourceButton(proc.modMatrix, monoSrc, false));
+        poly1->getProperties().set("polysrc", true);
+
+        addControl(r1 = new APKnob(lfoParams.rate), 0, 0);
+        addControl(b1 = new gin::Select(lfoParams.beat), 0, 0);
+
+        addControl(s1 = new gin::Select(lfoParams.sync));
+
+        addControl(w1 = new gin::Select(lfoParams.wave));
+
+        addControl(dp1 = new APKnob(lfoParams.depth, true), 1, 0);
+
+        addControl(o1 = new APKnob(lfoParams.offset, true), 1, 1);
+
+        addControl(dl1 = new APKnob(lfoParams.delay), 2, 0);
+
+        addControl(f1 = new APKnob(lfoParams.fade, true), 2, 1);
+
+        watchParam(lfoParams.sync);
+    }
+
+    void paramChanged() override
+    {
+        gin::ParamBox::paramChanged();
+        r1->setVisible(!lfoParams.sync->isOn());
+        b1->setVisible(lfoParams.sync->isOn());
+    }
+
+    void resized() override
+    {
+        gin::ParamBox::resized();
+        s1->setBounds(0, 93, 56, 35);
+        w1->setBounds(0, 128, 56, 35);
+        monoSelect.setBounds(3 * 56 - 85, 3, 32, 16);
+        polySelect.setBounds(3 * 56 - 61, 3, 32, 16);
+    }
+
+    PMProcessor &proc;
+
+    gin::ParamComponent::Ptr s1, w1, r1, b1, dp1, o1, f1, dl1;
+
+    juce::Button *poly1, *mono1;
+
+    int currentLFO{1};
+    const PMProcessor::LFOParams &lfoParams;
+    int num;
+    ParameterSelector monoSelect, polySelect;
 };
 
 //==============================================================================
@@ -383,8 +700,7 @@ class FilterBox : public gin::ParamBox
 
         freq->setLiveValuesCallback([this]() {
             if (proc.filterParams.keyTracking->getUserValue() != 0.0f ||
-                proc.modMatrix.isModulated(
-                    gin::ModDstId(proc.filterParams.frequency->getModIndex())))
+                proc.modMatrix.isModulated(gin::ModDstId(proc.filterParams.frequency->getModIndex())))
                 return proc.getLiveFilterCutoff();
             return juce::Array<float>();
         });
@@ -412,8 +728,7 @@ class ModBox : public gin::ParamBox
 class LevelBox final : public gin::ParamBox, public juce::Timer
 {
   public:
-    explicit LevelBox(gin::LevelTracker &level_)
-        : gin::ParamBox("  level"), levelMeter(level_, juce::NormalisableRange<float>{-60, 0}, true)
+    explicit LevelBox(gin::LevelTracker &level_) : gin::ParamBox("  level"), levelMeter(level_, juce::NormalisableRange<float>{-60, 0}, true)
     {
         // startTimerHz(30);
         addAndMakeVisible(levelMeter);
@@ -778,8 +1093,7 @@ class VolumeBox final : public gin::ParamBox
     explicit VolumeBox(PMProcessor &proc_) : gin::ParamBox("  vol"), proc(proc_)
     {
         setName("  vol");
-        level = new gin::PluginSlider(proc.globalParams.level, juce::Slider::LinearBarVertical,
-                                      juce::Slider::NoTextBox);
+        level = new gin::PluginSlider(proc.globalParams.level, juce::Slider::LinearBarVertical, juce::Slider::NoTextBox);
         addAndMakeVisible(level);
     }
 
