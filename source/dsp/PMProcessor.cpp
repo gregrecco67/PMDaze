@@ -1469,10 +1469,10 @@ void PMProcessor::applyEffects(juce::AudioSampleBuffer &fxALaneBuffer)
 gin::ProcessorOptions PMProcessor::getOptions() const
 {
     gin::ProcessorOptions options;
-    options.pluginName = "Audible Planets";
+    options.pluginName = "PM Daze";
     options.programmingCredits = {"Greg Recco"};
-    options.url = "https://github.com/gregrecco67/AudiblePlanets";
-    options.urlTitle = "Visit https://github.com/gregrecco67/AudiblePlanets";
+    options.url = "https://github.com/gregrecco67/PMDaze";
+    options.urlTitle = "Visit https://github.com/gregrecco67/PMDaze";
     options.useNewsChecker = false;
     options.useUpdateChecker = false;
     return options;

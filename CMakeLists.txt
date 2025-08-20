@@ -63,7 +63,7 @@ juce_add_plugin (${PROJECT_NAME}
 				NEEDS_MIDI_INPUT TRUE
 				NEEDS_MIDI_OUTPUT FALSE
 				COPY_PLUGIN_AFTER_BUILD TRUE
-				LV2URI "urn:void-star:the-pm:${CURRENT_VERSION}"
+				LV2URI "urn:void-star:pm-daze:${CURRENT_VERSION}"
 				JUCE_DONT_DECLARE_PROJECTINFO TRUE
 			)
 

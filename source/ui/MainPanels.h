@@ -412,8 +412,8 @@ class AlgoBox : public gin::ParamBox
         break;
         case 4:
         {
-            a32 = a21 = a41 = true;
-            a43 = a42 = a31 = false;
+            a43 = a32 = a31 = true;
+            a42 = a41 = a21 = false;
             v1 = v2 = true;
             v4 = v3 = false;
         }
