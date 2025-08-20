@@ -288,63 +288,63 @@ void PMVoice::renderNextBlock(juce::AudioBuffer<float> &outputBuffer, int startS
         // clang-format off
 		switch(algo) {
 		case 0: {
-			out =	e1 * vol1 * wave(w1, phase1 +
-					e2 * vol2 * modIndex * a2.process(wave(w2, phase2 + // only LP process ops that are modulators
-					e3 * vol3 * modIndex * a3.process(wave(w3, phase3 +
-					e4 * vol4 * modIndex * a4.process(wave(w4, phase4, true)), true)), true)));
+			out =	e1 * v1.p(vol1) * wave(w1, phase1 +
+					e2 * v2.p(vol2) * modIndex * a2.p(wave(w2, phase2 + // only LP process ops that are modulators
+					e3 * v3.p(vol3) * modIndex * a3.p(wave(w3, phase3 +
+					e4 * v4.p(vol4) * modIndex * a4.p(wave(w4, phase4, true)), true)), true)));
 			break;
 			}
 		case 1: {
 			out =	e1 * vol1 * wave(w1, phase1 +
-					e2 * vol2 * modIndex * a2.process(wave(w2, phase2 +
-					(e3 * vol3 * modIndex * a3.process(wave(w3, phase3, true))) +
-					(e4 * vol4 * modIndex * a4.process(wave(w4, phase4, true))), true)));
+					e2 * vol2 * modIndex *  a2.p(wave(w2, phase2 +
+					(e3 * vol3 * modIndex * a3.p(wave(w3, phase3, true))) +
+					(e4 * vol4 * modIndex * a4.p(wave(w4, phase4, true))), true)));
             break;
 			}
 		case 2: {
 			out =	e1 * vol1 * wave(w1, phase1 +
-					(e2 * vol2 * modIndex * a2.process(wave(w2, phase2 + 
-					e3 * vol3 * modIndex * a3.process(wave(w3, phase3, true)), true))) +
-					e4 * vol4 * modIndex * a4.process(wave(w4, phase4, true)), true);
+					(e2 * vol2 * modIndex * a2.p(wave(w2, phase2 + 
+					e3 * vol3 * modIndex *  a3.p(wave(w3, phase3, true)), true))) +
+					e4 * vol4 * modIndex *  a4.p(wave(w4, phase4, true)), true);
             break;
 			}
 		case 3: {
-			auto p4 = e4 * vol4 * modIndex * a4.process(wave(w4, phase4, true));
-			auto p3 = e3 * vol3 * modIndex * a3.process(wave(w3, phase3 + p4, true));
-			auto p2 = e2 * vol2 * modIndex * a2.process(wave(w2, phase2 + p4, true));
+			auto p4 = e4 * vol4 * modIndex * a4.p(wave(w4, phase4, true));
+			auto p3 = e3 * vol3 * modIndex * a3.p(wave(w3, phase3 + p4, true));
+			auto p2 = e2 * vol2 * modIndex * a2.p(wave(w2, phase2 + p4, true));
 			out = e1 * vol1 * wave(w1, phase1 + p2 + p3);
             break;
 			}
 		case 4: {
-			auto p43 = e3 * vol3 * modIndex * a3.process(wave(w3, phase3 + e4 * vol4 * modIndex * a4.process(wave(w4, phase4, true)), true));
+			auto p43 = e3 * vol3 * modIndex * a3.p(wave(w3, phase3 + e4 * vol4 * modIndex * a4.p(wave(w4, phase4, true)), true));
 			out2 = e2 * vol2 * wave(w2, phase2 + p43);
 			out1 = e1 * vol1 * wave(w1, phase1 + p43);
             out = (out1 + out2) * 0.5f;
 			break;
 			}
 		case 5: {
-			out2 = e2 * vol2 * wave(w2, phase2 + e3 * vol3 * modIndex * a3.process(wave(w3, phase3 + 
-				e4 * vol4 * modIndex * a4.process(wave(w4, phase4, true)), true)), true);
+			out2 = e2 * vol2 * wave(w2, phase2 + e3 * vol3 * modIndex * a3.p(wave(w3, phase3 + 
+				e4 * vol4 * modIndex * a4.p(wave(w4, phase4, true)), true)), true);
 			out1 = e1 * vol1 * wave(w1, phase1);
             out = (out1 + out2) * 0.5f;
 			break;
 			}
 		case 6: {
-			auto p4 = e4 * vol4 * modIndex * a4.process(wave(w4, phase4, true));
-			auto p3 = e3 * vol3 * modIndex * a3.process(wave(w3, phase3, true));
-			auto p2 = e2 * vol2 * modIndex * a2.process(wave(w2, phase2, true));
+			auto p4 = e4 * vol4 * modIndex * a4.p(wave(w4, phase4, true));
+			auto p3 = e3 * vol3 * modIndex * a3.p(wave(w3, phase3, true));
+			auto p2 = e2 * vol2 * modIndex * a2.p(wave(w2, phase2, true));
 			out1 = e1 * vol1 * wave(w1, phase1 + p2 + p3 + p4);
             out = out1;
 			break;
 			}
 		case 7: {
-			out1 = e1 * vol1 * wave(w1, phase1 + e2 * vol2 * modIndex * a2.process(wave(w2, phase2, true)));
-			out3 = e3 * vol3 * wave(w3, phase3 + e4 * vol4 * modIndex * a4.process(wave(w4, phase4, true)));
+			out1 = e1 * vol1 * wave(w1, phase1 + e2 * vol2 * modIndex * a2.p(wave(w2, phase2, true)));
+			out3 = e3 * vol3 * wave(w3, phase3 + e4 * vol4 * modIndex * a4.p(wave(w4, phase4, true)));
 			out = (out1 + out3) * 0.5f;
             break;
 			}
 		case 8: {
-			auto p4 = e4 * vol4 * modIndex * a4.process(wave(w4, phase4, true));
+			auto p4 = e4 * vol4 * modIndex * a4.p(wave(w4, phase4, true));
 			out3 = e3 * vol3 * wave(w3, phase3 + p4);
 			out2 = e2 * vol2 * wave(w2, phase2 + p4);
 			out1 = e1 * vol1 * wave(w1, phase1 + p4);
@@ -352,7 +352,7 @@ void PMVoice::renderNextBlock(juce::AudioBuffer<float> &outputBuffer, int startS
 			break;
 			}
 		case 9: {
-			out3 = e3 * vol3 * wave(w3, phase3 + e4 * vol4 * modIndex * a4.process(wave(w4, phase4, true)), true);
+			out3 = e3 * vol3 * wave(w3, phase3 + e4 * vol4 * modIndex * a4.p(wave(w4, phase4, true)), true);
 			out2 = e2 * vol2 * wave(w2, phase2);
 			out1 = e1 * vol1 * wave(w1, phase1);
             out = (out1 + out2 + out3) * 0.3333333333333333f;

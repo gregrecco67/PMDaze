@@ -69,10 +69,23 @@ class PMVoice final : public gin::SynthesiserVoice, public gin::ModVoice
     struct Averager
     {
         static float in;
-        float previous{0.f};
-        float process(float x) { return previous = (x * in + previous * (1.0f - in)); }
+        float previous{0};
+        float p(float x) { return previous = (x * in + previous * (1.0f - in)); }
     };
 
+    struct Dezip
+    {
+        float p1{0}, p2{0}, p3{0}, p4{0}, p5{0};
+        float p(float x)
+        {
+            p5 = p4;
+            p4 = p3;
+            p3 = p2;
+            p2 = p1;
+            p1 = x;
+            return (p1 + p2 + p3 + p4 + p5) * 0.2f;
+        }
+    };
     float sine(float x);
     float wave(int sel, float x, bool isMod = false);
 
@@ -98,6 +111,7 @@ class PMVoice final : public gin::SynthesiserVoice, public gin::ModVoice
 
     int w1{0}, w2{0}, w3{0}, w4{0};
     Averager a4, a3, a2;
+    Dezip v4, v3, v2, v1;
     int algo{0};
     float modIndex{4.f}; // was 25 for [0, 2pi] range, switched now to [0, 1] for faster rollover
 
