@@ -1100,9 +1100,28 @@ class VolumeBox final : public gin::ParamBox
 
     void paint(juce::Graphics &g) override
     {
+        // clang-format off
         gin::ParamBox::paint(g);
         g.setColour(juce::Colours::white.darker(0.2f));
-        g.fillRect(2, 54, getWidth() - 4, 2);
+        int w = getWidth();
+        int gw = w - 4;
+        g.fillRect(    2,  39,  4, 1); // +6 dB
+        g.fillRect(w - 6,  39,  4, 1);
+        g.fillRect(    2,  54, gw, 2); // 0
+        g.fillRect(    2,  70,  4, 1); // -6
+        g.fillRect(w - 6,  70,  4, 1);
+        g.fillRect(    2,  86,  4, 1); // -12
+        g.fillRect(w - 6,  86,  4, 1);
+        g.fillRect(    2, 102,  4, 1); // -18
+        g.fillRect(w - 6, 102,  4, 1);
+        g.fillRect(    2, 118,  4, 1); // -24
+        g.fillRect(w - 6, 118,  4, 1);
+        g.fillRect(    2, 134,  4, 1); // -30
+        g.fillRect(w - 6, 134,  4, 1);
+        g.fillRect(    2, 150,  4, 1); // -36
+        g.fillRect(w - 6, 150,  4, 1);
+
+        // clang-format on
     }
 
     void resized() override

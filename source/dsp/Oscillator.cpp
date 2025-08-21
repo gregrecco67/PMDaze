@@ -2,13 +2,12 @@
 
 #include "PMVoice.h"
 
-APOscillator::APOscillator(gin::BandLimitedLookupTables &bllt_) : bllt(bllt_)
+PMOscillator::PMOscillator(gin::BandLimitedLookupTables &bllt_) : bllt(bllt_)
 {
     setSampleRate(sampleRate); // bllt.setSampleRate(sampleRate);
 }
 
-void APOscillator::renderFloats(float freq, const Settings &settings, float *xs, float *ys,
-                                const int numSamples)
+void PMOscillator::renderFloats(float freq, const Settings &settings, float *xs, float *ys, const int numSamples)
 {
     const float delta = freq * invSampleRate;
     for (int i = 0; i < numSamples; i++)
