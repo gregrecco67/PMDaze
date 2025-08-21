@@ -20,9 +20,9 @@ static juce::String fmTypeTextFunction(const gin::Parameter &, float v)
     switch (int(v))
     {
     case 0:
-        return "Classic";
+        return "Trad FM";
     case 1:
-        return "ModFM";
+        return "Mod FM";
     default:
         jassertfalse;
         return {};
@@ -590,7 +590,7 @@ void PMProcessor::GlobalParams::setup(PMProcessor &p)
     level = p.addExtParam("level", "Main Vol.", "", " dB", {-40.0, 12.0, 0.0, 1.0f}, 0.0, 0.0f);
     mpe = p.addIntParam("mpe", "MPE", "", "", {0.0, 1.0, 1.0, 1.0}, 0.0f, 0.0f, enableTextFunction);
     pitchbendRange = p.addIntParam("pbrange", "PB Range", "", "", {0.0, 96.0, 1.0, 1.0}, 2.0, 0.0f);
-    modfm = p.addExtParam("modfm", "FM Type", "", "", {0.0, 1.0, 1.0, 1.0}, 0.0f, 0.0f, fmTypeTextFunction);
+    modfm = p.addExtParam("modfm", "FM Type", "", "", {0.0, 1.0, 1.0, 1.0}, 1.0f, 0.0f, fmTypeTextFunction);
 
     modTone->conversionFunction = [](float in) { return juce::NormalisableRange<float>(0.0, 1.0, 0.0, 0.5).convertFrom0to1(in); };
     modIndex->conversionFunction = [](float in) { return in * 0.166667f; };

@@ -245,7 +245,7 @@ float PMVoice::wave(int sel, float x, bool isMod) {
 			break;
 	}
 	if (proc.globalParams.modfm->isOn() && isMod) {
-		return std::exp(out) * 0.7 - 1; // correct for mod index
+		return std::exp(out) * 0.850918 - 1.313035; // correct for mod index
 	}
 	else { return out; }
 	

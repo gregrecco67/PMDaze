@@ -593,7 +593,6 @@ class AlgoBox : public gin::ParamBox
     }
 
     // clang-format on
-    // juce::ImageComponent funcImage{"function"};
 };
 
 class LFOMain : public gin::ParamBox
