@@ -7,14 +7,7 @@ PMOscillator::PMOscillator(gin::BandLimitedLookupTables &bllt_) : bllt(bllt_)
     setSampleRate(sampleRate); // bllt.setSampleRate(sampleRate);
 }
 
-void PMOscillator::renderFloats(float freq, const Settings &settings, float *xs, float *ys, const int numSamples)
-{
-    const float delta = freq * invSampleRate;
-    for (int i = 0; i < numSamples; i++)
-    {
-        xs[i] = bllt.process(settings.wave, freq, phase) * settings.vol;
-        ys[i] = bllt.process(settings.wave, freq, qrtPhase(phase)) * settings.vol;
-        phase += delta;
-        phase -= std::trunc(phase);
-    }
+float PMOscillator::w(gin::Wave wave, float phase, float freq, bool isMod) {
+    float out = bllt.process(wave, freq, phase);
+	return isMod ? std::exp(out) * 0.850918 - 1.313035 : out;
 }

@@ -26,7 +26,7 @@ float PMVoice::Averager::in;
 //==============================================================================
 PMVoice::PMVoice(PMProcessor &p)
     : proc(p), mseg1(proc.mseg1Data), mseg2(proc.mseg2Data), mseg3(proc.mseg3Data), mseg4(proc.mseg4Data), env1(p.convex), env2(p.convex),
-      env3(p.convex), env4(p.convex)
+      env3(p.convex), env4(p.convex), bllt(p.upsampledTables)
 {
     mseg1.reset();
     mseg2.reset();
@@ -96,6 +96,11 @@ void PMVoice::noteStarted()
     env3.noteOn();
     env4.noteOn();
 
+   	phase1 = lastp1 = proc.osc1Params.phase->getUserValue();
+	phase1 = lastp2 = proc.osc2Params.phase->getUserValue();
+	phase1 = lastp3 = proc.osc3Params.phase->getUserValue();
+	phase1 = lastp4 = proc.osc4Params.phase->getUserValue();
+
     mseg1.noteOn();
     mseg2.noteOn();
     mseg3.noteOn();
@@ -136,6 +141,11 @@ void PMVoice::noteRetriggered()
     lfo2.reset();
     lfo3.reset();
     lfo4.reset();
+
+    phase1 = proc.osc1Params.phase->getUserValue();
+	phase1 = proc.osc2Params.phase->getUserValue();
+	phase1 = proc.osc3Params.phase->getUserValue();
+	phase1 = proc.osc4Params.phase->getUserValue();
 
     lfo1.noteOn();
     lfo2.noteOn();
@@ -189,10 +199,10 @@ void PMVoice::setCurrentSampleRate(double newRate)
     lfo3.setSampleRate(quarter);
     lfo4.setSampleRate(quarter);
 
-    env1.setSampleRate(quarter);
-    env2.setSampleRate(quarter);
-    env3.setSampleRate(quarter);
-    env4.setSampleRate(quarter);
+    env1.setSampleRate(newRate);
+    env2.setSampleRate(newRate);
+    env3.setSampleRate(newRate);
+    env4.setSampleRate(newRate);
 
     constexpr Envelope::Params p;
     env1.setParameters(p);
@@ -213,60 +223,30 @@ void PMVoice::setCurrentSampleRate(double newRate)
     fqz1 = 0; // proc.filterParams.resonance->getUserValue();
 }
 
-// clang-format off
-float PMVoice::sine(float x) {
-	x *= 2.0f * pi; // take in phase in units of [0, 1] and convert to [-pi, pi]
-	x = FastMath<float>::normalizePhase(x);
-	auto x2 = x * x;
- 	return (((((-2.0366233e-08f * x2 + 2.6998227e-06f) 
-		* x2 + -0.00019808741f) * x2 + 0.008332408f) 
-		* x2 + -0.16666554f) * x2 + 0.99999958f) * x;
-}
-
-float PMVoice::wave(int sel, float x, bool isMod) {
+float PMVoice::w(gin::Wave sel, float phase, float freq, bool isMod) {
 	float out;
-	switch(sel) {
-		case 0:
-			out = sine(x);
-			break;
-		case 1: // saw 3
-			out = 0.638263f * sine(x) + 0.31842f * sine(2.0f * x - (int)(2.0f * x)) + 0.211349f * sine(3.0f * x - (int)(3.0f * x));
-			break;
-		case 2: // saw 4
-			out = 0.638263f * sine(x) + 0.31842f * sine(2.0f * x - (int)(2.0f * x)) + 0.211349f * sine(3.0f * x - (int)(3.0f * x))
-				+ 0.158489f * sine(4.0f * x - (int)(4.0f * x));
-			break;
-		case 3: // square 3
-			out = sine(x) + 0.42462f * sine(3.0f * x - (int)(3.0f * x)) + 0.254097f * sine(5.0f * x - (int)(5.0f * x));
-			break;
-		case 4: // square 4
-			out = sine(x) + 0.42462f * sine(3.0f * x - (int)(3.0f * x)) + 0.254097f * sine(5.0f * x - (int)(5.0f * x))
-				+ 0.18197f * sine(7.0f * x - (int)(7.0f * x));
-			break;
-	}
+    out = bllt.process(sel, freq, phase);
 	if (proc.globalParams.modfm->isOn() && isMod) {
-		return std::exp(out) * 0.850918 - 1.313035; // correct for mod index
+		return std::exp(out) * 0.850918 - 1.313035;
 	}
 	else { return out; }
-	
 }
-// clang-format on
 
 void PMVoice::renderNextBlock(juce::AudioBuffer<float> &outputBuffer, int startSample, int numSamples)
 {
     updateParams(numSamples);
-
+    phase1 += b1; // bumps
+    phase2 += b2;
+    phase3 += b3;
+    phase4 += b4;
     synthBuffer.setSize(2, numSamples, false, false, true);
-
     auto synthBufferL = synthBuffer.getWritePointer(0);
     auto synthBufferR = synthBuffer.getWritePointer(1);
-
     double invSampleRate = 1.0 / currentSampleRate;
 
-    // the whole enchilada
     for (int i = 0; i < numSamples; i++)
     {
-        env1.getNextSample();
+        env1.getNextSample(); // advances env
         env2.getNextSample();
         env3.getNextSample();
         env4.getNextSample();
@@ -288,81 +268,99 @@ void PMVoice::renderNextBlock(juce::AudioBuffer<float> &outputBuffer, int startS
         // clang-format off
 		switch(algo) {
 		case 0: {
-			out =	e1 * v1.p(vol1) * wave(w1, phase1 +
-					e2 * v2.p(vol2) * modIndex * a2.p(wave(w2, phase2 + // only LP process ops that are modulators
-					e3 * v3.p(vol3) * modIndex * a3.p(wave(w3, phase3 +
-					e4 * v4.p(vol4) * modIndex * a4.p(wave(w4, phase4, true)), true)), true)));
+			out =	e1 * v1.p(vol1) * w(w1, phase1 +
+					e2 * v2.p(vol2) * modIndex * a2.p(w(w2, phase2 + // only LP process ops that are modulators
+					e3 * v3.p(vol3) * modIndex * a3.p(w(w3, phase3 +
+					e4 * v4.p(vol4) * modIndex * a4.p(w(w4, phase4, 
+                        freq4, true)), 
+                        freq3, true)), 
+                        freq2, true)),
+                        freq1
+                    );
 			break;
 			}
 		case 1: {
-			out =	e1 * vol1 * wave(w1, phase1 +
-					e2 * vol2 * modIndex *  a2.p(wave(w2, phase2 +
-					(e3 * vol3 * modIndex * a3.p(wave(w3, phase3, true))) +
-					(e4 * vol4 * modIndex * a4.p(wave(w4, phase4, true))), true)));
+			out =	e1 * vol1 * w(w1, phase1 +
+					e2 * vol2 * modIndex *  a2.p(w(w2, phase2 +
+					(e3 * vol3 * modIndex * a3.p(w(w3, phase3, 
+                        freq3, true))) +
+					(e4 * vol4 * modIndex * a4.p(w(w4, phase4, 
+                        freq4, true))), 
+                        freq2, true)),
+                        freq1
+                    );
             break;
 			}
 		case 2: {
-			out =	e1 * vol1 * wave(w1, phase1 +
-					(e2 * vol2 * modIndex * a2.p(wave(w2, phase2 + 
-					e3 * vol3 * modIndex *  a3.p(wave(w3, phase3, true)), true))) +
-					e4 * vol4 * modIndex *  a4.p(wave(w4, phase4, true)), true);
+			out =	e1 * vol1 * w(w1, phase1 +
+					(e2 * vol2 * modIndex * a2.p(w(w2, phase2 + 
+					e3 * vol3 * modIndex *  a3.p(w(w3, phase3, true)), true))) +
+					e4 * vol4 * modIndex *  a4.p(w(w4, phase4, true)), true);
             break;
 			}
 		case 3: {
-			auto p4 = e4 * vol4 * modIndex * a4.p(wave(w4, phase4, true));
-			auto p3 = e3 * vol3 * modIndex * a3.p(wave(w3, phase3 + p4, true));
-			auto p2 = e2 * vol2 * modIndex * a2.p(wave(w2, phase2 + p4, true));
-			out = e1 * vol1 * wave(w1, phase1 + p2 + p3);
+			auto p4 = e4 * vol4 * modIndex * a4.p(w(w4, phase4, 
+                freq4, true));
+			auto p3 = e3 * vol3 * modIndex * a3.p(w(w3, phase3 + p4, 
+                freq3, true));
+			auto p2 = e2 * vol2 * modIndex * a2.p(w(w2, phase2 + p4, 
+                freq2, true));
+			out = e1 * vol1 * w(w1, phase1 + p2 + p3, freq1);
             break;
 			}
 		case 4: {
-			auto p43 = e3 * vol3 * modIndex * a3.p(wave(w3, phase3 + e4 * vol4 * modIndex * a4.p(wave(w4, phase4, true)), true));
-			out2 = e2 * vol2 * wave(w2, phase2 + p43);
-			out1 = e1 * vol1 * wave(w1, phase1 + p43);
+			auto p43 = e3 * vol3 * modIndex * a3.p(w(w3, phase3 + e4 * vol4 * modIndex * a4.p(w(w4, phase4, 
+                freq4, true)), 
+                freq3, true));
+			out2 = e2 * vol2 * w(w2, phase2 + p43, freq2);
+			out1 = e1 * vol1 * w(w1, phase1 + p43, freq1);
             out = (out1 + out2) * 0.5f;
 			break;
 			}
 		case 5: {
-			out2 = e2 * vol2 * wave(w2, phase2 + e3 * vol3 * modIndex * a3.p(wave(w3, phase3 + 
-				e4 * vol4 * modIndex * a4.p(wave(w4, phase4, true)), true)), true);
-			out1 = e1 * vol1 * wave(w1, phase1);
+			out2 = e2 * vol2 * w(w2, phase2 + e3 * vol3 * modIndex * a3.p(w(w3, phase3 + 
+				e4 * vol4 * modIndex * a4.p(w(w4, phase4, freq4, true)),
+                freq3, true)),
+                freq2, true);
+			out1 = e1 * vol1 * w(w1, phase1, freq1);
             out = (out1 + out2) * 0.5f;
 			break;
 			}
 		case 6: {
-			auto p4 = e4 * vol4 * modIndex * a4.p(wave(w4, phase4, true));
-			auto p3 = e3 * vol3 * modIndex * a3.p(wave(w3, phase3, true));
-			auto p2 = e2 * vol2 * modIndex * a2.p(wave(w2, phase2, true));
-			out1 = e1 * vol1 * wave(w1, phase1 + p2 + p3 + p4);
+			auto p4 = e4 * vol4 * modIndex * a4.p(w(w4, phase4, freq4, true));
+			auto p3 = e3 * vol3 * modIndex * a3.p(w(w3, phase3, freq3, true));
+			auto p2 = e2 * vol2 * modIndex * a2.p(w(w2, phase2, freq2, true));
+			out1 = e1 * vol1 * w(w1, phase1 + p2 + p3 + p4, freq1);
             out = out1;
 			break;
 			}
 		case 7: {
-			out1 = e1 * vol1 * wave(w1, phase1 + e2 * vol2 * modIndex * a2.p(wave(w2, phase2, true)));
-			out3 = e3 * vol3 * wave(w3, phase3 + e4 * vol4 * modIndex * a4.p(wave(w4, phase4, true)));
+			out1 = e1 * vol1 * w(w1, phase1 + e2 * vol2 * modIndex * a2.p(w(w2, phase2, freq2, true)), freq1);
+			out3 = e3 * vol3 * w(w3, phase3 + e4 * vol4 * modIndex * a4.p(w(w4, phase4, freq4, true)), freq3);
 			out = (out1 + out3) * 0.5f;
             break;
 			}
 		case 8: {
-			auto p4 = e4 * vol4 * modIndex * a4.p(wave(w4, phase4, true));
-			out3 = e3 * vol3 * wave(w3, phase3 + p4);
-			out2 = e2 * vol2 * wave(w2, phase2 + p4);
-			out1 = e1 * vol1 * wave(w1, phase1 + p4);
+			auto p4 = e4 * vol4 * modIndex * a4.p(w(w4, phase4, freq4, true));
+			out3 = e3 * vol3 * w(w3, phase3 + p4, freq3);
+			out2 = e2 * vol2 * w(w2, phase2 + p4, freq2);
+			out1 = e1 * vol1 * w(w1, phase1 + p4, freq1);
             out = (out1 + out2 + out3) * 0.3333333333333333f;
 			break;
 			}
 		case 9: {
-			out3 = e3 * vol3 * wave(w3, phase3 + e4 * vol4 * modIndex * a4.p(wave(w4, phase4, true)), true);
-			out2 = e2 * vol2 * wave(w2, phase2);
-			out1 = e1 * vol1 * wave(w1, phase1);
+			out3 = e3 * vol3 * w(w3, phase3 + e4 * vol4 * modIndex * a4.p(w(w4, phase4, 
+                freq4, true)), freq3, true);
+			out2 = e2 * vol2 * w(w2, phase2, freq2);
+			out1 = e1 * vol1 * w(w1, phase1, freq1);
             out = (out1 + out2 + out3) * 0.3333333333333333f;
 			break;
 			}
 		case 10: {
-			out4 = e4 * vol4 * wave(w4, phase4);
-			out3 = e3 * vol3 * wave(w3, phase3);
-			out2 = e2 * vol2 * wave(w2, phase2);
-			out1 = e1 * vol1 * wave(w1, phase1);
+			out4 = e4 * vol4 * w(w4, phase4, freq4);
+			out3 = e3 * vol3 * w(w3, phase3, freq3);
+			out2 = e2 * vol2 * w(w2, phase2, freq2);
+			out1 = e1 * vol1 * w(w1, phase1, freq1);
             out = (out1 + out2 + out3 + out4) * 0.25f;
 			break;
 			}
@@ -372,8 +370,11 @@ void PMVoice::renderNextBlock(juce::AudioBuffer<float> &outputBuffer, int startS
 			}
 		}
 
-		synthBufferL[i] = out;
-		synthBufferR[i] = out;
+		synthBufferL[i] = out * antipop;
+		synthBufferR[i] = out * antipop;
+        
+        antipop += .03f;
+		antipop = std::min(antipop, 1.0f);
         // clang-format on
     }
 
@@ -446,16 +447,18 @@ void PMVoice::updateParams(int blockSize)
         tilUpdate = 3;
     } // every 4th to match envelope/lfo/mseg
 
+
+
     vol1 = getValue(proc.osc1Params.volume);
     vol2 = getValue(proc.osc2Params.volume);
     vol3 = getValue(proc.osc3Params.volume);
     vol4 = getValue(proc.osc4Params.volume);
 
     algo = proc.timbreParams.algo->getUserValueInt();
-    w1 = proc.osc1Params.wave->getUserValueInt();
-    w2 = proc.osc2Params.wave->getUserValueInt();
-    w3 = proc.osc3Params.wave->getUserValueInt();
-    w4 = proc.osc4Params.wave->getUserValueInt();
+    w1 = waveForChoice(proc.osc1Params.wave->getUserValueInt());
+    w2 = waveForChoice(proc.osc2Params.wave->getUserValueInt());
+    w3 = waveForChoice(proc.osc3Params.wave->getUserValueInt());
+    w4 = waveForChoice(proc.osc4Params.wave->getUserValueInt());
 
     modIndex = getValue(proc.globalParams.modIndex);
     Averager::in = getValue(proc.globalParams.modTone);
@@ -577,6 +580,22 @@ void PMVoice::updateParams(int blockSize)
         envs[3] = &env4;
         break;
     }
+
+    auto phaseParam = getValue(proc.osc1Params.phase);
+	b1 = phaseParam - lastp1; // bumps
+	lastp1 = phaseParam;
+    
+    phaseParam = getValue(proc.osc2Params.phase);
+	b2 = phaseParam - lastp2;
+	lastp2 = phaseParam;
+    
+    phaseParam = getValue(proc.osc3Params.phase);
+	b3 = phaseParam - lastp3;
+	lastp3 = phaseParam;
+    
+    phaseParam = getValue(proc.osc4Params.phase);
+	b4 = phaseParam - lastp4;
+	lastp4 = phaseParam;
 
     switch (int(proc.filterParams.type->getUserValue()))
     {

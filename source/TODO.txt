@@ -1,5 +1,3 @@
 -- tables for sine lookup, brings in band-limited triangle, square, saw
--- need to manage 3 and 4-harmonic versions?
 -- phase bump logic from AP
-
 -- bllt? all 6 waves?

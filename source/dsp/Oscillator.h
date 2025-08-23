@@ -10,16 +10,6 @@ class PMOscillator // : public gin::StereoOscillator
     PMOscillator(gin::BandLimitedLookupTables &bllt_);
     ~PMOscillator() = default;
 
-    [[nodiscard]] static inline float qrtPhase(const float phase_)
-    {
-        float p2 = phase_ + 0.25f;
-        if (p2 >= 1.0f)
-        {
-            p2 -= 1.0f;
-        }
-        return p2;
-    }
-
     inline void noteOn(float p = -1)
     {
         if (p >= 0.0f)
@@ -44,14 +34,8 @@ class PMOscillator // : public gin::StereoOscillator
         phase -= std::trunc(phase);
     }
 
-    struct Settings
-    {
-        gin::Wave wave = gin::Wave::sine;
-        float vol = 0.0f;
-    };
-
-    void renderFloats(float note, const Settings &settings, float *xs, float *ys, const int numSamples);
-
+    float w(gin::Wave wave, float phase, float freq, bool isMod = false);
+    
     gin::BandLimitedLookupTables &bllt;
     float sampleRate = 44100.0f;
     float invSampleRate = 1.0f / sampleRate;

@@ -320,22 +320,24 @@ static juce::String gridTextFunction(const gin::Parameter &, float v) { return {
 
 static juce::String oscWaveTextFunction(const gin::Parameter &, float v)
 {
-    switch (int(v))
-    {
-    case 0:
-        return "Sine";
-    case 1:
-        return "Saw 3";
-    case 2:
-        return "Saw 4";
-    case 3:
-        return "Square 3";
-    case 4:
-        return "Square 4";
-    default:
-        jassertfalse;
-        return {};
-    }
+	switch (static_cast<int>(v))
+	{
+	case 0:
+		return "Sine";
+	case 1:
+		return "Triangle";
+	case 2:
+		return "Square";
+	case 3:
+		return "Saw";
+	case 4:
+		return "Pink Noise";
+	case 5:
+		return "White Noise";
+	default:
+		jassertfalse;
+		return {};
+	}
 }
 
 static juce::String auxWaveTextFunction(const gin::Parameter &, float v)

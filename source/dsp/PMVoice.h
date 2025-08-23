@@ -58,7 +58,6 @@ class PMVoice final : public gin::SynthesiserVoice, public gin::ModVoice
     inline float getLFO2Phase() { return lfo2.getCurrentPhase(); }
     inline float getLFO3Phase() { return lfo3.getCurrentPhase(); }
     inline float getLFO4Phase() { return lfo4.getCurrentPhase(); }
-
     [[nodiscard]] inline Envelope::EnvelopeState getENV1State() const { return env1.getState(); }
     [[nodiscard]] inline Envelope::EnvelopeState getENV2State() const { return env2.getState(); }
     [[nodiscard]] inline Envelope::EnvelopeState getENV3State() const { return env3.getState(); }
@@ -86,8 +85,9 @@ class PMVoice final : public gin::SynthesiserVoice, public gin::ModVoice
             return (p1 + p2 + p3 + p4 + p5) * 0.2f;
         }
     };
-    float sine(float x);
-    float wave(int sel, float x, bool isMod = false);
+
+    float w(gin::Wave sel, float phase, float freq, bool isMod = false);
+
 
   private:
     void updateParams(int blockSize);
@@ -101,24 +101,24 @@ class PMVoice final : public gin::SynthesiserVoice, public gin::ModVoice
     Envelope env1, env2, env3, env4;
     std::array<Envelope *, 4> envs{&env1, &env2, &env3, &env4};
     std::array<Envelope *, 4> envsByNum{&env1, &env2, &env3, &env4};
+    // PMOscillator o1, o2, o3, o4;
+
+    gin::BandLimitedLookupTables &bllt;
 
     int filterType{0};
     double freq1 = 0.0, freq2 = 0.0, freq3 = 0.0, freq4 = 0.0;
     double freq4factor = 1.0f, freq3factor = 1.0f, freq2factor = 1.0f;
     float vol1 = 0.0f, vol2 = 0.0f, vol3 = 0.0f, vol4 = 0.0f;
     double phase1 = 0.0, phase2 = 0.0, phase3 = 0.0, phase4 = 0.0;
+    double b1{0}, b2{0}, b3{0}, b4{0}; // phase bumps
     double phase = 0.0;
 
-    int w1{0}, w2{0}, w3{0}, w4{0};
+    gin::Wave w1, w2, w3, w4;
     Averager a4, a3, a2;
     Dezip v4, v3, v2, v1;
     int algo{0};
-    float modIndex{4.f}; // was 25 for [0, 2pi] range, switched now to [0, 1] for faster rollover
-
-    // =================================================
-    // above: we need it
-    // below: do we?
-    // =================================================
+    float modIndex{4.f};
+    float lastp1{0.f}, lastp2{0.f}, lastp3{0.f}, lastp4{0.f};  // last phase
 
     int tilUpdate{0}; // only update envelopes/lfo/mseg every 4th block
 
