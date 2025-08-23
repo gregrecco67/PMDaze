@@ -223,9 +223,10 @@ void PMVoice::setCurrentSampleRate(double newRate)
     fqz1 = 0; // proc.filterParams.resonance->getUserValue();
 }
 
-float PMVoice::w(gin::Wave sel, float phase, float freq, bool isMod) {
-	float out;
-    out = bllt.process(sel, freq, phase);
+float PMVoice::w(gin::Wave sel, float ph, float freq, bool isMod) {
+	while (ph >= 1.0f) ph -= 1.0f;
+    while (ph < 0.0f) ph += 1.0f;
+    float out = bllt.process(sel, freq, ph);
 	if (proc.globalParams.modfm->isOn() && isMod) {
 		return std::exp(out) * 0.850918 - 1.313035;
 	}
@@ -446,8 +447,6 @@ void PMVoice::updateParams(int blockSize)
     {
         tilUpdate = 3;
     } // every 4th to match envelope/lfo/mseg
-
-
 
     vol1 = getValue(proc.osc1Params.volume);
     vol2 = getValue(proc.osc2Params.volume);

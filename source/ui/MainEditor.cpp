@@ -112,25 +112,13 @@ void MainEditor::resized()
     setGrid(&lfo3, 10, 6, 3, 3, 2);
     setGrid(&lfo4, 13, 6, 3, 3, 2);
 
-    setGrid(&timbre, 10, 0, 0, 3, 2);
-    setGrid(&global, 13, 0, 0, 3, 2);
-    setGrid(&algoBox, 10, 2, 1, 2, 2);
-    setGrid(&filter, 12, 2, 1, 2, 2);
+    setGrid(&timbre, 10, 2, 1, 3, 2);
+    setGrid(&global, 13, 2, 1, 3, 2);
 
-    // setGrid(&filter, 10, 0, 0, 2, 2);
-    // setGrid(&timbre, 12, 0, 0, 3, 2);
-    // setGrid(&global, 10, 2, 1, 3, 2);
-
-    // NOW:
-    // filter - timbre - vol
-    // global - space - level
-
-    // should be:
-    // timbre - global
-    // filter - vol - level?
-
-    volumeBox.setBounds(14 * 56, 163, 56, 163);
-    levelBox.setBounds(15 * 56, 163, 56, 163);
+    setGrid(&algoBox, 10, 0, 0, 2, 2);
+    setGrid(&filter, 12, 0, 0, 2, 2);
+    volumeBox.setBounds(14 * 56, 0, 56, 163);
+    levelBox.setBounds(15 * 56, 0, 56, 163);
 
     modsrc.setBounds(16 * 56, 0, 5 * 56, 326);
     matrix.setBounds(16 * 56, 326, 5 * 56, 326);

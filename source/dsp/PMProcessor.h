@@ -266,16 +266,6 @@ class PMProcessor : public gin::Processor
         JUCE_DECLARE_NON_COPYABLE(MacroParams)
     };
 
-    struct AuxParams
-    {
-        AuxParams() = default;
-
-        gin::Parameter::Ptr enable, wave, env, octave, volume, detune, spread, prefx, filtertype, filtercutoff, filterres, filterkeytrack, ignorepb;
-        void setup(PMProcessor &p);
-
-        JUCE_DECLARE_NON_COPYABLE(AuxParams)
-    };
-
     inline void newRand()
     {
         modMatrix.setMonoValue(randSrc1Mono, dist(gen));
@@ -310,7 +300,6 @@ class PMProcessor : public gin::Processor
     FXOrderParams fxOrderParams;
     MSEGParams mseg1Params, mseg2Params, mseg3Params, mseg4Params;
     MacroParams macroParams;
-    AuxParams auxParams;
 
     //==============================================================================
     GainProcessor effectGain;

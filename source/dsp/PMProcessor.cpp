@@ -484,12 +484,12 @@ void PMProcessor::LFOParams::setup(PMProcessor &p, const juce::String &numStr)
 
     enable = p.addIntParam(id + "enable", id + "Enable", "Enable", "", {0.0, 1.0, 1.0, 1.0}, 0.0f, 0.0f, enableTextFunction);
 
-    sync = p.addIntParam(id + "sync", nm + " Sync", "Sync", "", {0.0, 1.0, 1.0, 1.0}, 1.0, 0.0f, enableTextFunction);
+    sync = p.addIntParam(id + "sync", nm + " Sync", "Sync", "", {0.0, 1.0, 1.0, 1.0}, 0.0, 0.0f, enableTextFunction);
     wave = p.addIntParam(id + "wave", nm + " Wave", "Wave", "", {1.0, 17.0, 1.0, 1.0}, 1.0, 0.0f, lfoTextFunction);
     rate = p.addExtParam(id + "rate", nm + " Rate", "Rate", " Hz", {0.0, 50.0, 0.0, 0.3f}, 1.0, 0.0f);
     beat =
         p.addIntParam(id + "beat", nm + " Beat", "Beat", "", {0.0, static_cast<float>(notes.size() - 1), 1.0, 1.0}, 23.0, 0.0f, durationTextFunction);
-    depth = p.addExtParam(id + "depth", nm + " Depth", "Depth", "", {-1.0, 1.0, 0.0, 1.0}, 1.0, 0.0f);
+    depth = p.addExtParam(id + "depth", nm + " Depth", "Depth", "", {-1.0, 1.0, 0.0, 1.0}, 1.0, 0.0f, percentTextFunction);
     phase = p.addExtParam(id + "phase", nm + " Phase", "Phase", "", {-1.0, 1.0, 0.0, 1.0}, 0.0, 0.0f);
     offset = p.addExtParam(id + "offset", nm + " Offset", "Offset", "", {-1.0, 1.0, 0.0, 1.0}, 0.0, 0.0f);
     fade = p.addExtParam(id + "fade", nm + " Fade", "Fade", " s", {-60.0, 60.0, 0.0, 0.2f, true}, 0.0f, 0.0f);
@@ -505,7 +505,7 @@ void PMProcessor::MSEGParams::setup(PMProcessor &p, const juce::String &number)
     rate = p.addExtParam("mseg" + number + "rate", "MSEG" + number + " Rate", "Rate", " Hz", {0.0, 50.0, 0.0, 0.3f}, 10.0, 0.0f);
     beat = p.addExtParam("mseg" + number + "beat", "MSEG" + number + " Beat", "Beat", "",
                          {0.0, float(gin::NoteDuration::getNoteDurations().size() - 1), 1.0, 1.0}, 13.0, 0.0f, durationTextFunction);
-    depth = p.addExtParam("mseg" + number + "depth", "MSEG" + number + " Depth", "Depth", "", {-1.0, 1.0, 0.0, 1.0}, 1.0, 0.0f);
+    depth = p.addExtParam("mseg" + number + "depth", "MSEG" + number + " Depth", "Depth", "", {-1.0, 1.0, 0.0, 1.0}, 1.0, 0.0f, percentTextFunction);
     phase = p.addExtParam("mseg" + number + "phase", "MSEG" + number + " Phase", "Phase", "", {-1.0, 1.0, 0.0, 1.0}, 0.5f, 0.0f);
     offset = p.addExtParam("mseg" + number + "offset", "MSEG" + number + " Offset", "Offset", "", {-1.0, 1.0, 0.0, 1.0}, 0.0, 0.0f);
     xgrid = p.addIntParam("mseg" + number + "xgrid", "MSEG" + number + "XGrid", "X Grid", "", {1.0, 20.0, 0.0, 1.0}, 10.0, 0.0f, gridTextFunction);
@@ -559,26 +559,6 @@ void PMProcessor::TimbreParams::setup(PMProcessor &p)
     algo = p.addExtParam("algo", "Algorithm", "", "", {0.0, 10.0, 1.0, 1.0}, 0.0, 0.f, algoTextFunction);
 }
 
-void PMProcessor::AuxParams::setup(PMProcessor &p)
-{
-    enable = p.addIntParam("auxenable", "Enable", "", "", {0.0, 1.0, 1.0, 1.0}, 0.0f, 0.0f, enableTextFunction);
-    wave = p.addExtParam("auxwave", "Aux Wave", "Wave", "", {0.0, 5.0, 0.0, 1.0}, 0.0f, 0.0f, auxWaveTextFunction);
-    env = p.addIntParam("auxenv", "Aux Env", "Env", "", {0.0, 3.0, 1.0, 1.0}, 0.0f, 0.0f, envSelectTextFunction);
-    octave = p.addExtParam("auxoctave", "Aux Octave", "Octave", "", {-2.0, 2.0, 1.0, 1.0}, 0.0f, 0.0f, auxOctaveTextFunction);
-    volume = p.addExtParam("auxvolume", "Aux Volume", "Volume", "", {-60.0, 12.0, 0.0, 1.0}, -12.f, 0.0f, decibelsTextFunction);
-    detune = p.addExtParam("auxdetune", "Aux Detune", "Detune", "", {0.0, 0.5f, 0.0, 1.0}, 0.0, 0.0f);
-    spread = p.addExtParam("auxspread", "Aux Spread", "Spread", "%", {0.0, 100.0, 0.0, 1.0}, 0.0, 0.0f);
-    prefx = p.addIntParam("auxprefx", "Aux FX Order", "FX Order", "", {0.0, 1.0, 0.0, 1.0}, 1.0, 0.0f, auxPreFxTextFunction);
-    filtertype = p.addIntParam("auxfiltertype", "Aux Filter Type", "Filter Type", "", {0.0, 7.0, 1.0, 1.0}, 0.0, 0.0f, filterTextFunction);
-    auto maxFreq = static_cast<float>(gin::getMidiNoteFromHertz(20000.0));
-    filtercutoff = p.addExtParam("auxfiltercutoff", "Aux Cutoff", "Cutoff", "", {0.0, maxFreq, 0.0f, 1.0}, 95.0, 0.0f, freqTextFunction);
-    filterres = p.addExtParam("auxres", "Aux Res", "Resonance", "", {0.0, 100.0, 0.0f, 1.0}, 0.0, 0.0f);
-    filterkeytrack = p.addExtParam("auxkeytrack", "Aux Keytrack", "Keytrack", "%", {0.0, 100.0, 0.0f, 1.0}, 0.0, 0.0f);
-    ignorepb = p.addIntParam("auxignorepb", "Aux Ignore PB", "Ignore PB", "", {0.0, 1.0, 1.0, 1.0}, 0.0f, 0.0f, enableTextFunction);
-
-    filterkeytrack->conversionFunction = [](float in) { return in * 0.01f; };
-}
-
 //==============================================================================
 void PMProcessor::GlobalParams::setup(PMProcessor &p)
 {
@@ -586,7 +566,7 @@ void PMProcessor::GlobalParams::setup(PMProcessor &p)
     modTone = p.addExtParam("modTone", "Mod Tone", "", "", {0.0, 1.0, 0.0, 1.0}, 0.5f, 0.0f, percentTextFunction);
     modIndex = p.addExtParam("modIndex", "Mod Index", "", "", {4.0, 28.0, 0.0, 1.0}, 12.0f, 0.0f);
     mono = p.addIntParam("mono", "Mono", "", "", {0.0, 1.0, 0.0, 1.0}, 0.0, 0.0f, enableTextFunction);
-    glideMode = p.addIntParam("gMode", "Glide Mode", "Glide", "", {0.0, 2.0, 0.0, 1.0}, 0.0f, 0.0f, glideModeTextFunction);
+    glideMode = p.addIntParam("gMode", "Glide Mode", "Glizz", "", {0.0, 2.0, 0.0, 1.0}, 0.0f, 0.0f, glideModeTextFunction);
     glideRate = p.addExtParam("gRate", "Glide Rate", "Rate", " s", {0.001f, 20.0, 0.0, 0.2f}, 0.3f, 0.0f);
     legato = p.addIntParam("legato", "Legato", "", "", {0.0, 1.0, 0.0, 1.0}, 0.0, 0.0f, enableTextFunction);
     level = p.addExtParam("level", "Main Vol.", "", " dB", {-40.0, 12.0, 0.0, 1.0f}, 0.0, 0.0f);
@@ -825,7 +805,6 @@ PMProcessor::PMProcessor()
 
     timbreParams.setup(*this);
     filterParams.setup(*this);
-    auxParams.setup(*this);
 
     // mono params begin in the middle of this block
     globalParams.setup(*this);

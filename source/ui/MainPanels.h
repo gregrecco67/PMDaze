@@ -765,73 +765,16 @@ class GlobalBox : public gin::ParamBox
     {
         setName("global");
 
-        addControl(vol = new APKnob(proc.globalParams.level), 2, 0);
-        addControl(auxvol = new APKnob(proc.auxParams.volume), 2, 1);
         addControl(new APKnob(proc.globalParams.glideRate), 1, 1);
         addControl(new APKnob(proc.globalParams.pitchbendRange), 0, 1);
-        auxvol->setDisplayName("Aux Vol.");
-        addControl(mpe = new gin::Select(proc.globalParams.mpe));
-        addControl(legato = new gin::Select(proc.globalParams.legato));
-        addControl(mono = new gin::Select(proc.globalParams.mono));
-        addControl(glideMode = new gin::Select(proc.globalParams.glideMode));
-    }
-
-    ~GlobalBox() override
-    {
-        vol->setLookAndFeel(nullptr);
-        auxvol->setLookAndFeel(nullptr);
-    }
-
-    void resized() override
-    {
-        gin::ParamBox::resized();
-        legato->setBounds(0, 23, 56, 35);
-        mono->setBounds(0, 58, 56, 35);
-        glideMode->setBounds(56, 23, 56, 35);
-        mpe->setBounds(56, 58, 56, 35);
-    }
-
-    gin::ParamComponent::Ptr legato = nullptr, mono = nullptr, glideMode = nullptr, mpe = nullptr;
-    APKnob *auxvol, *vol;
-    PMProcessor &proc;
-};
-
-//==============================================================================
-
-class AuxBox : public gin::ParamBox
-{
-  public:
-    AuxBox(const juce::String &name, PMProcessor &proc_) : gin::ParamBox(name), proc(proc_)
-    {
-        setName("aux");
-        addEnable(proc.auxParams.enable);
-
-        addControl(wave = new gin::Select(proc.auxParams.wave), 0, 0);
-        addControl(env = new gin::Select(proc.auxParams.env), 0, 0);
-        addControl(new APKnob(proc.auxParams.octave), 1, 0);
-        addControl(new APKnob(proc.auxParams.volume), 2, 0);
-        addControl(new APKnob(proc.auxParams.detune), 3, 0);
-        addControl(new APKnob(proc.auxParams.spread), 4, 0);
-
-        addControl(prefx = new gin::Select(proc.auxParams.prefx), 0, 1);
-        addControl(filtertype = new gin::Select(proc.auxParams.filtertype), 0, 1);
-        addControl(new APKnob(proc.auxParams.filtercutoff), 1, 1);
-        addControl(new APKnob(proc.auxParams.filterres), 2, 1);
-        addControl(new APKnob(proc.auxParams.filterkeytrack), 3, 1);
-        addControl(new gin::Select(proc.auxParams.ignorepb), 4, 1);
-    }
-
-    void resized() override
-    {
-        ParamBox::resized();
-        wave->setBounds(0, 23, 56, 35);
-        env->setBounds(0, 58, 56, 35);
-        prefx->setBounds(0, 93, 56, 35);
-        filtertype->setBounds(0, 128, 56, 35);
+        
+        addControl(new gin::Select(proc.globalParams.mono), 0, 0);
+        addControl(new gin::Select(proc.globalParams.legato), 1, 0);
+        addControl(new gin::Select(proc.globalParams.glideMode), 2, 0);
+        addControl(new gin::Select(proc.globalParams.mpe), 2, 1);
     }
 
     PMProcessor &proc;
-    gin::ParamComponent::Ptr wave, env, prefx, filtertype;
 };
 
 //==============================================================================
