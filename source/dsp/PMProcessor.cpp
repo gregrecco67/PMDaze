@@ -687,14 +687,14 @@ void PMProcessor::StereoParams::setup(PMProcessor &p)
 {
     const juce::String pfx = "st";
     const juce::String name = "Stereo ";
-    w1  = p.addExtParam(pfx + "width1", name + "Width 1", "Width 1", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.f, 0.f);
-    w2  = p.addExtParam(pfx + "width2", name + "Width 2", "Width 2", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.f, 0.f);
-    c1  = p.addExtParam(pfx + "ctr1", name + "Center 1", "Center 1", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.f, 0.f);
-    c2  = p.addExtParam(pfx + "ctr2", name + "Center 2", "Center 2", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.f, 0.f);
+    w1  = p.addExtParam(pfx + "width1", name + "Width 1", "Width 1", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.5f, 0.f);
+    w2  = p.addExtParam(pfx + "width2", name + "Width 2", "Width 2", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.5f, 0.f);
+    c1  = p.addExtParam(pfx + "ctr1", name + "Center 1", "Center 1", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.4f, 0.f);
+    c2  = p.addExtParam(pfx + "ctr2", name + "Center 2", "Center 2", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.65f, 0.f);
     p1  = p.addExtParam(pfx + "pan1", name + "Pan 1", "Pan 1", "", {-1.0f, 1.0f, 0.0, 1.0f}, 0.f, 0.f);
     p2  = p.addExtParam(pfx + "pan2", name + "Pan 2", "Pan 2", "", {-1.0f, 1.0f, 0.0, 1.0f}, 0.f, 0.f);
-    rot = p.addExtParam(pfx + "rot", name + "Rotat", "Rotation", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.f, 0.f);
-    out = p.addExtParam(pfx + "out", name + "Vol.", "Vol.", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.f, 0.f);
+    rot = p.addExtParam(pfx + "rot", name + "Rotat", "Rotation", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.2f, 0.f);
+    out = p.addExtParam(pfx + "out", name + "Vol.", "Vol.", "", {0.0f, 1.0f, 0.0, 1.0f}, 1.f, 0.f);
 }
 
 
