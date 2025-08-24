@@ -263,13 +263,13 @@ void PMVoice::renderNextBlock(juce::AudioBuffer<float> &outputBuffer, int startS
 		switch(algo) {
 		case 0: {
 			out =	e1 * v1.p(vol1) * w(w1, phase1 +
-					e2 * v2.p(vol2) * modIndex * a2.p(w(w2, phase2 + // only LP process ops that are modulators
+					e2 * v2.p(vol2) * modIndex * a2.p(w(w2, phase2 + // only average ops that are modulators
 					e3 * v3.p(vol3) * modIndex * a3.p(w(w3, phase3 +
 					e4 * v4.p(vol4) * modIndex * a4.p(w(w4, phase4, 
                         freq4, true)), 
                         freq3, true)), 
                         freq2, true)),
-                        freq1
+                        freq1, false
                     );
 			break;
 			}
@@ -281,15 +281,15 @@ void PMVoice::renderNextBlock(juce::AudioBuffer<float> &outputBuffer, int startS
 					(e4 * vol4 * modIndex * a4.p(w(w4, phase4, 
                         freq4, true))), 
                         freq2, true)),
-                        freq1
+                        freq1, false
                     );
             break;
 			}
 		case 2: {
 			out =	e1 * vol1 * w(w1, phase1 +
 					(e2 * vol2 * modIndex * a2.p(w(w2, phase2 + 
-					e3 * vol3 * modIndex *  a3.p(w(w3, phase3, true)), true))) +
-					e4 * vol4 * modIndex *  a4.p(w(w4, phase4, true)), true);
+					e3 * vol3 * modIndex *  a3.p(w(w3, phase3, freq3, true)), freq2, true))) +
+					e4 * vol4 * modIndex *  a4.p(w(w4, phase4, freq4, true)), freq1, true);
             break;
 			}
 		case 3: {
@@ -299,15 +299,15 @@ void PMVoice::renderNextBlock(juce::AudioBuffer<float> &outputBuffer, int startS
                 freq3, true));
 			auto p2 = e2 * vol2 * modIndex * a2.p(w(w2, phase2 + p4, 
                 freq2, true));
-			out = e1 * vol1 * w(w1, phase1 + p2 + p3, freq1);
+			out = e1 * vol1 * w(w1, phase1 + p2 + p3, freq1, false);
             break;
 			}
 		case 4: {
 			auto p43 = e3 * vol3 * modIndex * a3.p(w(w3, phase3 + e4 * vol4 * modIndex * a4.p(w(w4, phase4, 
                 freq4, true)), 
                 freq3, true));
-			out2 = e2 * vol2 * w(w2, phase2 + p43, freq2);
-			out1 = e1 * vol1 * w(w1, phase1 + p43, freq1);
+			out2 = e2 * vol2 * w(w2, phase2 + p43, freq2, false);
+			out1 = e1 * vol1 * w(w1, phase1 + p43, freq1, false);
             out = (out1 + out2) * 0.5f;
 			break;
 			}
@@ -316,7 +316,7 @@ void PMVoice::renderNextBlock(juce::AudioBuffer<float> &outputBuffer, int startS
 				e4 * vol4 * modIndex * a4.p(w(w4, phase4, freq4, true)),
                 freq3, true)),
                 freq2, true);
-			out1 = e1 * vol1 * w(w1, phase1, freq1);
+			out1 = e1 * vol1 * w(w1, phase1, freq1, false);
             out = (out1 + out2) * 0.5f;
 			break;
 			}
@@ -324,37 +324,37 @@ void PMVoice::renderNextBlock(juce::AudioBuffer<float> &outputBuffer, int startS
 			auto p4 = e4 * vol4 * modIndex * a4.p(w(w4, phase4, freq4, true));
 			auto p3 = e3 * vol3 * modIndex * a3.p(w(w3, phase3, freq3, true));
 			auto p2 = e2 * vol2 * modIndex * a2.p(w(w2, phase2, freq2, true));
-			out1 = e1 * vol1 * w(w1, phase1 + p2 + p3 + p4, freq1);
+			out1 = e1 * vol1 * w(w1, phase1 + p2 + p3 + p4, freq1, false);
             out = out1;
 			break;
 			}
 		case 7: {
-			out1 = e1 * vol1 * w(w1, phase1 + e2 * vol2 * modIndex * a2.p(w(w2, phase2, freq2, true)), freq1);
-			out3 = e3 * vol3 * w(w3, phase3 + e4 * vol4 * modIndex * a4.p(w(w4, phase4, freq4, true)), freq3);
+			out1 = e1 * vol1 * w(w1, phase1 + e2 * vol2 * modIndex * a2.p(w(w2, phase2, freq2, true)), freq1, false);
+			out3 = e3 * vol3 * w(w3, phase3 + e4 * vol4 * modIndex * a4.p(w(w4, phase4, freq4, true)), freq3, false);
 			out = (out1 + out3) * 0.5f;
             break;
 			}
 		case 8: {
 			auto p4 = e4 * vol4 * modIndex * a4.p(w(w4, phase4, freq4, true));
-			out3 = e3 * vol3 * w(w3, phase3 + p4, freq3);
-			out2 = e2 * vol2 * w(w2, phase2 + p4, freq2);
-			out1 = e1 * vol1 * w(w1, phase1 + p4, freq1);
+			out3 = e3 * vol3 * w(w3, phase3 + p4, freq3, false);
+			out2 = e2 * vol2 * w(w2, phase2 + p4, freq2, false);
+			out1 = e1 * vol1 * w(w1, phase1 + p4, freq1, false);
             out = (out1 + out2 + out3) * 0.3333333333333333f;
 			break;
 			}
 		case 9: {
 			out3 = e3 * vol3 * w(w3, phase3 + e4 * vol4 * modIndex * a4.p(w(w4, phase4, 
                 freq4, true)), freq3, true);
-			out2 = e2 * vol2 * w(w2, phase2, freq2);
-			out1 = e1 * vol1 * w(w1, phase1, freq1);
+			out2 = e2 * vol2 * w(w2, phase2, freq2, false);
+			out1 = e1 * vol1 * w(w1, phase1, freq1, false);
             out = (out1 + out2 + out3) * 0.3333333333333333f;
 			break;
 			}
 		case 10: {
-			out4 = e4 * vol4 * w(w4, phase4, freq4);
-			out3 = e3 * vol3 * w(w3, phase3, freq3);
-			out2 = e2 * vol2 * w(w2, phase2, freq2);
-			out1 = e1 * vol1 * w(w1, phase1, freq1);
+			out4 = e4 * vol4 * w(w4, phase4, freq4, false);
+			out3 = e3 * vol3 * w(w3, phase3, freq3, false);
+			out2 = e2 * vol2 * w(w2, phase2, freq2, false);
+			out1 = e1 * vol1 * w(w1, phase1, freq1, false);
             out = (out1 + out2 + out3 + out4) * 0.25f;
 			break;
 			}

@@ -74,8 +74,8 @@ if (APPLE)
 			-Wall -Wstrict-aliasing -Wunused-parameter -Wconditional-uninitialized -Woverloaded-virtual -Wreorder -Wconstant-conversion -Wbool-conversion -Wextra-semi 
 			-Wunreachable-code -Winconsistent-missing-destructor-override -Wshift-sign-overflow -Wnullable-to-nonnull-conversion -Wuninitialized -Wno-missing-field-initializers 
 			-Wno-ignored-qualifiers -Wno-missing-braces -Wno-char-subscripts -Wno-unused-private-field -fno-aligned-allocation -Wunused-private-field -Wunreachable-code 
-			-Wenum-compare -Wshadow -Wfloat-conversion -Wshadow-uncaptured-local -Wshadow-field -Wsign-compare -Wdeprecated-this-capture -Wimplicit-float-conversion 
-			-ffast-math -fno-finite-math-only -Wfloat-equal
+			-Wenum-compare -Wshadow -Wshadow-uncaptured-local -Wshadow-field -Wdeprecated-this-capture -Wimplicit-float-conversion 
+			-ffast-math -fno-finite-math-only 
 #			"$<$<CONFIG:RELEASE>:-Werror>"
 		)
 		add_definitions( -DUSE_NEON )
@@ -89,7 +89,10 @@ if (MSVC)
 endif ()
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
-	add_compile_definitions(USE_SSE)
+	target_compile_options(${PROJECT_NAME} PRIVATE 
+        -Wall -fdiagnostics-color=always -ffast-math 
+		)
+    add_compile_definitions(USE_SSE)
 endif ()
 
 # Binary Data
@@ -106,12 +109,12 @@ file (GLOB_RECURSE source_files CONFIGURE_DEPENDS
 	${CMAKE_CURRENT_SOURCE_DIR}/source/third_party/ADAAsrc/polylogarithm/Li2.*
 	${CMAKE_CURRENT_SOURCE_DIR}/source/third_party/ADAAsrc/*.h
 	${CMAKE_CURRENT_SOURCE_DIR}/source/third_party/ADAAsrc/ADAA/*.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/source/dsp/*.h
+    #${CMAKE_CURRENT_SOURCE_DIR}/source/dsp/*.h
     ${CMAKE_CURRENT_SOURCE_DIR}/source/dsp/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/source/dsp/*.hpp
+    #${CMAKE_CURRENT_SOURCE_DIR}/source/dsp/*.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/source/ui/*.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/source/ui/*.h
-	${CMAKE_CURRENT_SOURCE_DIR}/source/ui/*.hpp
+    #${CMAKE_CURRENT_SOURCE_DIR}/source/ui/*.h
+    #${CMAKE_CURRENT_SOURCE_DIR}/source/ui/*.hpp
 	)
 
 target_sources (${PROJECT_NAME} PRIVATE ${source_files})

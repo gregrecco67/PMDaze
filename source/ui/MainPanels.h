@@ -476,13 +476,13 @@ class AlgoBox : public gin::ParamBox
     void paint(juce::Graphics &g) override
     {
         gin::ParamBox::paint(g);
-        juce::Point ctr4{29, 104};
-        juce::Point ctr3{81, 104};
-        juce::Point ctr2{81, 52};
-        juce::Point ctr1{29, 52};
+        juce::Point ctr4{29, 119};
+        juce::Point ctr3{81, 119};
+        juce::Point ctr2{81, 67};
+        juce::Point ctr1{29, 67};
         // 1
         g.setColour(APColors::redMuted);
-        g.fillRoundedRectangle(6, 29, 46, 46, 5);
+        g.fillRoundedRectangle(6, 44, 46, 46, 5);
         juce::ColourGradient gradient{juce::Colours::white.withAlpha(0.6f),
                                       {ctr1.getX() + 0.f, ctr1.getY() + 0.f},
                                       APColors::redMuted,
@@ -493,7 +493,7 @@ class AlgoBox : public gin::ParamBox
 
         // 2
         g.setColour(APColors::yellowMuted);
-        g.fillRoundedRectangle(58, 29, 46, 46, 5);
+        g.fillRoundedRectangle(58, 44, 46, 46, 5);
         if (v2)
         {
             juce::ColourGradient gradient{juce::Colours::white.withAlpha(0.6f),
@@ -507,7 +507,7 @@ class AlgoBox : public gin::ParamBox
 
         // 4
         g.setColour(APColors::blueMuted);
-        g.fillRoundedRectangle(6, 81, 46, 46, 5);
+        g.fillRoundedRectangle(6, 96, 46, 46, 5);
         if (v4)
         {
             juce::ColourGradient gradient{juce::Colours::white.withAlpha(0.6f),
@@ -521,7 +521,7 @@ class AlgoBox : public gin::ParamBox
 
         // 3
         g.setColour(APColors::greenMuted);
-        g.fillRoundedRectangle(58, 81, 46, 46, 5);
+        g.fillRoundedRectangle(58, 96, 46, 46, 5);
         if (v3)
         {
             juce::ColourGradient gradient{juce::Colours::white.withAlpha(0.6f),

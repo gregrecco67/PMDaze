@@ -322,24 +322,24 @@ static juce::String gridTextFunction(const gin::Parameter &, float v) { return {
 
 static juce::String oscWaveTextFunction(const gin::Parameter &, float v)
 {
-	switch (static_cast<int>(v))
-	{
-	case 0:
-		return "Sine";
-	case 1:
-		return "Triangle";
-	case 2:
-		return "Square";
-	case 3:
-		return "Saw";
-	case 4:
-		return "Pink Noise";
-	case 5:
-		return "White Noise";
-	default:
-		jassertfalse;
-		return {};
-	}
+    switch (static_cast<int>(v))
+    {
+    case 0:
+        return "Sine";
+    case 1:
+        return "Triangle";
+    case 2:
+        return "Square";
+    case 3:
+        return "Saw";
+    case 4:
+        return "Pink Noise";
+    case 5:
+        return "White Noise";
+    default:
+        jassertfalse;
+        return {};
+    }
 }
 
 static juce::String auxWaveTextFunction(const gin::Parameter &, float v)
@@ -592,7 +592,7 @@ void PMProcessor::WaveshaperParams::setup(PMProcessor &p)
 {
     const juce::String pfx = "ws";
     const juce::String name = "WS ";
-    drive = p.addExtParam(pfx + "drive", name + "Drive", "Drive", "", {0.0, 60.0, 0.0, 1.0}, 0.0, 0.0f);
+    drive = p.addExtParam(pfx + "drive", name + "Drive", "Drive", "", {0.0, 60.0, 0.0, 1.0}, 0.0, 0.2f);
     gain = p.addExtParam(pfx + "gain", name + "Gain", "Gain (Out)", "", {-12.0f, 12.0f, 0.0f, 1.0}, 0.0, 0.0f);
     dry = p.addExtParam(pfx + "dry", name + "Dry", "Dry", "", {0.0, 1.0, 0.0, 1.0}, 1.0, 0.0f, percentTextFunction);
     wet = p.addExtParam(pfx + "wet", name + "Wet", "Wet", "", {0.0, 1.0, 0.0, 1.0}, 0.25, 0.0f, percentTextFunction);
@@ -687,16 +687,15 @@ void PMProcessor::StereoParams::setup(PMProcessor &p)
 {
     const juce::String pfx = "st";
     const juce::String name = "Stereo ";
-    w1  = p.addExtParam(pfx + "width1", name + "Width 1", "Width 1", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.5f, 0.f);
-    w2  = p.addExtParam(pfx + "width2", name + "Width 2", "Width 2", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.5f, 0.f);
-    c1  = p.addExtParam(pfx + "ctr1", name + "Center 1", "Center 1", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.4f, 0.f);
-    c2  = p.addExtParam(pfx + "ctr2", name + "Center 2", "Center 2", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.65f, 0.f);
-    p1  = p.addExtParam(pfx + "pan1", name + "Pan 1", "Pan 1", "", {-1.0f, 1.0f, 0.0, 1.0f}, 0.f, 0.f);
-    p2  = p.addExtParam(pfx + "pan2", name + "Pan 2", "Pan 2", "", {-1.0f, 1.0f, 0.0, 1.0f}, 0.f, 0.f);
+    w1 = p.addExtParam(pfx + "width1", name + "Width 1", "Width 1", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.5f, 0.f);
+    w2 = p.addExtParam(pfx + "width2", name + "Width 2", "Width 2", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.5f, 0.f);
+    c1 = p.addExtParam(pfx + "ctr1", name + "Center 1", "Center 1", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.4f, 0.f);
+    c2 = p.addExtParam(pfx + "ctr2", name + "Center 2", "Center 2", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.65f, 0.f);
+    p1 = p.addExtParam(pfx + "pan1", name + "Pan 1", "Pan 1", "", {-1.0f, 1.0f, 0.0, 1.0f}, 0.f, 0.f);
+    p2 = p.addExtParam(pfx + "pan2", name + "Pan 2", "Pan 2", "", {-1.0f, 1.0f, 0.0, 1.0f}, 0.f, 0.f);
     rot = p.addExtParam(pfx + "rot", name + "Rotat", "Rotation", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.2f, 0.f);
     out = p.addExtParam(pfx + "out", name + "Vol.", "Vol.", "", {0.0f, 1.0f, 0.0, 1.0f}, 1.f, 0.f);
 }
-
 
 //==============================================================================
 void PMProcessor::RingModParams::setup(PMProcessor &p)
@@ -1671,7 +1670,8 @@ void PMProcessor::updateParams(int newBlockSize)
         ladder.gain.setGainDecibels(modMatrix.getValue(ladderParams.gain));
     }
 
-    if (activeEffects.contains(10)) {
+    if (activeEffects.contains(10))
+    {
         float w1 = modMatrix.getValue(stereoParams.w1);
         float w2 = modMatrix.getValue(stereoParams.w2);
         float c1 = modMatrix.getValue(stereoParams.c1);

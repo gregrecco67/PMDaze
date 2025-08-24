@@ -68,13 +68,13 @@ class PMVoice final : public gin::SynthesiserVoice, public gin::ModVoice
     {
         static float in;
         float previous{0};
-        float p(float x) { return previous = (x * in + previous * (1.0f - in)); }
+        inline float p(float x) { return previous = (x * in + previous * (1.0f - in)); }
     };
 
     struct Dezip
     {
         float p1{0}, p2{0}, p3{0}, p4{0}, p5{0};
-        float p(float x)
+        inline float p(float x)
         {
             p5 = p4;
             p4 = p3;
@@ -85,7 +85,7 @@ class PMVoice final : public gin::SynthesiserVoice, public gin::ModVoice
         }
     };
 
-    float w(gin::Wave sel, float phase, float freq, bool isMod = false);
+    [[nodiscard]] inline float w(gin::Wave sel, float phase, float freq, bool isMod);
 
   private:
     void updateParams(int blockSize);

@@ -83,25 +83,17 @@ class ChorusProcessor
         for (int i = 0; i < static_cast<int>(numSamples); i++)
         {
             const auto lfoValues = lfo.getNextValues();
-            const auto leftDelayTime_ms = std::clamp(
-                (lfoValues.deg0Value * 10.0f * depth.getNextValue()) + delayTime_ms.getNextValue(),
-                5.f, 40.f);
+            const auto leftDelayTime_ms = std::clamp((lfoValues.deg0Value * 10.0f * depth.getNextValue()) + delayTime_ms.getNextValue(), 5.f, 40.f);
             const auto centerDelayTime_ms =
-                std::clamp((lfoValues.deg120Value * 10.0f * depth.getNextValue()) +
-                               delayTime_ms.getNextValue(),
-                           5.f, 40.f);
+                std::clamp((lfoValues.deg120Value * 10.0f * depth.getNextValue()) + delayTime_ms.getNextValue(), 5.f, 40.f);
             const auto rightDelayTime_ms =
-                std::clamp((lfoValues.deg240Value * 10.0f * depth.getNextValue()) +
-                               delayTime_ms.getNextValue(),
-                           5.f, 40.f);
+                std::clamp((lfoValues.deg240Value * 10.0f * depth.getNextValue()) + delayTime_ms.getNextValue(), 5.f, 40.f);
 
             const auto leftIn = samplesL[i];
             const auto rightIn = samplesR[i];
             const auto leftChorusOut = leftDelayBuffer.readLagrange(0, leftDelayTime_ms / 1000.0f);
-            const auto centerChorusOut =
-                centerDelayBuffer.readLagrange(0, centerDelayTime_ms / 1000.0f);
-            const auto rightChorusOut =
-                rightDelayBuffer.readLagrange(0, rightDelayTime_ms / 1000.0f);
+            const auto centerChorusOut = centerDelayBuffer.readLagrange(0, centerDelayTime_ms / 1000.0f);
+            const auto rightChorusOut = rightDelayBuffer.readLagrange(0, rightDelayTime_ms / 1000.0f);
 
             leftDelayBuffer.write(0, leftIn + leftChorusOut * feedback);
             centerDelayBuffer.write(0, rightIn * 0.5f + leftIn * 0.5f + centerChorusOut * feedback);
@@ -367,10 +359,7 @@ template <class F, class I> class PlateReverb
     void setWet(F w /* [0, 1] */) { wet = clamp(w, 0.0, 1.0); }
 
     // Delay before reverb.
-    void setPredelay(F pd /* in seconds, [0, 0.1] */)
-    {
-        predelay = clamp(pd, 0.0, kMaxPredelay) * sampleRate;
-    }
+    void setPredelay(F pd /* in seconds, [0, 0.1] */) { predelay = clamp(pd, 0.0, kMaxPredelay) * sampleRate; }
 
     // Apply a lowpass filter before reverb.
     void setLowpass(F cutoff /* Hz */)
@@ -595,10 +584,7 @@ template <class F, class I> class PlateReverb
 
         I writeIdx;
 
-        static I ceilPowerOfTwo(I n)
-        {
-            return (I)std::pow(2, std::ceil(std::log(n) / std::log(2)));
-        }
+        static I ceilPowerOfTwo(I n) { return (I)std::pow(2, std::ceil(std::log(n) / std::log(2))); }
     };
 
     //------------------------------------------
@@ -842,12 +828,9 @@ class MBFilterProcessor
     void prepare(const juce::dsp::ProcessSpec spec)
     {
         currentSampleRate = static_cast<float>(spec.sampleRate);
-        *iirLS.state = *juce::dsp::IIR::Coefficients<float>::makeLowShelf(
-            currentSampleRate, iirLSFrequency, iirLSQ, iirLSGain);
-        *iirPeak.state = *juce::dsp::IIR::Coefficients<float>::makePeakFilter(
-            currentSampleRate, iirPeakFrequency, iirPeakQ, iirPeakGain);
-        *iirHS.state = *juce::dsp::IIR::Coefficients<float>::makeHighShelf(
-            currentSampleRate, iirHSFrequency, iirHSQ, iirHSGain);
+        *iirLS.state = *juce::dsp::IIR::Coefficients<float>::makeLowShelf(currentSampleRate, iirLSFrequency, iirLSQ, iirLSGain);
+        *iirPeak.state = *juce::dsp::IIR::Coefficients<float>::makePeakFilter(currentSampleRate, iirPeakFrequency, iirPeakQ, iirPeakGain);
+        *iirHS.state = *juce::dsp::IIR::Coefficients<float>::makeHighShelf(currentSampleRate, iirHSFrequency, iirHSQ, iirHSGain);
 
         iirLS.prepare(spec);
         iirPeak.prepare(spec);
@@ -864,8 +847,7 @@ class MBFilterProcessor
         iirHS.process(context);
     }
 
-    void setParams(float LSFreq, float LSGain, float LSQ, float PeakFreq, float PeakGain,
-                   float PeakQ, float HSFreq, float HSGain, float HSQ)
+    void setParams(float LSFreq, float LSGain, float LSQ, float PeakFreq, float PeakGain, float PeakQ, float HSFreq, float HSGain, float HSQ)
     {
         iirLSFrequency = LSFreq;
         iirLSGain = LSGain;
@@ -876,17 +858,13 @@ class MBFilterProcessor
         iirHSFrequency = HSFreq;
         iirHSGain = HSGain;
         iirHSQ = HSQ;
-        *iirLS.state = *juce::dsp::IIR::Coefficients<float>::makeLowShelf(
-            currentSampleRate, iirLSFrequency, iirLSQ, iirLSGain);
-        *iirPeak.state = *juce::dsp::IIR::Coefficients<float>::makePeakFilter(
-            currentSampleRate, iirPeakFrequency, iirPeakQ, iirPeakGain);
-        *iirHS.state = *juce::dsp::IIR::Coefficients<float>::makeHighShelf(
-            currentSampleRate, iirHSFrequency, iirHSQ, iirHSGain);
+        *iirLS.state = *juce::dsp::IIR::Coefficients<float>::makeLowShelf(currentSampleRate, iirLSFrequency, iirLSQ, iirLSGain);
+        *iirPeak.state = *juce::dsp::IIR::Coefficients<float>::makePeakFilter(currentSampleRate, iirPeakFrequency, iirPeakQ, iirPeakGain);
+        *iirHS.state = *juce::dsp::IIR::Coefficients<float>::makeHighShelf(currentSampleRate, iirHSFrequency, iirHSQ, iirHSGain);
     }
 
   private:
-    using PDup = juce::dsp::ProcessorDuplicator<juce::dsp::IIR::Filter<float>,
-                                                juce::dsp::IIR::Coefficients<float>>;
+    using PDup = juce::dsp::ProcessorDuplicator<juce::dsp::IIR::Filter<float>, juce::dsp::IIR::Coefficients<float>>;
 
     PDup iirLS, iirHS, iirPeak;
     float iirLSFrequency{40.0f}, iirLSGain{1.0f}, iirLSQ{1.0f};
@@ -933,18 +911,16 @@ class WaveShaperProcessor
         dsL.set_coefs(coefs1);
         dsR.set_coefs(coefs1);
 
-        drive.reset(upsampledRate, 0.02f);
+        drive.reset(upsampledRate, 0.10f);
         preGain.prepare(upsampledSpec);
         preGain.setRampDurationSeconds(0.05);
         lpf.prepare(upsampledSpec);
         lpfCutoff.reset(upsampledRate, 0.02f);
         lpf.setCutoffFrequency(2000.0f);
         hsUp.prepare(upsampledSpec);
-        *hsUp.state =
-            *juce::dsp::IIR::Coefficients<float>::makeHighShelf(upsampledRate, 6500.f, 1.0f, 25.f);
+        *hsUp.state = *juce::dsp::IIR::Coefficients<float>::makeHighShelf(upsampledRate, 6500.f, 1.0f, 25.f);
         hsDown.prepare(upsampledSpec);
-        *hsDown.state =
-            *juce::dsp::IIR::Coefficients<float>::makeHighShelf(upsampledRate, 6500.f, 1.0f, 0.04f);
+        *hsDown.state = *juce::dsp::IIR::Coefficients<float>::makeHighShelf(upsampledRate, 6500.f, 1.0f, 0.04f);
         highPassPost.prepare(spec);
         *highPassPost.state = *juce::dsp::IIR::Coefficients<float>::makeHighPass(sampleRate, 40.0f);
         postGain.setRampDurationSeconds(0.05);
@@ -971,8 +947,7 @@ class WaveShaperProcessor
         usL.process_block(us1L, dataL, numSamples);
         usR.process_block(us1R, dataR, numSamples);
         float *channels[2]{us1L, us1R};
-        auto upblock = juce::dsp::AudioBlock<float>(channels, static_cast<size_t>(2),
-                                                    static_cast<size_t>(numSamples2));
+        auto upblock = juce::dsp::AudioBlock<float>(channels, static_cast<size_t>(2), static_cast<size_t>(numSamples2));
         const auto upcontext = juce::dsp::ProcessContextReplacing<float>(upblock);
 
         for (int i = 0; i < MINI_BLOCK_SIZE * 2; ++i)
@@ -1024,10 +999,8 @@ class WaveShaperProcessor
 
     void setHighShelfFreqAndQ(const float freq, const float q) const
     {
-        *hsUp.state = *juce::dsp::IIR::Coefficients<float>::makeHighShelf(upsampledRate, freq * 2.f,
-                                                                          q, 25.0f);
-        *hsDown.state = *juce::dsp::IIR::Coefficients<float>::makeHighShelf(upsampledRate,
-                                                                            freq * 2.f, q, 0.04f);
+        *hsUp.state = *juce::dsp::IIR::Coefficients<float>::makeHighShelf(upsampledRate, freq * 2.f, q, 25.0f);
+        *hsDown.state = *juce::dsp::IIR::Coefficients<float>::makeHighShelf(upsampledRate, freq * 2.f, q, 0.04f);
     }
 
     // 0: "Soft Clip";
@@ -1065,8 +1038,7 @@ class WaveShaperProcessor
             }
             else if (currentFunction == 5)
             {
-                folderprocs[ch].get()->m =
-                    juce::Decibels::decibelsToGain(drive.getNextValue() * .0667f);
+                // folderprocs[ch].get()->m = juce::Decibels::decibelsToGain(drive.getNextValue() * .0667f);
                 folderprocs[ch].get()->processBlock(source, numS);
             }
             else
@@ -1113,8 +1085,7 @@ class WaveShaperProcessor
         case 3:                  // fullwave --- rn it's tanh, add an option
             return std::tanh(x); // std::abs(std::tanh(x));
         case 5:                  // folder
-            return std::sin((1.f + juce::Decibels::decibelsToGain(drive.getNextValue() * .0667f)) *
-                            x);
+            return std::sin((1.f + juce::Decibels::decibelsToGain(drive.getNextValue() * .0667f)) * x);
         default:
             return x;
         }
@@ -1143,9 +1114,8 @@ class WaveShaperProcessor
     float dry{0.5f}, wet{0.5f};
 
     static constexpr int nbr_coefs1 = 8; // up/down-sampler coefs
-    double coefs1[nbr_coefs1]{0.044076093956155402, 0.16209555156378622, 0.32057678606990592,
-                              0.48526821501990786,  0.63402005787429128, 0.75902855561016014,
-                              0.86299283427175177,  0.9547836337311687};
+    double coefs1[nbr_coefs1]{0.044076093956155402, 0.16209555156378622, 0.32057678606990592, 0.48526821501990786,
+                              0.63402005787429128,  0.75902855561016014, 0.86299283427175177, 0.9547836337311687};
 
 #if USE_NEON
     hiir::Downsampler2xNeon<nbr_coefs1> dsL, dsR;
@@ -1166,8 +1136,7 @@ class RingModulator
 
     struct RingModParams
     {
-        float mod1freq{10.f}, mod2freq{10.f}, shape1{0.f}, shape2{0.f}, mix1{0.f}, mix2{0.f},
-            spread{0.f}, highcut{20000.f}, lowcut{20.f};
+        float mod1freq{10.f}, mod2freq{10.f}, shape1{0.f}, shape2{0.f}, mix1{0.f}, mix2{0.f}, spread{0.f}, highcut{20000.f}, lowcut{20.f};
     };
 
     inline void setParams(const RingModParams &params_) { params = params_; }
@@ -1176,14 +1145,11 @@ class RingModulator
     {
         sampleRate = spec.sampleRate;
         oversampledSampleRate = sampleRate * oversampleRatio;
-        const juce::dsp::ProcessSpec oversampledSpec{
-            oversampledSampleRate,
-            static_cast<juce::uint32>(spec.maximumBlockSize * oversampleRatio),
-            static_cast<juce::uint32>(2)};
+        const juce::dsp::ProcessSpec oversampledSpec{oversampledSampleRate, static_cast<juce::uint32>(spec.maximumBlockSize * oversampleRatio),
+                                                     static_cast<juce::uint32>(2)};
         const auto samplesPerBlock = spec.maximumBlockSize * oversampleRatio;
         constexpr auto filterType = juce::dsp::Oversampling<float>::filterHalfBandFIREquiripple;
-        oversampler = std::make_unique<juce::dsp::Oversampling<float>>(spec.numChannels,
-                                                                       oversampleOrder, filterType);
+        oversampler = std::make_unique<juce::dsp::Oversampling<float>>(spec.numChannels, oversampleOrder, filterType);
         oversampler->initProcessing((size_t)samplesPerBlock);
         mod1LPCutoff.reset(sampleRate * oversampleRatio, 0.02f);
         mod2LPCutoff.reset(sampleRate * oversampleRatio, 0.02f);
@@ -1232,7 +1198,7 @@ class RingModulator
     {
         const auto numSamples = context.getOutputBlock().getNumSamples();
         const auto oversampledBlock = oversampler->processSamplesUp(context.getOutputBlock());
-        
+
         // 1. prepare derived parameters
         juce::dsp::SIMDRegister<float> mod1freqs{params.mod1freq}, mod2freqs{params.mod2freq};
         const juce::dsp::SIMDRegister<float> unity{1.f};
@@ -1241,12 +1207,10 @@ class RingModulator
         mod1freqs = mod1freqs * (unity + spread * semitones);
         mod2freqs = mod2freqs * (unity + spread * semitones);
 
-        mod1PhaseIncs = mod1freqs * juce::dsp::SIMDRegister<float>(
-                                        2.0f * juce::MathConstants<float>::pi *
-                                        static_cast<float>(inverseOversampledSampleRate));
-        mod2PhaseIncs = mod2freqs * juce::dsp::SIMDRegister<float>(
-                                        2.0f * juce::MathConstants<float>::pi *
-                                        static_cast<float>(inverseOversampledSampleRate));
+        mod1PhaseIncs =
+            mod1freqs * juce::dsp::SIMDRegister<float>(2.0f * juce::MathConstants<float>::pi * static_cast<float>(inverseOversampledSampleRate));
+        mod2PhaseIncs =
+            mod2freqs * juce::dsp::SIMDRegister<float>(2.0f * juce::MathConstants<float>::pi * static_cast<float>(inverseOversampledSampleRate));
 
         mod1LPCutoff.skip(static_cast<int>(numSamples));
         mod2LPCutoff.skip(static_cast<int>(numSamples));
@@ -1279,25 +1243,17 @@ class RingModulator
             juce::dsp::SIMDRegister<float> mod1, mod2;
             if (params.shape1 < 0.5f)
             {
-                mod1[0] =
-                    sin1[0] * (1.f - params.shape1 * 2.0f) + square1[0] * params.shape1 * 2.0f;
-                mod1[1] =
-                    sin1[1] * (1.f - params.shape1 * 2.0f) + square1[1] * params.shape1 * 2.0f;
-                mod1[2] =
-                    sin1[2] * (1.f - params.shape1 * 2.0f) + square1[2] * params.shape1 * 2.0f;
-                mod1[3] =
-                    sin1[3] * (1.f - params.shape1 * 2.0f) + square1[3] * params.shape1 * 2.0f;
+                mod1[0] = sin1[0] * (1.f - params.shape1 * 2.0f) + square1[0] * params.shape1 * 2.0f;
+                mod1[1] = sin1[1] * (1.f - params.shape1 * 2.0f) + square1[1] * params.shape1 * 2.0f;
+                mod1[2] = sin1[2] * (1.f - params.shape1 * 2.0f) + square1[2] * params.shape1 * 2.0f;
+                mod1[3] = sin1[3] * (1.f - params.shape1 * 2.0f) + square1[3] * params.shape1 * 2.0f;
             }
             else
             {
-                mod1[0] = square1[0] * (1.0f - params.shape1) * 2.0f +
-                          saw1[0] * (params.shape1 - 0.5f) * 2.f;
-                mod1[1] = square1[1] * (1.0f - params.shape1) * 2.0f +
-                          saw1[1] * (params.shape1 - 0.5f) * 2.f;
-                mod1[2] = square1[2] * (1.0f - params.shape1) * 2.0f +
-                          saw1[2] * (params.shape1 - 0.5f) * 2.f;
-                mod1[3] = square1[3] * (1.0f - params.shape1) * 2.0f +
-                          saw1[3] * (params.shape1 - 0.5f) * 2.f;
+                mod1[0] = square1[0] * (1.0f - params.shape1) * 2.0f + saw1[0] * (params.shape1 - 0.5f) * 2.f;
+                mod1[1] = square1[1] * (1.0f - params.shape1) * 2.0f + saw1[1] * (params.shape1 - 0.5f) * 2.f;
+                mod1[2] = square1[2] * (1.0f - params.shape1) * 2.0f + saw1[2] * (params.shape1 - 0.5f) * 2.f;
+                mod1[3] = square1[3] * (1.0f - params.shape1) * 2.0f + saw1[3] * (params.shape1 - 0.5f) * 2.f;
             }
             mod1[0] = LP1.processSample(0, mod1[0]);
             mod1[1] = LP1.processSample(1, mod1[1]);
@@ -1306,25 +1262,17 @@ class RingModulator
 
             if (params.shape2 < 0.5f)
             {
-                mod2[0] =
-                    sin2[0] * (1.f - params.shape2 * 2.0f) + square2[0] * params.shape2 * 2.0f;
-                mod2[1] =
-                    sin2[1] * (1.f - params.shape2 * 2.0f) + square2[1] * params.shape2 * 2.0f;
-                mod2[2] =
-                    sin2[2] * (1.f - params.shape2 * 2.0f) + square2[2] * params.shape2 * 2.0f;
-                mod2[3] =
-                    sin2[3] * (1.f - params.shape2 * 2.0f) + square2[3] * params.shape2 * 2.0f;
+                mod2[0] = sin2[0] * (1.f - params.shape2 * 2.0f) + square2[0] * params.shape2 * 2.0f;
+                mod2[1] = sin2[1] * (1.f - params.shape2 * 2.0f) + square2[1] * params.shape2 * 2.0f;
+                mod2[2] = sin2[2] * (1.f - params.shape2 * 2.0f) + square2[2] * params.shape2 * 2.0f;
+                mod2[3] = sin2[3] * (1.f - params.shape2 * 2.0f) + square2[3] * params.shape2 * 2.0f;
             }
             else
             {
-                mod2[0] = square2[0] * (1.0f - params.shape2) * 2.0f +
-                          saw2[0] * (params.shape2 - 0.5f) * 2.f;
-                mod2[1] = square2[1] * (1.0f - params.shape2) * 2.0f +
-                          saw2[1] * (params.shape2 - 0.5f) * 2.f;
-                mod2[2] = square2[2] * (1.0f - params.shape2) * 2.0f +
-                          saw2[2] * (params.shape2 - 0.5f) * 2.f;
-                mod2[3] = square2[3] * (1.0f - params.shape2) * 2.0f +
-                          saw2[3] * (params.shape2 - 0.5f) * 2.f;
+                mod2[0] = square2[0] * (1.0f - params.shape2) * 2.0f + saw2[0] * (params.shape2 - 0.5f) * 2.f;
+                mod2[1] = square2[1] * (1.0f - params.shape2) * 2.0f + saw2[1] * (params.shape2 - 0.5f) * 2.f;
+                mod2[2] = square2[2] * (1.0f - params.shape2) * 2.0f + saw2[2] * (params.shape2 - 0.5f) * 2.f;
+                mod2[3] = square2[3] * (1.0f - params.shape2) * 2.0f + saw2[3] * (params.shape2 - 0.5f) * 2.f;
             }
             mod2[0] = LP3.processSample(0, mod2[0]);
             mod2[1] = LP3.processSample(1, mod2[1]);
@@ -1409,8 +1357,7 @@ class RingModulator
     double sampleRate{44100.0};
 
     // utility functions
-    [[nodiscard]] static juce::dsp::SIMDRegister<float>
-    simdSaw(const juce::dsp::SIMDRegister<float> phases)
+    [[nodiscard]] static juce::dsp::SIMDRegister<float> simdSaw(const juce::dsp::SIMDRegister<float> phases)
     {
         return (phases * inv_pi_v<float>)*2.0f - 1.0f;
     }
@@ -1433,15 +1380,13 @@ class RingModulator
     RingModParams params;
     juce::dsp::StateVariableTPTFilter<float> LP1, LP2, LP3,
         LP4; // these are stereo
-    juce::dsp::StateVariableTPTFilter<float> highCut1, highCut2, highCut3, highCut4, lowCut1,
-        lowCut2, lowCut3,
+    juce::dsp::StateVariableTPTFilter<float> highCut1, highCut2, highCut3, highCut4, lowCut1, lowCut2, lowCut3,
         lowCut4; // post multiply, pre-stagemix
     juce::dsp::SIMDRegister<float> mod1Phases{0.0f}, mod2Phases{0.0f};
     juce::dsp::SIMDRegister<float> mod1PhaseIncs{0.0f}, mod2PhaseIncs{0.0f};
 
     float semis[4] = {0.12f, 0.06f, -0.0566f, -0.1071f};
-    const juce::dsp::SIMDRegister<float> semitones =
-        juce::dsp::SIMDRegister<float>::fromRawArray(semis);
+    const juce::dsp::SIMDRegister<float> semitones = juce::dsp::SIMDRegister<float>::fromRawArray(semis);
 
     juce::SmoothedValue<float> mod1LPCutoff, mod2LPCutoff;
 };
@@ -1484,17 +1429,13 @@ class LadderFilterProcessor
     float currentSampleRate{44100.0f};
 };
 
-
-class StereoProc{
-public:
+class StereoProc
+{
+  public:
     StereoProc() = default;
     gin::StereoProcessor p;
 
-    void set(float w1, float w2, float c1, float c2, float p1, float p2, float rot, float out) {
-        p.setParameters (w1, c1, p1, rot, p2, c2, w2, out);
-    }
-    void process(juce::AudioBuffer<float> &buffer) {
-        p.process(buffer);
-    }
+    void set(float w1, float w2, float c1, float c2, float p1, float p2, float rot, float out) { p.setParameters(w1, c1, p1, rot, p2, c2, w2, out); }
+    void process(juce::AudioBuffer<float> &buffer) { p.process(buffer); }
     float w1{0}, w2{0}, c1{0}, c2{0}, p1{0}, p2{0}, rot{0}, out{0};
 };
