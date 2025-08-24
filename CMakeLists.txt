@@ -162,7 +162,7 @@ target_link_libraries (${PROJECT_NAME}
 						Assets
 						juce::juce_recommended_config_flags
 						#juce::juce_recommended_lto_flags
-						juce::juce_recommended_warning_flags
+                        #juce::juce_recommended_warning_flags
 					)
 
 if (APPLE)
