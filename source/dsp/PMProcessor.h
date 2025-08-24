@@ -244,6 +244,15 @@ class PMProcessor : public gin::Processor
         JUCE_DECLARE_NON_COPYABLE(LadderParams)
     };
 
+    struct StereoParams
+    {
+        StereoParams() = default;
+        gin::Parameter::Ptr w1, w2, c1, c2, p1, p2, rot, out;
+        void setup(PMProcessor &p);
+        int pos{-1};
+        JUCE_DECLARE_NON_COPYABLE(StereoParams)
+    };
+
     struct FXOrderParams
     {
         FXOrderParams() = default;
@@ -300,6 +309,7 @@ class PMProcessor : public gin::Processor
     FXOrderParams fxOrderParams;
     MSEGParams mseg1Params, mseg2Params, mseg3Params, mseg4Params;
     MacroParams macroParams;
+    StereoParams stereoParams;
 
     //==============================================================================
     GainProcessor effectGain;
@@ -312,6 +322,7 @@ class PMProcessor : public gin::Processor
     RingModulator ringmod;
     LadderFilterProcessor ladder;
     juce::dsp::Limiter<float> limiter;
+    StereoProc stereo;
 
     gin::GainProcessor outputGain;
 

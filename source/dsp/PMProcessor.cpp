@@ -239,6 +239,8 @@ static juce::String fxListTextFunction(const gin::Parameter &, float v)
         return {"Gain"};
     case 9:
         return {"Ladder Filter"};
+    case 10:
+        return {"Stereo Ehancer"};
     default:
         jassertfalse;
         return {};
@@ -681,6 +683,22 @@ void PMProcessor::MBFilterParams::setup(PMProcessor &p)
 }
 
 //==============================================================================
+void PMProcessor::StereoParams::setup(PMProcessor &p)
+{
+    const juce::String pfx = "st";
+    const juce::String name = "Stereo ";
+    w1  = p.addExtParam(pfx + "width1", name + "Width 1", "Width 1", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.f, 0.f);
+    w2  = p.addExtParam(pfx + "width2", name + "Width 2", "Width 2", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.f, 0.f);
+    c1  = p.addExtParam(pfx + "ctr1", name + "Center 1", "Center 1", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.f, 0.f);
+    c2  = p.addExtParam(pfx + "ctr2", name + "Center 2", "Center 2", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.f, 0.f);
+    p1  = p.addExtParam(pfx + "pan1", name + "Pan 1", "Pan 1", "", {-1.0f, 1.0f, 0.0, 1.0f}, 0.f, 0.f);
+    p2  = p.addExtParam(pfx + "pan2", name + "Pan 2", "Pan 2", "", {-1.0f, 1.0f, 0.0, 1.0f}, 0.f, 0.f);
+    rot = p.addExtParam(pfx + "rot", name + "Rotat", "Rotation", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.f, 0.f);
+    out = p.addExtParam(pfx + "out", name + "Vol.", "Vol.", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.f, 0.f);
+}
+
+
+//==============================================================================
 void PMProcessor::RingModParams::setup(PMProcessor &p)
 {
     const juce::String pfx = "rm";
@@ -707,14 +725,14 @@ static juce::String fxPrePostFunction(const gin::Parameter &, float v) { return 
 void PMProcessor::FXOrderParams::setup(PMProcessor &p)
 {
     auto maxFreq = static_cast<float>(gin::getMidiNoteFromHertz(20000.0));
-    fxa1 = p.addIntParam("fxa1", "FX A1", "", "", {0.0, 9.0, 1.0, 1.0}, 0.0f, 0.0f, fxListTextFunction);
-    fxa2 = p.addIntParam("fxa2", "FX A2", "", "", {0.0, 9.0, 1.0, 1.0}, 0.0f, 0.0f, fxListTextFunction);
-    fxa3 = p.addIntParam("fxa3", "FX A3", "", "", {0.0, 9.0, 1.0, 1.0}, 0.0f, 0.0f, fxListTextFunction);
-    fxa4 = p.addIntParam("fxa4", "FX A4", "", "", {0.0, 9.0, 1.0, 1.0}, 0.0f, 0.0f, fxListTextFunction);
-    fxb1 = p.addIntParam("fxb1", "FX B1", "", "", {0.0, 9.0, 1.0, 1.0}, 0.0f, 0.0f, fxListTextFunction);
-    fxb2 = p.addIntParam("fxb2", "FX B2", "", "", {0.0, 9.0, 1.0, 1.0}, 0.0f, 0.0f, fxListTextFunction);
-    fxb3 = p.addIntParam("fxb3", "FX B3", "", "", {0.0, 9.0, 1.0, 1.0}, 0.0f, 0.0f, fxListTextFunction);
-    fxb4 = p.addIntParam("fxb4", "FX B4", "", "", {0.0, 9.0, 1.0, 1.0}, 0.0f, 0.0f, fxListTextFunction);
+    fxa1 = p.addIntParam("fxa1", "FX A1", "", "", {0.0, 10.0, 1.0, 1.0}, 0.0f, 0.0f, fxListTextFunction);
+    fxa2 = p.addIntParam("fxa2", "FX A2", "", "", {0.0, 10.0, 1.0, 1.0}, 0.0f, 0.0f, fxListTextFunction);
+    fxa3 = p.addIntParam("fxa3", "FX A3", "", "", {0.0, 10.0, 1.0, 1.0}, 0.0f, 0.0f, fxListTextFunction);
+    fxa4 = p.addIntParam("fxa4", "FX A4", "", "", {0.0, 10.0, 1.0, 1.0}, 0.0f, 0.0f, fxListTextFunction);
+    fxb1 = p.addIntParam("fxb1", "FX B1", "", "", {0.0, 10.0, 1.0, 1.0}, 0.0f, 0.0f, fxListTextFunction);
+    fxb2 = p.addIntParam("fxb2", "FX B2", "", "", {0.0, 10.0, 1.0, 1.0}, 0.0f, 0.0f, fxListTextFunction);
+    fxb3 = p.addIntParam("fxb3", "FX B3", "", "", {0.0, 10.0, 1.0, 1.0}, 0.0f, 0.0f, fxListTextFunction);
+    fxb4 = p.addIntParam("fxb4", "FX B4", "", "", {0.0, 10.0, 1.0, 1.0}, 0.0f, 0.0f, fxListTextFunction);
     chainAtoB = p.addIntParam("chainAtoB", "FX Chain Routing", "", "", {0.0, 1.0, 1.0, 1.0}, 1.0f, 0.0f, fxRouteFunction);
     laneAGain = p.addExtParam("laneAGain", "FX A Pre-Gain", "Gain", " dB", {-60.0, 40.0, 0.0, 1.0}, 0.0f, 0.0f);
     laneBGain = p.addExtParam("laneBGain", "FX B Pre-Gain", "Gain", " dB", {-60.0, 40.0, 0.0, 1.0}, 0.0f, 0.0f);
@@ -818,6 +836,7 @@ PMProcessor::PMProcessor()
     mbfilterParams.setup(*this);
     ringmodParams.setup(*this);
     ladderParams.setup(*this);
+    stereoParams.setup(*this);
 
     fxOrderParams.setup(*this);
 
@@ -1252,6 +1271,9 @@ void PMProcessor::applyEffects(juce::AudioSampleBuffer &fxALaneBuffer)
             case 9:
                 ladder.process(outContext);
                 break;
+            case 10:
+                stereo.process(fxALaneBuffer);
+                break;
             default:
                 break;
             }
@@ -1305,6 +1327,9 @@ void PMProcessor::applyEffects(juce::AudioSampleBuffer &fxALaneBuffer)
                 break;
             case 9:
                 ladder.process(outContext);
+                break;
+            case 10:
+                stereo.process(fxALaneBuffer);
                 break;
             default:
                 break;
@@ -1378,6 +1403,9 @@ void PMProcessor::applyEffects(juce::AudioSampleBuffer &fxALaneBuffer)
             case 9:
                 ladder.process(AContext);
                 break;
+            case 10:
+                stereo.process(fxALaneBuffer);
+                break;
             default:
                 break;
             }
@@ -1414,6 +1442,9 @@ void PMProcessor::applyEffects(juce::AudioSampleBuffer &fxALaneBuffer)
                 break;
             case 9:
                 ladder.process(BContext);
+                break;
+            case 10:
+                stereo.process(fxBLaneBuffer);
                 break;
             default:
                 break;
@@ -1638,6 +1669,19 @@ void PMProcessor::updateParams(int newBlockSize)
         ladder.filter.setMode(mode);
         ladder.filter.setResonance(modMatrix.getValue(ladderParams.reso));
         ladder.gain.setGainDecibels(modMatrix.getValue(ladderParams.gain));
+    }
+
+    if (activeEffects.contains(10)) {
+        float w1 = modMatrix.getValue(stereoParams.w1);
+        float w2 = modMatrix.getValue(stereoParams.w2);
+        float c1 = modMatrix.getValue(stereoParams.c1);
+        float c2 = modMatrix.getValue(stereoParams.c2);
+        float p1 = modMatrix.getValue(stereoParams.p1);
+        float p2 = modMatrix.getValue(stereoParams.p2);
+        float rot = modMatrix.getValue(stereoParams.rot);
+        float out = modMatrix.getValue(stereoParams.out);
+
+        stereo.set(w1, w2, c1, c2, p1, p2, rot, out);
     }
 
     // Output gain

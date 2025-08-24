@@ -109,6 +109,17 @@ class FXBox : public gin::ParamBox
         addControl(ldrtype = new APKnob(proc.ladderParams.type), 1, 0);
         addControl(ldrgain = new APKnob(proc.ladderParams.gain), 1, 1);
 
+        // stereo = 10
+        addControl(strw1 = new APKnob(proc.stereoParams.w1), 0, 0);
+        addControl(strw2 = new APKnob(proc.stereoParams.w2), 2, 0);
+        addControl(strc1 = new APKnob(proc.stereoParams.c1), 0, 1);
+        addControl(strc2 = new APKnob(proc.stereoParams.c2), 2, 1);
+        addControl(strp1 = new APKnob(proc.stereoParams.p1, true), 0, 2);
+        addControl(strp2 = new APKnob(proc.stereoParams.p2, true), 2, 2);
+        addControl(strrot = new APKnob(proc.stereoParams.rot), 1, 0);
+        addControl(strout = new APKnob(proc.stereoParams.out), 1, 2);
+        
+
         addAndMakeVisible(dynamicsMeter);
         addAndMakeVisible(funcImage);
 
@@ -272,6 +283,16 @@ class FXBox : public gin::ParamBox
             ldrtype->setVisible(true);
             ldrgain->setVisible(true);
             break;
+        case 10:
+            strw1->setVisible(true);
+            strw2->setVisible(true);
+            strc1->setVisible(true);
+            strc2->setVisible(true);
+            strp1->setVisible(true);
+            strp2->setVisible(true);
+            strrot->setVisible(true);
+            strout->setVisible(true);
+            break;
         }
     }
 
@@ -352,6 +373,16 @@ class FXBox : public gin::ParamBox
         ldrdrive->setVisible(false);
         ldrtype->setVisible(false);
         ldrgain->setVisible(false);
+        // STR = 10
+        strw1->setVisible(false);
+        strw2->setVisible(false);
+        strc1->setVisible(false);
+        strc2->setVisible(false);
+        strp1->setVisible(false);
+        strp2->setVisible(false);
+        strrot->setVisible(false);
+        strout->setVisible(false);
+        
     }
 
     PMProcessor &proc;
@@ -369,6 +400,7 @@ class FXBox : public gin::ParamBox
         mbfilterpeakfreq, mbfilterpeakgain, mbfilterpeakq, mbfilterhighshelffreq,
         mbfilterhighshelfgain, mbfilterhighshelfq;
     gin::ParamComponent::Ptr ldrcutoff, ldrreso, ldrdrive, ldrtype, ldrgain;
+    gin::ParamComponent::Ptr strw1, strw2, strc1, strc2, strp1, strp2, strrot, strout;
     gin::DynamicsMeter dynamicsMeter;
     juce::ImageComponent funcImage{"function"};
     int currentEffect = 0;

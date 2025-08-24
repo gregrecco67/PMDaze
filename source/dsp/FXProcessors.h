@@ -1232,10 +1232,7 @@ class RingModulator
     {
         const auto numSamples = context.getOutputBlock().getNumSamples();
         const auto oversampledBlock = oversampler->processSamplesUp(context.getOutputBlock());
-        // auto oversampledContext =
-        // juce::dsp::ProcessContextReplacing<float>(oversampledBlock); do
-        // processing in oversampledBuffer
-
+        
         // 1. prepare derived parameters
         juce::dsp::SIMDRegister<float> mod1freqs{params.mod1freq}, mod2freqs{params.mod2freq};
         const juce::dsp::SIMDRegister<float> unity{1.f};
@@ -1485,4 +1482,19 @@ class LadderFilterProcessor
     juce::dsp::LadderFilter<float> filter;
     juce::dsp::Gain<float> gain;
     float currentSampleRate{44100.0f};
+};
+
+
+class StereoProc{
+public:
+    StereoProc() = default;
+    gin::StereoProcessor p;
+
+    void set(float w1, float w2, float c1, float c2, float p1, float p2, float rot, float out) {
+        p.setParameters (w1, c1, p1, rot, p2, c2, w2, out);
+    }
+    void process(juce::AudioBuffer<float> &buffer) {
+        p.process(buffer);
+    }
+    float w1{0}, w2{0}, c1{0}, c2{0}, p1{0}, p2{0}, rot{0}, out{0};
 };

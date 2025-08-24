@@ -21,7 +21,6 @@
 #include <random>
 #include "Envelope.h"
 #include "MTS-ESP/libMTSClient.h"
-#include "Oscillator.h"
 class PMProcessor;
 
 using std::numbers::pi_v;
@@ -93,6 +92,7 @@ class PMVoice final : public gin::SynthesiserVoice, public gin::ModVoice
     void updateParams(int blockSize);
 
     PMProcessor &proc;
+    gin::BandLimitedLookupTables &bllt;
 
     gin::Filter filter;
     gin::LFO lfo1, lfo2, lfo3, lfo4;
@@ -101,9 +101,6 @@ class PMVoice final : public gin::SynthesiserVoice, public gin::ModVoice
     Envelope env1, env2, env3, env4;
     std::array<Envelope *, 4> envs{&env1, &env2, &env3, &env4};
     std::array<Envelope *, 4> envsByNum{&env1, &env2, &env3, &env4};
-    // PMOscillator o1, o2, o3, o4;
-
-    gin::BandLimitedLookupTables &bllt;
 
     int filterType{0};
     double freq1 = 0.0, freq2 = 0.0, freq3 = 0.0, freq4 = 0.0;
@@ -111,7 +108,7 @@ class PMVoice final : public gin::SynthesiserVoice, public gin::ModVoice
     float vol1 = 0.0f, vol2 = 0.0f, vol3 = 0.0f, vol4 = 0.0f;
     double phase1 = 0.0, phase2 = 0.0, phase3 = 0.0, phase4 = 0.0;
     double b1{0}, b2{0}, b3{0}, b4{0}; // phase bumps
-    double phase = 0.0;
+    // double phase = 0.0;
 
     gin::Wave w1, w2, w3, w4;
     Averager a4, a3, a2;
