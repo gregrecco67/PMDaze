@@ -1,15 +1,15 @@
 /*
- * Audible Planets - an expressive, quasi-Ptolemaic semi-modular synthesizer
+ * PM Daze - an expressive, semi-modular, phase-modulation synthesizer
  *
- * Copyright 2024, Greg Recco
+ * Copyright 2025, Greg Recco
  *
- * Audible Planets is released under the GNU General Public Licence v3
+ * PM Daze is released under the GNU General Public Licence v3
  * or later (GPL-3.0-or-later). The license is found in the "LICENSE"
  * file in the root of this repository, or at
  * https://www.gnu.org/licenses/gpl-3.0.en.html
  *
- * All source for Audible Planets is available at
- * https://github.com/gregrecco67/AudiblePlanets
+ * All source code for PM Daze is available at
+ * https://github.com/gregrecco67/PMDaze
  */
 
 #pragma once
@@ -87,7 +87,6 @@ class PMVoice final : public gin::SynthesiserVoice, public gin::ModVoice
 
     float w(gin::Wave sel, float phase, float freq, bool isMod = false);
 
-
   private:
     void updateParams(int blockSize);
 
@@ -115,7 +114,7 @@ class PMVoice final : public gin::SynthesiserVoice, public gin::ModVoice
     Dezip v4, v3, v2, v1;
     int algo{0};
     float modIndex{4.f};
-    float lastp1{0.f}, lastp2{0.f}, lastp3{0.f}, lastp4{0.f};  // last phase
+    float lastp1{0.f}, lastp2{0.f}, lastp3{0.f}, lastp4{0.f}; // last phase
 
     int tilUpdate{0}; // only update envelopes/lfo/mseg every 4th block
 

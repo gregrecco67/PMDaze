@@ -1,16 +1,16 @@
-/*
- * Audible Planets - an expressive, quasi-Ptolemaic semi-modular synthesizer
- *
- * Copyright 2024, Greg Recco
- *
- * Audible Planets is released under the GNU General Public Licence v3
- * or later (GPL-3.0-or-later). The license is found in the "LICENSE"
- * file in the root of this repository, or at
- * https://www.gnu.org/licenses/gpl-3.0.en.html
- *
- * All source for Audible Planets is available at
- * https://github.com/gregrecco67/AudiblePlanets
- */
+//
+// PM Daze - a phase-modulation synthesizer
+//
+// Copyright 2025, Greg Recco
+//
+// PM Daze is released under the GNU General Public Licence v3
+// or later (GPL-3.0-or-later). The license is found in the "LICENSE"
+// file in the root of this repository, or at
+// https://www.gnu.org/licenses/gpl-3.0.en.html
+//
+// Source code for PM Daze is available at
+// https://github.com/gregrecco67/PMDaze
+//
 
 #pragma once
 
@@ -20,13 +20,10 @@
 //==============================================================================
 /*
  */
-class EnvelopeComponent : public juce::Component,
-                          public gin::Parameter::ParameterListener,
-                          public juce::Timer
+class EnvelopeComponent : public juce::Component, public gin::Parameter::ParameterListener, public juce::Timer
 {
   public:
-    EnvelopeComponent(const PMProcessor &proc_, const int number)
-        : proc(proc_), envelopeNumber(number)
+    EnvelopeComponent(const PMProcessor &proc_, const int number) : proc(proc_), envelopeNumber(number)
     {
         setOpaque(true);
         switch (envelopeNumber)
@@ -130,8 +127,7 @@ class EnvelopeComponent : public juce::Component,
         }
     }
 
-    float attack{1.f}, decay{1.f}, sustain{0.5f}, release{1.f}, attackCurve{1.0f},
-        decayCurve{-1.0f};
+    float attack{1.f}, decay{1.f}, sustain{0.5f}, release{1.f}, attackCurve{1.0f}, decayCurve{-1.0f};
 
     inline void setAttack(float attackValue)
     {
@@ -171,23 +167,17 @@ class EnvelopeComponent : public juce::Component,
 
     void valueUpdated(gin::Parameter *p) override
     {
-        if (p == proc.env1Params.attack || p == proc.env2Params.attack ||
-            p == proc.env3Params.attack || p == proc.env4Params.attack)
+        if (p == proc.env1Params.attack || p == proc.env2Params.attack || p == proc.env3Params.attack || p == proc.env4Params.attack)
             setAttack(p->getUserValue());
-        else if (p == proc.env1Params.decay || p == proc.env2Params.decay ||
-                 p == proc.env3Params.decay || p == proc.env4Params.decay)
+        else if (p == proc.env1Params.decay || p == proc.env2Params.decay || p == proc.env3Params.decay || p == proc.env4Params.decay)
             setDecay(p->getUserValue());
-        else if (p == proc.env1Params.sustain || p == proc.env2Params.sustain ||
-                 p == proc.env3Params.sustain || p == proc.env4Params.sustain)
+        else if (p == proc.env1Params.sustain || p == proc.env2Params.sustain || p == proc.env3Params.sustain || p == proc.env4Params.sustain)
             setSustain(p->getValue()); // getValue() -> 0..1
-        else if (p == proc.env1Params.release || p == proc.env2Params.release ||
-                 p == proc.env3Params.release || p == proc.env4Params.release)
+        else if (p == proc.env1Params.release || p == proc.env2Params.release || p == proc.env3Params.release || p == proc.env4Params.release)
             setRelease(p->getUserValue());
-        else if (p == proc.env1Params.acurve || p == proc.env2Params.acurve ||
-                 p == proc.env3Params.acurve || p == proc.env4Params.acurve)
+        else if (p == proc.env1Params.acurve || p == proc.env2Params.acurve || p == proc.env3Params.acurve || p == proc.env4Params.acurve)
             setAttackCurve(p->getUserValue());
-        else if (p == proc.env1Params.drcurve || p == proc.env2Params.drcurve ||
-                 p == proc.env3Params.drcurve || p == proc.env4Params.drcurve)
+        else if (p == proc.env1Params.drcurve || p == proc.env2Params.drcurve || p == proc.env3Params.drcurve || p == proc.env4Params.drcurve)
             setDecayCurve(p->getUserValue());
     }
 
@@ -200,57 +190,43 @@ class EnvelopeComponent : public juce::Component,
         juce::NormalisableRange<float> attackRange{0.0, 60.0, 0.0, 0.2f};
         auto attackLength = attackRange.convertTo0to1(attack) * width / 4.f;
 
-        float attackFirstControlX{0.f}, attackFirstControlY{0.f}, attackSecondControlX{0.f},
-            attackSecondControlY;
+        float attackFirstControlX{0.f}, attackFirstControlY{0.f}, attackSecondControlX{0.f}, attackSecondControlY;
 
         float fudgeUIFactor = 0.75f;
 
         if (attackCurve > 0.f)
         {
-            attackFirstControlX =
-                0.25f * attackLength - attackCurve * fudgeUIFactor * 0.25f * attackLength;
+            attackFirstControlX = 0.25f * attackLength - attackCurve * fudgeUIFactor * 0.25f * attackLength;
             attackFirstControlY = 0.25f * height + attackCurve * fudgeUIFactor * 0.75f * height;
-            attackSecondControlX =
-                0.75f * attackLength - attackCurve * fudgeUIFactor * 0.75f * attackLength;
+            attackSecondControlX = 0.75f * attackLength - attackCurve * fudgeUIFactor * 0.75f * attackLength;
             attackSecondControlY = 0.75f * height + attackCurve * fudgeUIFactor * 0.25f * height;
         }
         else
         {
-            attackFirstControlX =
-                0.25f * attackLength - fudgeUIFactor * attackCurve * 0.75f * attackLength;
+            attackFirstControlX = 0.25f * attackLength - fudgeUIFactor * attackCurve * 0.75f * attackLength;
             attackFirstControlY = 0.25f * height + attackCurve * fudgeUIFactor * 0.25f * height;
-            attackSecondControlX =
-                0.75f * attackLength - attackCurve * fudgeUIFactor * 0.25f * attackLength;
+            attackSecondControlX = 0.75f * attackLength - attackCurve * fudgeUIFactor * 0.25f * attackLength;
             attackSecondControlY = 0.75f * height + attackCurve * fudgeUIFactor * 0.75f * height;
         }
 
         auto decayLength = attackRange.convertTo0to1(decay) * width / 4.f;
-        float decayFirstControlX{0.f}, decayFirstControlY{0.f}, decaySecondControlX{0.f},
-            decaySecondControlY;
+        float decayFirstControlX{0.f}, decayFirstControlY{0.f}, decaySecondControlX{0.f}, decaySecondControlY;
         float decayEndX = attackLength + decayLength;
         float decayEndY = sustain * height;
 
         if (decayCurve < 0.f)
         {
-            decayFirstControlX = attackLength + 0.25f * decayLength +
-                                 decayCurve * fudgeUIFactor * 0.25f * decayLength;
-            decayFirstControlY = height - 0.25f * (height - sustain * height) +
-                                 decayCurve * fudgeUIFactor * 0.75f * (height - sustain * height);
-            decaySecondControlX = attackLength + 0.75f * decayLength +
-                                  decayCurve * fudgeUIFactor * 0.75f * decayLength;
-            decaySecondControlY = height - 0.75f * (height - sustain * height) +
-                                  decayCurve * fudgeUIFactor * 0.25f * (height - sustain * height);
+            decayFirstControlX = attackLength + 0.25f * decayLength + decayCurve * fudgeUIFactor * 0.25f * decayLength;
+            decayFirstControlY = height - 0.25f * (height - sustain * height) + decayCurve * fudgeUIFactor * 0.75f * (height - sustain * height);
+            decaySecondControlX = attackLength + 0.75f * decayLength + decayCurve * fudgeUIFactor * 0.75f * decayLength;
+            decaySecondControlY = height - 0.75f * (height - sustain * height) + decayCurve * fudgeUIFactor * 0.25f * (height - sustain * height);
         }
         else
         {
-            decayFirstControlX = attackLength + 0.25f * decayLength +
-                                 fudgeUIFactor * decayCurve * 0.75f * decayLength;
-            decayFirstControlY = height - 0.25f * (height - sustain * height) +
-                                 decayCurve * fudgeUIFactor * 0.25f * (height - sustain * height);
-            decaySecondControlX = attackLength + 0.75f * decayLength +
-                                  decayCurve * fudgeUIFactor * 0.25f * decayLength;
-            decaySecondControlY = height - 0.75f * (height - sustain * height) +
-                                  decayCurve * fudgeUIFactor * 0.75f * (height - sustain * height);
+            decayFirstControlX = attackLength + 0.25f * decayLength + fudgeUIFactor * decayCurve * 0.75f * decayLength;
+            decayFirstControlY = height - 0.25f * (height - sustain * height) + decayCurve * fudgeUIFactor * 0.25f * (height - sustain * height);
+            decaySecondControlX = attackLength + 0.75f * decayLength + decayCurve * fudgeUIFactor * 0.25f * decayLength;
+            decaySecondControlY = height - 0.75f * (height - sustain * height) + decayCurve * fudgeUIFactor * 0.75f * (height - sustain * height);
         }
 
         g.fillAll(juce::Colour(33, 31, 33)); // clear the background
@@ -260,8 +236,7 @@ class EnvelopeComponent : public juce::Component,
         g.setColour(c = findColour(gin::GinLookAndFeel::accentColourId)); // envelope color
 
         myPath.startNewSubPath(0.f, 1.f); // attack segment
-        myPath.cubicTo(attackFirstControlX, attackFirstControlY, attackSecondControlX,
-                       attackSecondControlY, attackLength, height);
+        myPath.cubicTo(attackFirstControlX, attackFirstControlY, attackSecondControlX, attackSecondControlY, attackLength, height);
 
         // check for attack phase,
         // getPointAlongPath()
@@ -273,15 +248,13 @@ class EnvelopeComponent : public juce::Component,
             if (state.state == Envelope::State::attack || state.state == Envelope::State::ADRattack)
             {
                 auto pointAlongPath = myPath.getPointAlongPath(pathLength1 * state.phase);
-                g.fillEllipse(juce::Rectangle<float>(4.f, 4.f).withCentre(
-                    juce::Point<float>(pointAlongPath.x, height - pointAlongPath.y + 5)));
+                g.fillEllipse(juce::Rectangle<float>(4.f, 4.f).withCentre(juce::Point<float>(pointAlongPath.x, height - pointAlongPath.y + 5)));
             }
         }
         g.setColour(c);
 
         myPath.startNewSubPath(attackLength, height); // decay segment
-        myPath.cubicTo(decayFirstControlX, decayFirstControlY, decaySecondControlX,
-                       decaySecondControlY, decayEndX, decayEndY);
+        myPath.cubicTo(decayFirstControlX, decayFirstControlY, decaySecondControlX, decaySecondControlY, decayEndX, decayEndY);
 
         auto pathLength2 = myPath.getLength() - pathLength1;
         g.setColour(juce::Colours::white);
@@ -289,10 +262,8 @@ class EnvelopeComponent : public juce::Component,
         {
             if (state.state == Envelope::State::decay || state.state == Envelope::State::ADRdecay)
             {
-                auto pointAlongPath =
-                    myPath.getPointAlongPath(pathLength2 * (1.f - state.phase) + pathLength1);
-                g.fillEllipse(juce::Rectangle<float>(4.f, 4.f).withCentre(
-                    juce::Point<float>(pointAlongPath.x, height - pointAlongPath.y + 5)));
+                auto pointAlongPath = myPath.getPointAlongPath(pathLength2 * (1.f - state.phase) + pathLength1);
+                g.fillEllipse(juce::Rectangle<float>(4.f, 4.f).withCentre(juce::Point<float>(pointAlongPath.x, height - pointAlongPath.y + 5)));
             }
         }
         g.setColour(c);
@@ -306,72 +277,52 @@ class EnvelopeComponent : public juce::Component,
         float sustainHeight = sustain * height;
 
         float releaseLength = attackRange.convertTo0to1(release) * width / 4.f;
-        float releaseFirstControlX{0.f}, releaseFirstControlY{0.f}, releaseSecondControlX{0.f},
-            releaseSecondControlY{0.f};
+        float releaseFirstControlX{0.f}, releaseFirstControlY{0.f}, releaseSecondControlX{0.f}, releaseSecondControlY{0.f};
         float releaseEndX = decayEndX + .25f * width + releaseLength;
         float releaseEndY = 1.f; // ......
         if (decayCurve < 0.f)
         {
-            releaseFirstControlX = sustainEndX + 0.25f * releaseLength +
-                                   decayCurve * fudgeUIFactor * 0.25f * releaseLength;
-            releaseFirstControlY =
-                0.75f * sustainHeight + decayCurve * fudgeUIFactor * 0.75f * sustainHeight;
-            releaseSecondControlX = sustainEndX + 0.75f * releaseLength +
-                                    decayCurve * fudgeUIFactor * 0.75f * releaseLength;
-            releaseSecondControlY =
-                0.25f * sustainHeight + decayCurve * fudgeUIFactor * 0.25f * sustainHeight;
+            releaseFirstControlX = sustainEndX + 0.25f * releaseLength + decayCurve * fudgeUIFactor * 0.25f * releaseLength;
+            releaseFirstControlY = 0.75f * sustainHeight + decayCurve * fudgeUIFactor * 0.75f * sustainHeight;
+            releaseSecondControlX = sustainEndX + 0.75f * releaseLength + decayCurve * fudgeUIFactor * 0.75f * releaseLength;
+            releaseSecondControlY = 0.25f * sustainHeight + decayCurve * fudgeUIFactor * 0.25f * sustainHeight;
         }
         else
         {
-            releaseFirstControlX = sustainEndX + 0.25f * releaseLength +
-                                   fudgeUIFactor * decayCurve * 0.75f * releaseLength;
-            releaseFirstControlY =
-                0.75f * sustainHeight + decayCurve * fudgeUIFactor * 0.25f * sustainHeight;
-            releaseSecondControlX = sustainEndX + 0.75f * releaseLength +
-                                    decayCurve * fudgeUIFactor * 0.25f * releaseLength;
-            releaseSecondControlY =
-                0.25f * sustainHeight + decayCurve * fudgeUIFactor * 0.75f * sustainHeight;
+            releaseFirstControlX = sustainEndX + 0.25f * releaseLength + fudgeUIFactor * decayCurve * 0.75f * releaseLength;
+            releaseFirstControlY = 0.75f * sustainHeight + decayCurve * fudgeUIFactor * 0.25f * sustainHeight;
+            releaseSecondControlX = sustainEndX + 0.75f * releaseLength + decayCurve * fudgeUIFactor * 0.25f * releaseLength;
+            releaseSecondControlY = 0.25f * sustainHeight + decayCurve * fudgeUIFactor * 0.75f * sustainHeight;
         }
 
-        myPath.cubicTo(releaseFirstControlX, releaseFirstControlY, releaseSecondControlX,
-                       releaseSecondControlY, releaseEndX, releaseEndY);
+        myPath.cubicTo(releaseFirstControlX, releaseFirstControlY, releaseSecondControlX, releaseSecondControlY, releaseEndX, releaseEndY);
 
         auto pathLength3 = myPath.getLength() - pathLength1 - pathLength2 - width / 4.f;
         g.setColour(juce::Colours::white);
         for (auto &state : states)
         {
-            if (state.state == Envelope::State::release ||
-                state.state == Envelope::State::ADRrelease)
+            if (state.state == Envelope::State::release || state.state == Envelope::State::ADRrelease)
             {
-                auto pointAlongPath = myPath.getPointAlongPath(
-                    pathLength3 * (1 - state.phase) + pathLength1 + pathLength2 + width / 4.f);
-                g.fillEllipse(juce::Rectangle<float>(4.f, 4.f).withCentre(
-                    juce::Point<float>(pointAlongPath.x, height - pointAlongPath.y + 5)));
+                auto pointAlongPath = myPath.getPointAlongPath(pathLength3 * (1 - state.phase) + pathLength1 + pathLength2 + width / 4.f);
+                g.fillEllipse(juce::Rectangle<float>(4.f, 4.f).withCentre(juce::Point<float>(pointAlongPath.x, height - pointAlongPath.y + 5)));
             }
         }
         g.setColour(c);
 
-        myPath.applyTransform(
-            juce::AffineTransform::verticalFlip(height).juce::AffineTransform::translated(0.0f,
-                                                                                          5.0f));
+        myPath.applyTransform(juce::AffineTransform::verticalFlip(height).juce::AffineTransform::translated(0.0f, 5.0f));
         g.strokePath(myPath, juce::PathStrokeType(1.0f));
 
-        g.fillEllipse(
-            juce::Rectangle<float>(6.f, 6.f).withCentre(juce::Point<float>(attackLength, 4.0)));
-        g.fillEllipse(juce::Rectangle<float>(6.f, 6.f).withCentre(
-            juce::Point<float>(decayEndX, height - decayEndY + 5.f)));
-        g.fillEllipse(juce::Rectangle<float>(6.f, 6.f).withCentre(
-            juce::Point<float>(decayEndX + width / 4.f, height - decayEndY + 5.f)));
+        g.fillEllipse(juce::Rectangle<float>(6.f, 6.f).withCentre(juce::Point<float>(attackLength, 4.0)));
+        g.fillEllipse(juce::Rectangle<float>(6.f, 6.f).withCentre(juce::Point<float>(decayEndX, height - decayEndY + 5.f)));
+        g.fillEllipse(juce::Rectangle<float>(6.f, 6.f).withCentre(juce::Point<float>(decayEndX + width / 4.f, height - decayEndY + 5.f)));
 
         g.setColour(juce::Colours::white);
         for (auto &state : states)
         {
             if (state.state == Envelope::State::sustain)
             {
-                g.fillEllipse(juce::Rectangle<float>(4.f, 4.f).withCentre(
-                    juce::Point<float>(decayEndX + width / 4.f, height - decayEndY + 5.f)));
-                g.fillEllipse(juce::Rectangle<float>(4.f, 4.f).withCentre(
-                    juce::Point<float>(decayEndX, height - decayEndY + 5.f)));
+                g.fillEllipse(juce::Rectangle<float>(4.f, 4.f).withCentre(juce::Point<float>(decayEndX + width / 4.f, height - decayEndY + 5.f)));
+                g.fillEllipse(juce::Rectangle<float>(4.f, 4.f).withCentre(juce::Point<float>(decayEndX, height - decayEndY + 5.f)));
             }
         }
     }

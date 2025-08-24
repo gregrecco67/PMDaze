@@ -13,6 +13,7 @@
 //
 
 // LICENSE for FastMath class and its members fastSin, and fastTanh:
+// used in source/dsp/FXProcessors.h
 //------------------------------------------------------------------------------
 /*
 MIT License
@@ -61,8 +62,7 @@ template <class F> class FastMath
     static inline F fastSin(F x)
     {
         static constexpr F B = 4 / juce::MathConstants<float>::pi;
-        static constexpr F C =
-            -4 / (juce::MathConstants<float>::pi * juce::MathConstants<float>::pi);
+        static constexpr F C = -4 / (juce::MathConstants<float>::pi * juce::MathConstants<float>::pi);
         static constexpr F P = 0.225f;
 
         F y = B * x + C * x * std::abs(x);
@@ -82,8 +82,7 @@ template <class F> class FastMath
                      x2 * (-0.166666666088260696413164261885310067f +
                            x2 * (0.00833333072055773645376566203656709979f +
                                  x2 * (-0.000198408328232619552901560108010257242f +
-                                       x2 * (2.75239710746326498401791551303359689e-6f -
-                                             2.3868346521031027639830001794722295e-8f * x2)))));
+                                       x2 * (2.75239710746326498401791551303359689e-6f - 2.3868346521031027639830001794722295e-8f * x2)))));
     }
 
     static inline float normalizePhase(float x1)
@@ -110,8 +109,7 @@ template <class F> class FastMath
                 x2 * (SIMD(-0.166666666088260696413164261885310067f) +
                       x2 * (SIMD(0.00833333072055773645376566203656709979f) +
                             x2 * (SIMD(-0.000198408328232619552901560108010257242f) +
-                                  x2 * (SIMD(2.75239710746326498401791551303359689e-6f) -
-                                        SIMD(2.3868346521031027639830001794722295e-8f) * x2)))));
+                                  x2 * (SIMD(2.75239710746326498401791551303359689e-6f) - SIMD(2.3868346521031027639830001794722295e-8f) * x2)))));
     }
 
     FastMath() = default;

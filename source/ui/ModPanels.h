@@ -1,3 +1,16 @@
+//
+// PM Daze - a phase-modulation synthesizer
+//
+// Copyright 2025, Greg Recco
+//
+// PM Daze is released under the GNU General Public Licence v3
+// or later (GPL-3.0-or-later). The license is found in the "LICENSE"
+// file in the root of this repository, or at
+// https://www.gnu.org/licenses/gpl-3.0.en.html
+//
+// Source code for PM Daze is available at
+// https://github.com/gregrecco67/PMDaze
+//
 #pragma once
 
 #include <gin_plugin/gin_plugin.h>
@@ -10,9 +23,8 @@ class LFOBox : public gin::ParamBox
 {
   public:
     LFOBox(PMProcessor &proc_, const PMProcessor::LFOParams &lfoParams_, int num_)
-        : ParamBox(juce::String("  LFO ") += juce::String(num_)), proc(proc_),
-          lfoParams(lfoParams_), num(num_), monoSelect(proc, *(proc.monoLfoIds[num - 1])),
-          polySelect(proc, *(proc.polyLfoIds[num - 1]))
+        : ParamBox(juce::String("  LFO ") += juce::String(num_)), proc(proc_), lfoParams(lfoParams_), num(num_),
+          monoSelect(proc, *(proc.monoLfoIds[num - 1])), polySelect(proc, *(proc.polyLfoIds[num - 1]))
     {
         setName("lfo");
         addAndMakeVisible(monoSelect);
@@ -83,8 +95,8 @@ class LFOBox : public gin::ParamBox
             }
             return phases;
         };
-        l1->setParams(lfoParams.wave, lfoParams.sync, lfoParams.rate, lfoParams.beat,
-                      lfoParams.depth, lfoParams.offset, lfoParams.phase, lfoParams.enable);
+        l1->setParams(lfoParams.wave, lfoParams.sync, lfoParams.rate, lfoParams.beat, lfoParams.depth, lfoParams.offset, lfoParams.phase,
+                      lfoParams.enable);
         addControl(l1, 1, 0, 4, 1);
 
         watchParam(lfoParams.sync);
@@ -128,14 +140,11 @@ class LFOBox : public gin::ParamBox
 class MsegBox : public gin::ParamBox
 {
   public:
-    MsegBox(PMProcessor &proc_, PMProcessor::MSEGParams &m1_, PMProcessor::MSEGParams &m2_,
-            gin::MSEG::Data &m1Data, gin::MSEG::Data &m2Data, int num_)
-        : gin::ParamBox(juce::String("  MSEG ")), proc(proc_), msegComponent1(m1Data),
-          msegComponent2(m2Data), m1(m1_), m2(m2_), num(num_),
-          pSelect1(proc,
-                   (num == 1) ? gin::ModSrcId(proc.modSrcMSEG1) : gin::ModSrcId(proc.modSrcMSEG3)),
-          pSelect2(proc,
-                   (num == 1) ? gin::ModSrcId(proc.modSrcMSEG2) : gin::ModSrcId(proc.modSrcMSEG4))
+    MsegBox(PMProcessor &proc_, PMProcessor::MSEGParams &m1_, PMProcessor::MSEGParams &m2_, gin::MSEG::Data &m1Data, gin::MSEG::Data &m2Data,
+            int num_)
+        : gin::ParamBox(juce::String("  MSEG ")), proc(proc_), msegComponent1(m1Data), msegComponent2(m2Data), m1(m1_), m2(m2_), num(num_),
+          pSelect1(proc, (num == 1) ? gin::ModSrcId(proc.modSrcMSEG1) : gin::ModSrcId(proc.modSrcMSEG3)),
+          pSelect2(proc, (num == 1) ? gin::ModSrcId(proc.modSrcMSEG2) : gin::ModSrcId(proc.modSrcMSEG4))
     {
         setName("MSEG");
 
@@ -150,31 +159,23 @@ class MsegBox : public gin::ParamBox
         pSelect1.setText("+Dest", juce::dontSendNotification);
         pSelect2.setText("+Dest", juce::dontSendNotification);
 
-        msegComponent1.setParams(m1.sync, m1.rate, m1.beat, m1.depth, m1.offset, m1.phase,
-                                 m1.enable, m1.xgrid, m1.ygrid, m1.loop);
+        msegComponent1.setParams(m1.sync, m1.rate, m1.beat, m1.depth, m1.offset, m1.phase, m1.enable, m1.xgrid, m1.ygrid, m1.loop);
         msegComponent1.setEditable(true);
-        msegComponent1.setDrawMode(
-            true, static_cast<gin::MSEGComponent::DrawMode>(m1.drawmode->getUserValue()));
+        msegComponent1.setDrawMode(true, static_cast<gin::MSEGComponent::DrawMode>(m1.drawmode->getUserValue()));
 
-        msegComponent2.setParams(m2.sync, m2.rate, m2.beat, m2.depth, m2.offset, m2.phase,
-                                 m2.enable, m2.xgrid, m2.ygrid, m2.loop);
+        msegComponent2.setParams(m2.sync, m2.rate, m2.beat, m2.depth, m2.offset, m2.phase, m2.enable, m2.xgrid, m2.ygrid, m2.loop);
         msegComponent2.setEditable(true);
-        msegComponent2.setDrawMode(
-            true, static_cast<gin::MSEGComponent::DrawMode>(m2.drawmode->getUserValue()));
+        msegComponent2.setDrawMode(true, static_cast<gin::MSEGComponent::DrawMode>(m2.drawmode->getUserValue()));
 
         if (num == 1)
         {
-            addModSource(
-                poly2 = new gin::ModulationSourceButton(proc.modMatrix, proc.modSrcMSEG2, true));
-            addModSource(
-                poly1 = new gin::ModulationSourceButton(proc.modMatrix, proc.modSrcMSEG1, true));
+            addModSource(poly2 = new gin::ModulationSourceButton(proc.modMatrix, proc.modSrcMSEG2, true));
+            addModSource(poly1 = new gin::ModulationSourceButton(proc.modMatrix, proc.modSrcMSEG1, true));
         }
         else
         {
-            addModSource(
-                poly2 = new gin::ModulationSourceButton(proc.modMatrix, proc.modSrcMSEG4, true));
-            addModSource(
-                poly1 = new gin::ModulationSourceButton(proc.modMatrix, proc.modSrcMSEG3, true));
+            addModSource(poly2 = new gin::ModulationSourceButton(proc.modMatrix, proc.modSrcMSEG4, true));
+            addModSource(poly1 = new gin::ModulationSourceButton(proc.modMatrix, proc.modSrcMSEG3, true));
         }
 
         addControl(r1 = new APKnob(m1.rate), 0, 0);
@@ -245,8 +246,7 @@ class MsegBox : public gin::ParamBox
 
     void show(const int selected)
     {
-        for (gin::ParamComponent::Ptr c :
-             {r1, b1, s1, l1, dp1, o1, dr1, ms1, x1, y1, r2, b2, s2, l2, dp2, o2, dr2, ms2, x2, y2})
+        for (gin::ParamComponent::Ptr c : {r1, b1, s1, l1, dp1, o1, dr1, ms1, x1, y1, r2, b2, s2, l2, dp2, o2, dr2, ms2, x2, y2})
         {
             c->setVisible(false);
         }
@@ -314,8 +314,7 @@ class MsegBox : public gin::ParamBox
 
         if (m1.draw->getUserValueBool())
         {
-            msegComponent1.setDrawMode(
-                true, static_cast<gin::MSEGComponent::DrawMode>(m1.drawmode->getUserValue()));
+            msegComponent1.setDrawMode(true, static_cast<gin::MSEGComponent::DrawMode>(m1.drawmode->getUserValue()));
         }
         else
         {
@@ -324,8 +323,7 @@ class MsegBox : public gin::ParamBox
 
         if (m2.draw->getUserValueBool())
         {
-            msegComponent2.setDrawMode(
-                true, static_cast<gin::MSEGComponent::DrawMode>(m2.drawmode->getUserValue()));
+            msegComponent2.setDrawMode(true, static_cast<gin::MSEGComponent::DrawMode>(m2.drawmode->getUserValue()));
         }
         else
         {
@@ -351,8 +349,7 @@ class MsegBox : public gin::ParamBox
     }
 
     PMProcessor &proc;
-    gin::ParamComponent::Ptr r1, b1, s1, l1, dp1, o1, dr1, ms1, x1, y1, r2, b2, s2, l2, dp2, o2,
-        dr2, ms2, x2, y2;
+    gin::ParamComponent::Ptr r1, b1, s1, l1, dp1, o1, dr1, ms1, x1, y1, r2, b2, s2, l2, dp2, o2, dr2, ms2, x2, y2;
     juce::Button *poly1, *poly2;
 
     gin::MSEGComponent msegComponent1, msegComponent2;

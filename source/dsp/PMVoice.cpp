@@ -1,17 +1,3 @@
-/*
- * Audible Planets - an expressive, quasi-Ptolemaic semi-modular synthesizer
- *
- * Copyright 2024, Greg Recco
- *
- * Audible Planets is released under the GNU General Public Licence v3
- * or later (GPL-3.0-or-later). The license is found in the "LICENSE"
- * file in the root of this repository, or at
- * https://www.gnu.org/licenses/gpl-3.0.en.html
- *
- * All source for Audible Planets is available at
- * https://github.com/gregrecco67/AudiblePlanets
- */
-
 // #define MIPP_ALIGNED_LOADS
 #include "PMProcessor.h"
 #include "PMVoice.h"
@@ -96,10 +82,10 @@ void PMVoice::noteStarted()
     env3.noteOn();
     env4.noteOn();
 
-   	phase1 = lastp1 = proc.osc1Params.phase->getUserValue();
-	phase1 = lastp2 = proc.osc2Params.phase->getUserValue();
-	phase1 = lastp3 = proc.osc3Params.phase->getUserValue();
-	phase1 = lastp4 = proc.osc4Params.phase->getUserValue();
+    phase1 = lastp1 = proc.osc1Params.phase->getUserValue();
+    phase2 = lastp2 = proc.osc2Params.phase->getUserValue();
+    phase3 = lastp3 = proc.osc3Params.phase->getUserValue();
+    phase4 = lastp4 = proc.osc4Params.phase->getUserValue();
 
     mseg1.noteOn();
     mseg2.noteOn();
@@ -143,9 +129,9 @@ void PMVoice::noteRetriggered()
     lfo4.reset();
 
     phase1 = proc.osc1Params.phase->getUserValue();
-	phase1 = proc.osc2Params.phase->getUserValue();
-	phase1 = proc.osc3Params.phase->getUserValue();
-	phase1 = proc.osc4Params.phase->getUserValue();
+    phase2 = proc.osc2Params.phase->getUserValue();
+    phase3 = proc.osc3Params.phase->getUserValue();
+    phase4 = proc.osc4Params.phase->getUserValue();
 
     lfo1.noteOn();
     lfo2.noteOn();
@@ -223,14 +209,21 @@ void PMVoice::setCurrentSampleRate(double newRate)
     fqz1 = 0; // proc.filterParams.resonance->getUserValue();
 }
 
-float PMVoice::w(gin::Wave sel, float ph, float freq, bool isMod) {
-	while (ph >= 1.0f) ph -= 1.0f;
-    while (ph < 0.0f) ph += 1.0f;
+float PMVoice::w(gin::Wave sel, float ph, float freq, bool isMod)
+{
+    while (ph >= 1.0f)
+        ph -= 1.0f;
+    while (ph < 0.0f)
+        ph += 1.0f;
     float out = bllt.process(sel, freq, ph);
-	if (proc.globalParams.modfm->isOn() && isMod) {
-		return std::exp(out) * 0.850918 - 1.313035;
-	}
-	else { return out; }
+    if (proc.globalParams.modfm->isOn() && isMod)
+    {
+        return std::exp(out) * 0.850918 - 1.313035;
+    }
+    else
+    {
+        return out;
+    }
 }
 
 void PMVoice::renderNextBlock(juce::AudioBuffer<float> &outputBuffer, int startSample, int numSamples)
@@ -581,20 +574,20 @@ void PMVoice::updateParams(int blockSize)
     }
 
     auto phaseParam = getValue(proc.osc1Params.phase);
-	b1 = phaseParam - lastp1; // bumps
-	lastp1 = phaseParam;
-    
+    b1 = phaseParam - lastp1; // bumps
+    lastp1 = phaseParam;
+
     phaseParam = getValue(proc.osc2Params.phase);
-	b2 = phaseParam - lastp2;
-	lastp2 = phaseParam;
-    
+    b2 = phaseParam - lastp2;
+    lastp2 = phaseParam;
+
     phaseParam = getValue(proc.osc3Params.phase);
-	b3 = phaseParam - lastp3;
-	lastp3 = phaseParam;
-    
+    b3 = phaseParam - lastp3;
+    lastp3 = phaseParam;
+
     phaseParam = getValue(proc.osc4Params.phase);
-	b4 = phaseParam - lastp4;
-	lastp4 = phaseParam;
+    b4 = phaseParam - lastp4;
+    lastp4 = phaseParam;
 
     switch (int(proc.filterParams.type->getUserValue()))
     {

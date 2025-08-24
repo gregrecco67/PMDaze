@@ -1,16 +1,16 @@
-/*
- * Audible Planets - an expressive, quasi-Ptolemaic semi-modular synthesizer
- *
- * Copyright 2024, Greg Recco
- *
- * Audible Planets is released under the GNU General Public Licence v3
- * or later (GPL-3.0-or-later). The license is found in the "LICENSE"
- * file in the root of this repository, or at
- * https://www.gnu.org/licenses/gpl-3.0.en.html
- *
- * All source for Audible Planets is available at
- * https://github.com/gregrecco67/AudiblePlanets
- */
+//
+// PM Daze - a phase-modulation synthesizer
+//
+// Copyright 2025, Greg Recco
+//
+// PM Daze is released under the GNU General Public Licence v3
+// or later (GPL-3.0-or-later). The license is found in the "LICENSE"
+// file in the root of this repository, or at
+// https://www.gnu.org/licenses/gpl-3.0.en.html
+//
+// Source code for PM Daze is available at
+// https://github.com/gregrecco67/PMDaze
+//
 #pragma once
 #include "APModAdditions.h"
 #include "dsp/PMProcessor.h"
@@ -118,7 +118,6 @@ class FXBox : public gin::ParamBox
         addControl(strp2 = new APKnob(proc.stereoParams.p2, true), 2, 2);
         addControl(strrot = new APKnob(proc.stereoParams.rot), 1, 0);
         addControl(strout = new APKnob(proc.stereoParams.out), 1, 2);
-        
 
         addAndMakeVisible(dynamicsMeter);
         addAndMakeVisible(funcImage);
@@ -148,28 +147,22 @@ class FXBox : public gin::ParamBox
             switch (proc.waveshaperParams.type->getUserValueInt())
             {
             case 0: // "Soft Clip"
-                funcImage.setImage(juce::ImageCache::getFromMemory(BinaryData::sine_png,
-                                                                   BinaryData::sine_pngSize));
+                funcImage.setImage(juce::ImageCache::getFromMemory(BinaryData::sine_png, BinaryData::sine_pngSize));
                 break;
             case 1: // "Tanh"
-                funcImage.setImage(juce::ImageCache::getFromMemory(BinaryData::tanh4_png,
-                                                                   BinaryData::tanh4_pngSize));
+                funcImage.setImage(juce::ImageCache::getFromMemory(BinaryData::tanh4_png, BinaryData::tanh4_pngSize));
                 break;
             case 2: // "Hard Clip"
-                funcImage.setImage(juce::ImageCache::getFromMemory(BinaryData::clipping_png,
-                                                                   BinaryData::clipping_pngSize));
+                funcImage.setImage(juce::ImageCache::getFromMemory(BinaryData::clipping_png, BinaryData::clipping_pngSize));
                 break;
             case 3: // "Halfwave"
-                funcImage.setImage(juce::ImageCache::getFromMemory(BinaryData::halfwave_png,
-                                                                   BinaryData::halfwave_pngSize));
+                funcImage.setImage(juce::ImageCache::getFromMemory(BinaryData::halfwave_png, BinaryData::halfwave_pngSize));
                 break;
             case 4: // "Fullwave"
-                funcImage.setImage(juce::ImageCache::getFromMemory(BinaryData::fullwave_png,
-                                                                   BinaryData::fullwave_pngSize));
+                funcImage.setImage(juce::ImageCache::getFromMemory(BinaryData::fullwave_png, BinaryData::fullwave_pngSize));
                 break;
             case 5: // "Folder"
-                funcImage.setImage(juce::ImageCache::getFromMemory(BinaryData::cheb5_png,
-                                                                   BinaryData::cheb5_pngSize));
+                funcImage.setImage(juce::ImageCache::getFromMemory(BinaryData::cheb5_png, BinaryData::cheb5_pngSize));
                 break;
             }
             funcImage.setVisible(true);
@@ -382,23 +375,19 @@ class FXBox : public gin::ParamBox
         strp2->setVisible(false);
         strrot->setVisible(false);
         strout->setVisible(false);
-        
     }
 
     PMProcessor &proc;
-    gin::ParamComponent::Ptr rmmodfreq1, rmmodfreq2, rmshape1, rmshape2, rmmix1, rmmix2, rmspread,
-        rmlowcut, rmhighcut;
+    gin::ParamComponent::Ptr rmmodfreq1, rmmodfreq2, rmshape1, rmshape2, rmmix1, rmmix2, rmspread, rmlowcut, rmhighcut;
     gin::ParamComponent::Ptr wsdrive, wsgain, wsdry, wslp, wswet, wstype, wshsfreq, wshsq;
     gin::ParamComponent::Ptr gngain;
-    gin::ParamComponent::Ptr cpthreshold, cpratio, cpattack, cprelease, cpknee, cpinput, cpoutput,
-        cptype;
-    gin::ParamComponent::Ptr dltimeleft, dltimeright, dlbeatsleft, dlbeatsright, dltemposync,
-        dlfeedback, dldry, dlwet, dlpingpong, dlfreeze, dlcutoff;
+    gin::ParamComponent::Ptr cpthreshold, cpratio, cpattack, cprelease, cpknee, cpinput, cpoutput, cptype;
+    gin::ParamComponent::Ptr dltimeleft, dltimeright, dlbeatsleft, dlbeatsright, dltemposync, dlfeedback, dldry, dlwet, dlpingpong, dlfreeze,
+        dlcutoff;
     gin::ParamComponent::Ptr chrate, chdepth, chdelay, chfeedback, chdry, chwet;
     gin::ParamComponent::Ptr rvsize, rvdecay, rvdamping, rvlowpass, rvpredelay, rvdry, rvwet;
-    gin::ParamComponent::Ptr mbfilterlowshelffreq, mbfilterlowshelfgain, mbfilterlowshelfq,
-        mbfilterpeakfreq, mbfilterpeakgain, mbfilterpeakq, mbfilterhighshelffreq,
-        mbfilterhighshelfgain, mbfilterhighshelfq;
+    gin::ParamComponent::Ptr mbfilterlowshelffreq, mbfilterlowshelfgain, mbfilterlowshelfq, mbfilterpeakfreq, mbfilterpeakgain, mbfilterpeakq,
+        mbfilterhighshelffreq, mbfilterhighshelfgain, mbfilterhighshelfq;
     gin::ParamComponent::Ptr ldrcutoff, ldrreso, ldrdrive, ldrtype, ldrgain;
     gin::ParamComponent::Ptr strw1, strw2, strc1, strc2, strp1, strp2, strrot, strout;
     gin::DynamicsMeter dynamicsMeter;
