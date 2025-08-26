@@ -408,28 +408,28 @@ void PMProcessor::OSCParams::setup(PMProcessor &p, const juce::String &numStr)
     switch (numStr.getIntValue())
     {
     case 1:
-        coarse = p.addExtParam(id + "coarse", nm + " Coarse", "Coarse", "", {1.0, 24.0, 1.0, 1.0}, 1.0, 0.0f);
-        fine = p.addExtParam(id + "fine", nm + " Fine", "Fine", "", osc1FineRange, 0.0, 0.0f);
-        volume = p.addExtParam(id + "volume", nm + " Volume", "Volume", " dB", {-40.0, 0.0, 0.0f, 1.0}, -6.f, 0.02f);
-        phase = p.addExtParam(id + "phase", nm + " Phase", "Phase", "", {0.0, 1.0, 0.0, 1.0}, 0.15f, 0.0f);
+        coarse = p.addExtParam(id + "coarse", nm + " Coarse", "Coarse", "", {1.0, 24.0, 1.0, 1.0}, 1.0, 0.05f);
+        fine = p.addExtParam(id + "fine", nm + " Fine", "Fine", "", osc1FineRange, 0.0, 0.05f);
+        volume = p.addExtParam(id + "volume", nm + " Volume", "Volume", " dB", {-50.0, 0.0, 0.0f, 1.0}, -6.f, 0.02f);
+        phase = p.addExtParam(id + "phase", nm + " Phase", "Phase", "", {0.0, 1.0, 0.0, 1.0}, 0.15f, 0.05f);
         break;
     case 2:
-        coarse = p.addExtParam(id + "coarse", nm + " Coarse", "Coarse", "", {1.0, 24.0, 1.0, 1.0}, 2.0, 0.0f);
-        fine = p.addExtParam(id + "fine", nm + " Fine", "Fine", "", defaultFineRange, 0.0, 0.0f);
-        volume = p.addExtParam(id + "volume", nm + " Volume", "Volume", " dB", {-40.0, 0.0, 0.0f, 1.0}, -6.f, 0.02f);
-        phase = p.addExtParam(id + "phase", nm + " Phase", "Phase", "", {0.0, 1.0, 0.0, 1.0}, 0.3f, 0.0f);
+        coarse = p.addExtParam(id + "coarse", nm + " Coarse", "Coarse", "", {1.0, 24.0, 1.0, 1.0}, 2.0, 0.05f);
+        fine = p.addExtParam(id + "fine", nm + " Fine", "Fine", "", defaultFineRange, 0.0, 0.05f);
+        volume = p.addExtParam(id + "volume", nm + " Volume", "Volume", " dB", {-50.0, 0.0, 0.0f, 1.0}, -6.f, 0.02f);
+        phase = p.addExtParam(id + "phase", nm + " Phase", "Phase", "", {0.0, 1.0, 0.0, 1.0}, 0.3f, 0.05f);
         break;
     case 3:
-        coarse = p.addExtParam(id + "coarse", nm + " Coarse", "Coarse", "", {1.0, 24.0, 1.0, 1.0}, 3.0, 0.0f);
-        fine = p.addExtParam(id + "fine", nm + " Fine", "Fine", "", defaultFineRange, 0.0, 0.0f);
-        volume = p.addExtParam(id + "volume", nm + " Volume", "Volume", " dB", {-40.0, 0.0, 0.0f, 1.0}, -9.f, 0.02f);
-        phase = p.addExtParam(id + "phase", nm + " Phase", "Phase", "", {0.0, 1.0, 0.0, 1.0}, 0.65f, 0.0f);
+        coarse = p.addExtParam(id + "coarse", nm + " Coarse", "Coarse", "", {1.0, 24.0, 1.0, 1.0}, 3.0, 0.05f);
+        fine = p.addExtParam(id + "fine", nm + " Fine", "Fine", "", defaultFineRange, 0.0, 0.05f);
+        volume = p.addExtParam(id + "volume", nm + " Volume", "Volume", " dB", {-50.0, 0.0, 0.0f, 1.0}, -9.f, 0.02f);
+        phase = p.addExtParam(id + "phase", nm + " Phase", "Phase", "", {0.0, 1.0, 0.0, 1.0}, 0.65f, 0.05f);
         break;
     case 4:
-        coarse = p.addExtParam(id + "coarse", nm + " Coarse", "Coarse", "", {1.0, 24.0, 1.0, 1.0}, 4.0, 0.0f);
-        fine = p.addExtParam(id + "fine", nm + " Fine", "Fine", "", defaultFineRange, 0.0, 0.0f);
-        volume = p.addExtParam(id + "volume", nm + " Volume", "Volume", " dB", {-40.0, 0.0, 0.0f, 1.0}, -14.f, 0.02f);
-        phase = p.addExtParam(id + "phase", nm + " Phase", " Phase", "", {0.0, 1.0, 0.0, 1.0}, 0.85f, 0.0f);
+        coarse = p.addExtParam(id + "coarse", nm + " Coarse", "Coarse", "", {1.0, 24.0, 1.0, 1.0}, 4.0, 0.05f);
+        fine = p.addExtParam(id + "fine", nm + " Fine", "Fine", "", defaultFineRange, 0.0, 0.05f);
+        volume = p.addExtParam(id + "volume", nm + " Volume", "Volume", " dB", {-50.0, 0.0, 0.0f, 1.0}, -14.f, 0.02f);
+        phase = p.addExtParam(id + "phase", nm + " Phase", " Phase", "", {0.0, 1.0, 0.0, 1.0}, 0.85f, 0.05f);
         break;
     }
     wave = p.addExtParam(id + "wave", nm + " Wave", "Wave", "", {0.0, 5.0, 1.0f, 1.0}, 0.0, 0.0f, oscWaveTextFunction);
@@ -437,7 +437,7 @@ void PMProcessor::OSCParams::setup(PMProcessor &p, const juce::String &numStr)
     env = p.addIntParam(id + "env", nm + " Env", "Env", "", {0.0, 3.0, 1.0f, 1.0}, (float)(numStr.getIntValue() - 1), 0.0f, envSelectTextFunction);
     this->num = numStr.getIntValue();
     volume->conversionFunction = [](float in) {
-        if (in < -39.5f)
+        if (in < -49.5f)
             return 0.0f;
         return juce::Decibels::decibelsToGain(in);
     };
@@ -454,7 +454,7 @@ void PMProcessor::FilterParams::setup(PMProcessor &p)
     type = p.addIntParam(id + "type", nm + " Type", "Type", "", {0.0, 7.0, 1.0f, 1.0}, 0.0, 0.0f, filterTextFunction);
     keyTracking = p.addExtParam(id + "key", nm + " Key", "Key", "%", {0.0, 100.0, 0.0f, 1.0}, 0.0, 0.0f);
     frequency = p.addExtParam(id + "freq", nm + " Freq", "Freq", " Hz", {0.0, maxFreq, 0.0f, 1.0}, 95.0, 0.1f, freqTextFunction);
-    resonance = p.addExtParam(id + "res", nm + " Res", "Res", "", {0.0, 100.0, 0.0f, 1.0}, 0.0, 0.0f);
+    resonance = p.addExtParam(id + "res", nm + " Res", "Res", "", {0.0, 100.0, 0.0f, 1.0}, 0.0, 0.05f);
 
     keyTracking->conversionFunction = [](const float in) { return in / 100.0f; };
 }
@@ -468,10 +468,10 @@ void PMProcessor::LadderParams::setup(PMProcessor &p)
     auto maxFreq = static_cast<float>(gin::getMidiNoteFromHertz(20000.0));
 
     type = p.addIntParam(id + "type", nm + " Type", "Type", "", {0.0, 5.0, 1.0f, 1.0}, 0.0, 0.0f, ladderTypeTextFunction);
-    cutoff = p.addExtParam(id + "cutoff", nm + " Cutoff", "Cutoff", "Hz", {0.0, maxFreq, 0.0f, 1.0}, 95.0, 0.0, freqTextFunction);
-    drive = p.addExtParam(id + "drive", nm + " Drive", "Drive", "", {1.0, 50.0, 0.0, 1.0}, 1.0f, 0.0f);
-    reso = p.addExtParam(id + "res", nm + " Res", "Res", "", {0.0, 0.99f, 0.0, 1.0}, 0.0, 0.0f);
-    gain = p.addExtParam(id + "gain", nm + " Gain", "Gain", " dB", {-40.0, 0.0, 0.0, 1.0}, -6.0f, 0.0f);
+    cutoff = p.addExtParam(id + "cutoff", nm + " Cutoff", "Cutoff", "Hz", {0.0, maxFreq, 0.0f, 1.0}, 95.0, 0.05, freqTextFunction);
+    drive = p.addExtParam(id + "drive", nm + " Drive", "Drive", "", {1.0, 50.0, 0.0, 1.0}, 1.0f, 0.05f);
+    reso = p.addExtParam(id + "res", nm + " Res", "Res", "", {0.0, 0.99f, 0.0, 1.0}, 0.0, 0.05f);
+    gain = p.addExtParam(id + "gain", nm + " Gain", "Gain", " dB", {-40.0, 0.0, 0.0, 1.0}, -6.0f, 0.05f);
 }
 
 //==============================================================================
@@ -486,13 +486,13 @@ void PMProcessor::LFOParams::setup(PMProcessor &p, const juce::String &numStr)
 
     enable = p.addIntParam(id + "enable", id + "Enable", "Enable", "", {0.0, 1.0, 1.0, 1.0}, 0.0f, 0.0f, enableTextFunction);
 
-    sync = p.addIntParam(id + "sync", nm + " Sync", "Sync", "", {0.0, 1.0, 1.0, 1.0}, 0.0, 0.0f, enableTextFunction);
-    wave = p.addIntParam(id + "wave", nm + " Wave", "Wave", "", {1.0, 17.0, 1.0, 1.0}, 1.0, 0.0f, lfoTextFunction);
-    rate = p.addExtParam(id + "rate", nm + " Rate", "Rate", " Hz", {0.0, 50.0, 0.0, 0.3f}, 1.0, 0.0f);
+    sync = p.addIntParam(id + "sync", nm + " Sync", "Sync", "", {0.0, 1.0, 1.0, 1.0}, 0.0, 0.05f, enableTextFunction);
+    wave = p.addIntParam(id + "wave", nm + " Wave", "Wave", "", {1.0, 17.0, 1.0, 1.0}, 1.0, 0.05f, lfoTextFunction);
+    rate = p.addExtParam(id + "rate", nm + " Rate", "Rate", " Hz", {0.0, 50.0, 0.0, 0.3f}, 1.0, 0.05f);
     beat =
-        p.addIntParam(id + "beat", nm + " Beat", "Beat", "", {0.0, static_cast<float>(notes.size() - 1), 1.0, 1.0}, 23.0, 0.0f, durationTextFunction);
-    depth = p.addExtParam(id + "depth", nm + " Depth", "Depth", "", {-1.0, 1.0, 0.0, 1.0}, 1.0, 0.0f, percentTextFunction);
-    phase = p.addExtParam(id + "phase", nm + " Phase", "Phase", "", {-1.0, 1.0, 0.0, 1.0}, 0.0, 0.0f);
+        p.addIntParam(id + "beat", nm + " Beat", "Beat", "", {0.0, static_cast<float>(notes.size() - 1), 1.0, 1.0}, 23.0, 0.05f, durationTextFunction);
+    depth = p.addExtParam(id + "depth", nm + " Depth", "Depth", "", {-1.0, 1.0, 0.0, 1.0}, 1.0, 0.05f, percentTextFunction);
+    phase = p.addExtParam(id + "phase", nm + " Phase", "Phase", "", {-1.0, 1.0, 0.0, 1.0}, 0.0, 0.05f);
     offset = p.addExtParam(id + "offset", nm + " Offset", "Offset", "", {-1.0, 1.0, 0.0, 1.0}, 0.0, 0.0f);
     fade = p.addExtParam(id + "fade", nm + " Fade", "Fade", " s", {-60.0, 60.0, 0.0, 0.2f, true}, 0.0f, 0.0f);
     delay = p.addExtParam(id + "delay", nm + " Delay", "Delay", " s", {0.0, 60.0, 0.0, 0.2f}, 0.0f, 0.0f);
@@ -564,23 +564,23 @@ void PMProcessor::TimbreParams::setup(PMProcessor &p)
 //==============================================================================
 void PMProcessor::GlobalParams::setup(PMProcessor &p)
 {
-    velSens = p.addExtParam("velSens", "Vel. Sens.", "", "%", {0.0, 100.0, 0.0, 1.0}, 100.0, 0.0f);
-    modTone = p.addExtParam("modTone", "Mod Tone", "", "", {0.0, 1.0, 0.0, 1.0}, 0.5f, 0.0f, percentTextFunction);
-    modIndex = p.addExtParam("modIndex", "Mod Index", "", "", {4.0, 28.0, 0.0, 1.0}, 12.0f, 0.0f);
+    velSens = p.addExtParam("velSens", "Vel. Sens.", "", "%", {0.0, 100.0, 0.0, 1.0}, 100.0, 0.05f);
+    modTone = p.addExtParam("modTone", "Mod Tone", "", "", {0.0, 1.0, 0.0, 1.0}, 0.5f, 0.07f, percentTextFunction);
+    modIndex = p.addExtParam("modIndex", "Mod Index", "", "", {4.0, 28.0, 0.0, 1.0}, 12.0f, 0.07f);
     mono = p.addIntParam("mono", "Mono", "", "", {0.0, 1.0, 0.0, 1.0}, 0.0, 0.0f, enableTextFunction);
     glideMode = p.addIntParam("gMode", "Glide Mode", "Glizz", "", {0.0, 2.0, 0.0, 1.0}, 0.0f, 0.0f, glideModeTextFunction);
     glideRate = p.addExtParam("gRate", "Glide Rate", "Rate", " s", {0.001f, 20.0, 0.0, 0.2f}, 0.3f, 0.0f);
     legato = p.addIntParam("legato", "Legato", "", "", {0.0, 1.0, 0.0, 1.0}, 0.0, 0.0f, enableTextFunction);
-    level = p.addExtParam("level", "Main Vol.", "", " dB", {-40.0, 12.0, 0.0, 1.0f}, 0.0, 0.0f);
+    level = p.addExtParam("level", "Main Vol.", "", " dB", {-50.0, 12.0, 0.0, 1.0f}, 0.0, 0.05f);
     mpe = p.addIntParam("mpe", "MPE", "", "", {0.0, 1.0, 1.0, 1.0}, 0.0f, 0.0f, enableTextFunction);
-    pitchbendRange = p.addIntParam("pbrange", "PB Range", "", "", {0.0, 96.0, 1.0, 1.0}, 2.0, 0.0f);
+    pitchbendRange = p.addIntParam("pbrange", "PB Range", "", "", {0.0, 96.0, 1.0, 1.0}, 2.0, 0.05f);
     modfm = p.addExtParam("modfm", "FM Type", "", "", {0.0, 1.0, 1.0, 1.0}, 1.0f, 0.0f, fmTypeTextFunction);
 
     modTone->conversionFunction = [](float in) { return juce::NormalisableRange<float>(0.0, 1.0, 0.0, 0.5).convertFrom0to1(in); };
     modIndex->conversionFunction = [](float in) { return in * 0.166667f; };
 
     level->conversionFunction = [](float in) {
-        if (in < -39.5f)
+        if (in < -49.5f)
             return 0.0f;
         return juce::Decibels::decibelsToGain(in);
     };
@@ -593,13 +593,13 @@ void PMProcessor::WaveshaperParams::setup(PMProcessor &p)
     const juce::String pfx = "ws";
     const juce::String name = "WS ";
     drive = p.addExtParam(pfx + "drive", name + "Drive", "Drive", "", {0.0, 60.0, 0.0, 1.0}, 0.0, 0.2f);
-    gain = p.addExtParam(pfx + "gain", name + "Gain", "Gain (Out)", "", {-12.0f, 12.0f, 0.0f, 1.0}, 0.0, 0.0f);
-    dry = p.addExtParam(pfx + "dry", name + "Dry", "Dry", "", {0.0, 1.0, 0.0, 1.0}, 1.0, 0.0f, percentTextFunction);
-    wet = p.addExtParam(pfx + "wet", name + "Wet", "Wet", "", {0.0, 1.0, 0.0, 1.0}, 0.25, 0.0f, percentTextFunction);
+    gain = p.addExtParam(pfx + "gain", name + "Gain", "Gain (Out)", "", {-12.0f, 12.0f, 0.0f, 1.0}, 0.0, 0.05f);
+    dry = p.addExtParam(pfx + "dry", name + "Dry", "Dry", "", {0.0, 1.0, 0.0, 1.0}, 1.0, 0.05f, percentTextFunction);
+    wet = p.addExtParam(pfx + "wet", name + "Wet", "Wet", "", {0.0, 1.0, 0.0, 1.0}, 0.25, 0.05f, percentTextFunction);
     type = p.addIntParam(pfx + "func", name + "Function", "Function", "", {0.0, 5.0, 1.0, 1.0}, 0.0f, 0.0f, waveshaperTypeTextFunction);
-    highshelf = p.addExtParam(pfx + "highshelf", name + "High Shelf", "High Shelf", " Hz", {4500.0f, 12000.0f, 0.0, 1.3f}, 6500.0f, 0.0f);
-    hsq = p.addExtParam(pfx + "hsq", name + "HShelf Q", "Shelf Q", "", {0.5f, 5.0f, 0.0, 1.0}, 1.0f, 0.0f);
-    lp = p.addExtParam(pfx + "lp", name + "Low Pass", "Lowpass", "", {20.0f, 20000.0f, 0.0, 0.3f}, 20000.0f, 0.0f);
+    highshelf = p.addExtParam(pfx + "highshelf", name + "High Shelf", "High Shelf", " Hz", {4500.0f, 12000.0f, 0.0, 1.3f}, 6500.0f, 0.05f);
+    hsq = p.addExtParam(pfx + "hsq", name + "HShelf Q", "Shelf Q", "", {0.5f, 5.0f, 0.0, 1.0}, 1.0f, 0.05f);
+    lp = p.addExtParam(pfx + "lp", name + "Low Pass", "Lowpass", "", {20.0f, 20000.0f, 0.0, 0.3f}, 20000.0f, 0.05f);
 }
 
 //==============================================================================
@@ -607,15 +607,15 @@ void PMProcessor::CompressorParams::setup(PMProcessor &p)
 {
     const juce::String pfx = "cp";
     const juce::String name = "Comp ";
-    threshold = p.addExtParam(pfx + "threshold", name + "Threshold", "Threshold", " dB", {-60.0, 0.0, 0.0, 1.0}, -12.0f, 0.0f);
-    ratio = p.addExtParam(pfx + "ratio", name + "Ratio", "Ratio", "x", {1.0, 20.0, 0.0, 1.0}, 2.0f, 0.0f);
+    threshold = p.addExtParam(pfx + "threshold", name + "Threshold", "Threshold", " dB", {-60.0, 0.0, 0.0, 1.0}, -12.0f, 0.05f);
+    ratio = p.addExtParam(pfx + "ratio", name + "Ratio", "Ratio", "x", {1.0, 20.0, 0.0, 1.0}, 2.0f, 0.05f);
     attack =
-        p.addExtParam(pfx + "attack", name + "Attack", "Attack", "", {0.00002f, 0.1f, 0.00001f, 0.3f}, 0.0005f, 0.0f, compressorAttackTextFunction);
-    release = p.addExtParam(pfx + "release", name + "Release", "Release", "", {0.05f, 1.0, 0.001f, 1.0}, 0.1f, 0.0f, millisecondsTextFunction);
-    knee = p.addExtParam(pfx + "knee", name + "Knee", "Knee", " dB", {0.0, 20.0, 0.01f, 1.0}, 0.0f, 0.0f);
-    input = p.addExtParam(pfx + "input", name + "Input", "Input", "", {0.0, 5.0, 0.0, 1.0}, 1.0f, 0.0f);
-    output = p.addExtParam(pfx + "output", name + "Output", "Output", "", {0.0, 5.0, 0.0, 1.0}, 1.0f, 0.0f);
-    type = p.addIntParam(pfx + "type", name + "Type", "Type", "", {0.0, 3.0, 1.0, 1.0}, 0.0f, 0.0f, compressorTypeTextFunction);
+        p.addExtParam(pfx + "attack", name + "Attack", "Attack", "", {0.00002f, 0.1f, 0.00001f, 0.3f}, 0.0005f, 0.05f, compressorAttackTextFunction);
+    release = p.addExtParam(pfx + "release", name + "Release", "Release", "", {0.05f, 1.0, 0.001f, 1.0}, 0.1f, 0.05f, millisecondsTextFunction);
+    knee = p.addExtParam(pfx + "knee", name + "Knee", "Knee", " dB", {0.0, 20.0, 0.01f, 1.0}, 0.0f, 0.05f);
+    input = p.addExtParam(pfx + "input", name + "Input", "Input", "", {0.0, 5.0, 0.0, 1.0}, 1.0f, 0.05f);
+    output = p.addExtParam(pfx + "output", name + "Output", "Output", "", {0.0, 5.0, 0.0, 1.0}, 1.0f, 0.05f);
+    type = p.addIntParam(pfx + "type", name + "Type", "Type", "", {0.0, 3.0, 1.0, 1.0}, 0.0f, 0.05f, compressorTypeTextFunction);
 }
 
 //==============================================================================
@@ -624,8 +624,8 @@ void PMProcessor::StereoDelayParams::setup(PMProcessor &p)
     const juce::String name = "Delay ";
     const juce::String pfx = "dl";
     auto &notes = gin::NoteDuration::getNoteDurations();
-    timeleft = p.addExtParam(pfx + "timeleft", name + "Time Left", "Time L", "", {0.001f, 10.0, 0.0, 0.5}, 0.5f, 0.0f, secondsTextFunction);
-    timeright = p.addExtParam(pfx + "timeright", name + "Time Right", "Time R", "", {0.001f, 10.0, 0.0, 0.5}, 0.5f, 0.0f, secondsTextFunction);
+    timeleft = p.addExtParam(pfx + "timeleft", name + "Time Left", "Time L", "", {0.001f, 10.0, 0.0, 0.5}, 0.5f, 0.05f, secondsTextFunction);
+    timeright = p.addExtParam(pfx + "timeright", name + "Time Right", "Time R", "", {0.001f, 10.0, 0.0, 0.5}, 0.5f, 0.05f, secondsTextFunction);
     beatsleft = p.addExtParam(pfx + "beatsleft", name + "Beats Left", "Beats L", "", {0.0, float(notes.size() - 1), 1.0, 1.0}, 13.0, 0.0f,
                               durationTextFunction);
     beatsright = p.addExtParam(pfx + "beatsright", name + "Beats Right", "Beats R", "", {0.0, float(notes.size() - 1), 1.0, 1.0}, 13.0, 0.0f,
@@ -633,10 +633,10 @@ void PMProcessor::StereoDelayParams::setup(PMProcessor &p)
     temposync = p.addIntParam(pfx + "temposync", name + "Tempo Sync", "Tempo Sync", "", {0.0, 1.0, 1.0, 1.0}, 1.0f, 0.0f, enableTextFunction);
     freeze = p.addIntParam(pfx + "freeze", name + "Freeze", "Freeze", "", {0.0, 1.0, 1.0, 1.0}, 0.0f, 0.0f, enableTextFunction);
     pingpong = p.addIntParam(pfx + "pingpong", name + "Ping Pong", "Ping Pong", "", {0.0, 1.0, 1.0, 1.0}, 0.0f, 0.0f, enableTextFunction);
-    feedback = p.addExtParam(pfx + "feedback", name + "Feedback", "Feedback", "", {0.0, 1.0, 0.0, 1.0}, 0.5f, 0.0f, percentTextFunction);
-    wet = p.addExtParam(pfx + "wet", name + "Wet", "Wet", "", {0.0, 1.0, 0.0, 1.0}, 0.25, 0.0f, percentTextFunction);
-    dry = p.addExtParam(pfx + "dry", name + "Dry", "Dry", "", {0.0, 1.0, 0.0, 1.0}, 1.0f, 0.0f, percentTextFunction);
-    cutoff = p.addExtParam(pfx + "cutoff", name + "Cutoff", "LP Cutoff", " Hz", {20.0f, 20000.0f, 0.0, 0.3f}, 10000.0f, 0.0f);
+    feedback = p.addExtParam(pfx + "feedback", name + "Feedback", "Feedback", "", {0.0, 1.0, 0.0, 1.0}, 0.5f, 0.05f, percentTextFunction);
+    wet = p.addExtParam(pfx + "wet", name + "Wet", "Wet", "", {0.0, 1.0, 0.0, 1.0}, 0.25, 0.05f, percentTextFunction);
+    dry = p.addExtParam(pfx + "dry", name + "Dry", "Dry", "", {0.0, 1.0, 0.0, 1.0}, 1.0f, 0.05f, percentTextFunction);
+    cutoff = p.addExtParam(pfx + "cutoff", name + "Cutoff", "LP Cutoff", " Hz", {20.0f, 20000.0f, 0.0, 0.3f}, 10000.0f, 0.05f);
 }
 
 //==============================================================================
@@ -644,12 +644,12 @@ void PMProcessor::ChorusParams::setup(PMProcessor &p)
 {
     const juce::String name = "Chorus ";
     const juce::String pfx = "ch";
-    rate = p.addExtParam(pfx + "rate", name + "Rate", "Rate", " Hz", {0.005f, 20.0f, 0.0f, 0.3f}, 0.04f, 0.0f);
-    depth = p.addExtParam(pfx + "depth", name + "Depth", "Depth", "", {0.0, 1.0, 0.0, 1.0}, 0.5f, 0.0f, percentTextFunction);
-    delay = p.addExtParam(pfx + "delay", name + "Delay", "Delay", " ms", {10.0f, 40.0f, 0.0, 1.0}, 25.0f, 0.0f);
-    feedback = p.addExtParam(pfx + "feedback", name + "Feedback", "Feedback", "", {0.0, 1.0, 0.0, 1.0}, 0.5f, 0.0f, percentTextFunction);
-    dry = p.addExtParam(pfx + "dry", name + "Dry", "Dry", "", {0.0, 1.0, 0.0, 1.0}, 1.0f, 0.0f, percentTextFunction);
-    wet = p.addExtParam(pfx + "wet", name + "Wet", "Wet", "", {0.0, 1.0, 0.0, 1.0}, 0.5f, 0.0f, percentTextFunction);
+    rate = p.addExtParam(pfx + "rate", name + "Rate", "Rate", " Hz", {0.005f, 20.0f, 0.0f, 0.3f}, 0.04f, 0.05f);
+    depth = p.addExtParam(pfx + "depth", name + "Depth", "Depth", "", {0.0, 1.0, 0.0, 1.0}, 0.5f, 0.05f, percentTextFunction);
+    delay = p.addExtParam(pfx + "delay", name + "Delay", "Delay", " ms", {10.0f, 40.0f, 0.0, 1.0}, 25.0f, 0.05f);
+    feedback = p.addExtParam(pfx + "feedback", name + "Feedback", "Feedback", "", {0.0, 1.0, 0.0, 1.0}, 0.5f, 0.05f, percentTextFunction);
+    dry = p.addExtParam(pfx + "dry", name + "Dry", "Dry", "", {0.0, 1.0, 0.0, 1.0}, 1.0f, 0.05f, percentTextFunction);
+    wet = p.addExtParam(pfx + "wet", name + "Wet", "Wet", "", {0.0, 1.0, 0.0, 1.0}, 0.5f, 0.05f, percentTextFunction);
 }
 
 //==============================================================================
@@ -657,13 +657,13 @@ void PMProcessor::ReverbParams::setup(PMProcessor &p)
 {
     const juce::String pfx = "rv";
     const juce::String name = "Reverb ";
-    size = p.addExtParam(pfx + "size", name + "Size", "Size", "", {0.0, 2.0, 0.0, 1.0}, 1.f, 0.0f);
-    decay = p.addExtParam(pfx + "decay", name + "Decay", "Decay", "", {0.0, 1.0, 0.0, 1.0}, 0.5f, 0.0f);
-    damping = p.addExtParam(pfx + "damping", name + "Damping", "Damping", " Hz", {20.0f, 20000.0f, 0.0, 0.3f}, 10000.0f, 0.0f);
-    lowpass = p.addExtParam(pfx + "lowpass", name + "Lowpass", "Lowpass", " Hz", {20.0f, 20000.0f, 0.0, 0.3f}, 20000.0f, 0.0f);
-    predelay = p.addExtParam(pfx + "predelay", name + "Predelay", "Predelay", "", {0.0, 0.1f, 0.0, 1.0}, 0.002f, 0.0f, secondsTextFunction);
-    dry = p.addExtParam(pfx + "dry", name + "Dry", "Dry", "", {0.0, 1.0, 0.0, 1.0}, 1.0f, 0.0f, percentTextFunction);
-    wet = p.addExtParam(pfx + "wet", name + "Wet", "Wet", "", {0.0, 1.0, 0.0, 1.0}, 0.08f, 0.0f, percentTextFunction);
+    size = p.addExtParam(pfx + "size", name + "Size", "Size", "", {0.0, 2.0, 0.0, 1.0}, 1.f, 0.07f);
+    decay = p.addExtParam(pfx + "decay", name + "Decay", "Decay", "", {0.0, 1.0, 0.0, 1.0}, 0.5f, 0.05f);
+    damping = p.addExtParam(pfx + "damping", name + "Damping", "Damping", " Hz", {20.0f, 20000.0f, 0.0, 0.3f}, 10000.0f, 0.05f);
+    lowpass = p.addExtParam(pfx + "lowpass", name + "Lowpass", "Lowpass", " Hz", {20.0f, 20000.0f, 0.0, 0.3f}, 20000.0f, 0.05f);
+    predelay = p.addExtParam(pfx + "predelay", name + "Predelay", "Predelay", "", {0.0, 0.1f, 0.0, 1.0}, 0.002f, 0.05f, secondsTextFunction);
+    dry = p.addExtParam(pfx + "dry", name + "Dry", "Dry", "", {0.0, 1.0, 0.0, 1.0}, 1.0f, 0.05f, percentTextFunction);
+    wet = p.addExtParam(pfx + "wet", name + "Wet", "Wet", "", {0.0, 1.0, 0.0, 1.0}, 0.08f, 0.05f, percentTextFunction);
 }
 
 //==============================================================================
@@ -687,14 +687,14 @@ void PMProcessor::StereoParams::setup(PMProcessor &p)
 {
     const juce::String pfx = "st";
     const juce::String name = "Stereo ";
-    w1 = p.addExtParam(pfx + "width1", name + "Width 1", "Width 1", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.5f, 0.f);
-    w2 = p.addExtParam(pfx + "width2", name + "Width 2", "Width 2", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.5f, 0.f);
-    c1 = p.addExtParam(pfx + "ctr1", name + "Center 1", "Center 1", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.4f, 0.f);
-    c2 = p.addExtParam(pfx + "ctr2", name + "Center 2", "Center 2", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.65f, 0.f);
-    p1 = p.addExtParam(pfx + "pan1", name + "Pan 1", "Pan 1", "", {-1.0f, 1.0f, 0.0, 1.0f}, 0.f, 0.f);
-    p2 = p.addExtParam(pfx + "pan2", name + "Pan 2", "Pan 2", "", {-1.0f, 1.0f, 0.0, 1.0f}, 0.f, 0.f);
-    rot = p.addExtParam(pfx + "rot", name + "Rotat", "Rotation", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.2f, 0.f);
-    out = p.addExtParam(pfx + "out", name + "Vol.", "Vol.", "", {0.0f, 1.0f, 0.0, 1.0f}, 1.f, 0.f);
+    w1 = p.addExtParam(pfx + "width1", name + "Width 1", "Width 1", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.5f, 0.05f);
+    w2 = p.addExtParam(pfx + "width2", name + "Width 2", "Width 2", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.5f, 0.05f);
+    c1 = p.addExtParam(pfx + "ctr1", name + "Center 1", "Center 1", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.4f, 0.05f);
+    c2 = p.addExtParam(pfx + "ctr2", name + "Center 2", "Center 2", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.65f, 0.05f);
+    p1 = p.addExtParam(pfx + "pan1", name + "Pan 1", "Pan 1", "", {-1.0f, 1.0f, 0.0, 1.0f}, 0.f, 0.05f);
+    p2 = p.addExtParam(pfx + "pan2", name + "Pan 2", "Pan 2", "", {-1.0f, 1.0f, 0.0, 1.0f}, 0.f, 0.05f);
+    rot = p.addExtParam(pfx + "rot", name + "Rotat", "Rotation", "", {0.0f, 1.0f, 0.0, 1.0f}, 0.2f, 0.05f);
+    out = p.addExtParam(pfx + "out", name + "Vol.", "Vol.", "", {0.0f, 1.0f, 0.0, 1.0f}, 1.f, 0.05f);
 }
 
 //==============================================================================
@@ -702,19 +702,19 @@ void PMProcessor::RingModParams::setup(PMProcessor &p)
 {
     const juce::String pfx = "rm";
     const juce::String name = "RMod ";
-    modfreq1 = p.addExtParam(pfx + "modfreq1", name + "Freq 1", "Mod Freq 1", " Hz", {1.0, 12000.0, 0.0, 0.3f}, 40.0f, 0.0f);
-    shape1 = p.addExtParam(pfx + "shape1", name + "Shape 1", "Shape 1", "", {0.0, 1.0, 0.0, 1.0}, 0.0f, 0.0f, percentTextFunction);
-    mix1 = p.addExtParam(pfx + "mix1", name + "Mix 1", "Mix 1", "", {0.0, 1.0, 0.0, 1.0}, 0.0f, 0.0f, percentTextFunction);
-    modfreq2 = p.addExtParam(pfx + "modfreq2", name + "Freq 2", "Mod Freq 2", " Hz", {1.0, 12000.0, 0.0, 0.3f}, 40.0f, 0.0f);
-    shape2 = p.addExtParam(pfx + "shape2", name + "Shape 2", "Shape 2", "", {0.0, 1.0, 0.0, 1.0}, 0.0f, 0.0f, percentTextFunction);
-    mix2 = p.addExtParam(pfx + "mix2", name + "Mix 2", "Mix 2", "", {0.0, 1.0, 0.0, 1.0}, 0.0f, 0.0f, percentTextFunction);
-    spread = p.addExtParam(pfx + "spread", name + "Spread", "Spread", "", {0.0, 1.0, 0.0, 1.0}, 0.03f, 0.0f, percentTextFunction);
-    lowcut = p.addExtParam(pfx + "lowcut", name + "Low Cut", "Low Cut", " Hz", {20.0, 20000.0, 0.0, 0.3f}, 20.0f, 0.0f);
-    highcut = p.addExtParam(pfx + "highcut", name + "High Cut", "High Cut", " Hz", {20.0, 20000.0, 0.0, 0.3f}, 20000.0f, 0.0f);
+    modfreq1 = p.addExtParam(pfx + "modfreq1", name + "Freq 1", "Mod Freq 1", " Hz", {1.0, 12000.0, 0.0, 0.3f}, 40.0f, 0.05f);
+    shape1 = p.addExtParam(pfx + "shape1", name + "Shape 1", "Shape 1", "", {0.0, 1.0, 0.0, 1.0}, 0.0f, 0.05f, percentTextFunction);
+    mix1 = p.addExtParam(pfx + "mix1", name + "Mix 1", "Mix 1", "", {0.0, 1.0, 0.0, 1.0}, 0.0f, 0.05f, percentTextFunction);
+    modfreq2 = p.addExtParam(pfx + "modfreq2", name + "Freq 2", "Mod Freq 2", " Hz", {1.0, 12000.0, 0.0, 0.3f}, 40.0f, 0.05f);
+    shape2 = p.addExtParam(pfx + "shape2", name + "Shape 2", "Shape 2", "", {0.0, 1.0, 0.0, 1.0}, 0.0f, 0.05f, percentTextFunction);
+    mix2 = p.addExtParam(pfx + "mix2", name + "Mix 2", "Mix 2", "", {0.0, 1.0, 0.0, 1.0}, 0.0f, 0.05f, percentTextFunction);
+    spread = p.addExtParam(pfx + "spread", name + "Spread", "Spread", "", {0.0, 1.0, 0.0, 1.0}, 0.03f, 0.05f, percentTextFunction);
+    lowcut = p.addExtParam(pfx + "lowcut", name + "Low Cut", "Low Cut", " Hz", {20.0, 20000.0, 0.0, 0.3f}, 20.0f, 0.05f);
+    highcut = p.addExtParam(pfx + "highcut", name + "High Cut", "High Cut", " Hz", {20.0, 20000.0, 0.0, 0.3f}, 20000.0f, 0.05f);
 }
 
 //==============================================================================
-void PMProcessor::GainParams::setup(PMProcessor &p) { gain = p.addExtParam("fxgain", "FX Gain", "Gain", " dB", {-60.0, 40.0, 0.0, 1.0}, 0.0f, 0.0f); }
+void PMProcessor::GainParams::setup(PMProcessor &p) { gain = p.addExtParam("fxgain", "FX Gain", "Gain", " dB", {-60.0, 40.0, 0.0, 1.0}, 0.0f, 0.05f); }
 
 static juce::String fxRouteFunction(const gin::Parameter &, float v) { return v < 0.5f ? "A || B" : "A -> B"; }
 
