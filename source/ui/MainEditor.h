@@ -46,7 +46,7 @@ class MainEditor : public juce::Component, public gin::Parameter::ParameterListe
     LFOMain lfo1{proc, proc.lfo1Params, 1};
     LFOMain lfo2{proc, proc.lfo2Params, 2};
     LFOMain lfo3{proc, proc.lfo3Params, 3};
-    LFOMain lfo4{proc, proc.lfo3Params, 4};
+    LFOMain lfo4{proc, proc.lfo4Params, 4};
 
     FilterBox filter{"  flt", proc};
     ModBox modsrc{"  mod", proc};
