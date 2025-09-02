@@ -422,13 +422,13 @@ void PMProcessor::OSCParams::setup(PMProcessor &p, const juce::String &numStr)
     case 3:
         coarse = p.addExtParam(id + "coarse", nm + " Coarse", "Coarse", "", {1.0, 24.0, 1.0, 1.0}, 3.0, 0.05f);
         fine = p.addExtParam(id + "fine", nm + " Fine", "Fine", "", defaultFineRange, 0.0, 0.05f);
-        volume = p.addExtParam(id + "volume", nm + " Volume", "Volume", " dB", {-50.0, 0.0, 0.0f, 1.0}, -9.f, 0.02f);
+        volume = p.addExtParam(id + "volume", nm + " Volume", "Volume", " dB", {-50.0, 0.0, 0.0f, 1.0}, -35.f, 0.02f);
         phase = p.addExtParam(id + "phase", nm + " Phase", "Phase", "", {0.0, 1.0, 0.0, 1.0}, 0.65f, 0.05f);
         break;
     case 4:
         coarse = p.addExtParam(id + "coarse", nm + " Coarse", "Coarse", "", {1.0, 24.0, 1.0, 1.0}, 4.0, 0.05f);
         fine = p.addExtParam(id + "fine", nm + " Fine", "Fine", "", defaultFineRange, 0.0, 0.05f);
-        volume = p.addExtParam(id + "volume", nm + " Volume", "Volume", " dB", {-50.0, 0.0, 0.0f, 1.0}, -14.f, 0.02f);
+        volume = p.addExtParam(id + "volume", nm + " Volume", "Volume", " dB", {-50.0, 0.0, 0.0f, 1.0}, -50.f, 0.02f);
         phase = p.addExtParam(id + "phase", nm + " Phase", " Phase", "", {0.0, 1.0, 0.0, 1.0}, 0.85f, 0.05f);
         break;
     }
